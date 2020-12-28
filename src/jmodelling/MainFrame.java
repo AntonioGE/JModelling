@@ -20,26 +20,10 @@ public class MainFrame {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        Vec3f a = new Vec3f(2, 0, 1);
-        Vec3f b = new Vec3f(1, -1, 3);
-        Vec3f c = Vec3f.cross_(a, b);
-
-        Mat3f A = new Mat3f(
-                2, 3, 0,
-                7, 1, 4,
-                3, 0, -3
-        );
-
-        Mat3f B = new Mat3f(
-                7, 0, 6,
-                0, -2, 4,
-                1, 0, 9
-        );
-
-        Mat3f C = new Mat3f();
-        Mat3f.mul(A, B, C);
-        
-        C.print();
+        Vec3f a = new Vec3f(1, 0, 0);
+        Vec3f axis = new Vec3f(0, 0, 1);
+        a.rotate(axis, 45).print();
+        a.rotate(axis, 180).print();
         
     }
 

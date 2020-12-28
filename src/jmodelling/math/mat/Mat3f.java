@@ -48,6 +48,40 @@ public class Mat3f {
     }
 
     public Mat3f(float[] data) {
+        set(data);
+    }
+
+    @Override
+    public Mat3f clone() {
+        return new Mat3f(this);
+    }
+
+    @Override
+    public String toString() {
+        return "|" + m00 + ", " + m01 + ", " + m02 + "|\n"
+                + "|" + m10 + ", " + m11 + ", " + m12 + "|\n"
+                + "|" + m20 + ", " + m21 + ", " + m22 + "|";
+    }
+
+    public void print() {
+        System.out.println(toString());
+    }
+
+    public void set(Mat3f other) {
+        this.m00 = other.m00;
+        this.m01 = other.m01;
+        this.m02 = other.m02;
+
+        this.m10 = other.m10;
+        this.m11 = other.m11;
+        this.m12 = other.m12;
+
+        this.m20 = other.m20;
+        this.m21 = other.m21;
+        this.m22 = other.m22;
+    }
+
+    public void set(float[] data) {
         this.m00 = data[0];
         this.m01 = data[1];
         this.m02 = data[2];
@@ -61,34 +95,122 @@ public class Mat3f {
         this.m22 = data[8];
     }
 
-    @Override
-    public Mat3f clone() {
-        return new Mat3f(this);
+    public float[] toArray() {
+        return new float[]{
+            m00, m01, m02, m10, m11, m12, m20, m21, m22
+        };
     }
 
-    @Override
-    public String toString() {
-        return "|" + m00 + ", " + m01 + ", " + m02 + "|"
-                + "|" + m10 + ", " + m11 + ", " + m12 + "|"
-                + "|" + m20 + ", " + m21 + ", " + m22 + "|";
+    public static Mat3f identity() {
+        return new Mat3f(
+                1.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 1.0f
+        );
     }
-    
-    public void print(){
-        System.out.println(toString());
+
+    public static void add(Mat3f src1, Mat3f src2, Mat3f dst) {
+        dst.m00 = src1.m00 + src2.m00;
+        dst.m01 = src1.m01 + src2.m01;
+        dst.m02 = src1.m02 + src2.m02;
+
+        dst.m10 = src1.m10 + src2.m10;
+        dst.m11 = src1.m11 + src2.m11;
+        dst.m12 = src1.m12 + src2.m12;
+
+        dst.m20 = src1.m20 + src2.m20;
+        dst.m21 = src1.m21 + src2.m21;
+        dst.m22 = src1.m22 + src2.m22;
     }
-    
-    public void set(Mat3f other){
-        this.m00 = other.m00;
-        this.m01 = other.m01;
-        this.m02 = other.m02;
 
-        this.m10 = other.m10;
-        this.m11 = other.m11;
-        this.m12 = other.m12;
+    public static Mat3f add_(Mat3f src1, Mat3f src2) {
+        Mat3f dst = new Mat3f();
+        add(src1, src2, dst);
+        return dst;
+    }
 
-        this.m20 = other.m20;
-        this.m21 = other.m21;
-        this.m22 = other.m22;
+    public Mat3f add(Mat3f other) {
+        add(this, other, this);
+        return this;
+    }
+
+    public Mat3f add_(Mat3f other) {
+        return add_(this, other);
+    }
+
+    public static void sub(Mat3f src1, Mat3f src2, Mat3f dst) {
+        dst.m00 = src1.m00 - src2.m00;
+        dst.m01 = src1.m01 - src2.m01;
+        dst.m02 = src1.m02 - src2.m02;
+
+        dst.m10 = src1.m10 - src2.m10;
+        dst.m11 = src1.m11 - src2.m11;
+        dst.m12 = src1.m12 - src2.m12;
+
+        dst.m20 = src1.m20 - src2.m20;
+        dst.m21 = src1.m21 - src2.m21;
+        dst.m22 = src1.m22 - src2.m22;
+    }
+
+    public static Mat3f sub_(Mat3f src1, Mat3f src2) {
+        Mat3f dst = new Mat3f();
+        sub(src1, src2, dst);
+        return dst;
+    }
+
+    public Mat3f sub(Mat3f other) {
+        sub(this, other, this);
+        return this;
+    }
+
+    public Mat3f sub_(Mat3f other) {
+        return sub_(this, other);
+    }
+
+    public static void mul(Mat3f src1, Mat3f src2, Mat3f dst) {
+        dst.m00 = src1.m00 * src2.m00 + src1.m01 * src2.m10 + src1.m02 * src2.m20;
+        dst.m01 = src1.m00 * src2.m01 + src1.m01 * src2.m11 + src1.m02 * src2.m21;
+        dst.m02 = src1.m00 * src2.m02 + src1.m01 * src2.m12 + src1.m02 * src2.m22;
+
+        dst.m10 = src1.m10 * src2.m00 + src1.m11 * src2.m10 + src1.m12 * src2.m20;
+        dst.m11 = src1.m10 * src2.m01 + src1.m11 * src2.m11 + src1.m12 * src2.m21;
+        dst.m12 = src1.m10 * src2.m02 + src1.m11 * src2.m12 + src1.m12 * src2.m22;
+
+        dst.m20 = src1.m20 * src2.m00 + src1.m21 * src2.m10 + src1.m22 * src2.m20;
+        dst.m21 = src1.m20 * src2.m01 + src1.m21 * src2.m11 + src1.m22 * src2.m21;
+        dst.m22 = src1.m20 * src2.m02 + src1.m21 * src2.m12 + src1.m22 * src2.m22;
+    }
+
+    public static Mat3f mul_(Mat3f src1, Mat3f src2) {
+        Mat3f dst = new Mat3f();
+        mul(src1, src2, dst);
+        return dst;
+    }
+
+    public Mat3f mul(Mat3f other) {
+        mul(this.clone(), other, this);
+        return this;
+    }
+
+    public Mat3f mul_(Mat3f other) {
+        return mul_(this, other);
+    }
+
+    public void setRow(int index, Vec3f row) {
+        float[] data = toArray();
+        index *= 3;
+        data[index] = row.x;
+        data[index + 1] = row.y;
+        data[index + 2] = row.z;
+        set(data);
+    }
+
+    public void setCol(int index, Vec3f col) {
+        float[] data = toArray();
+        data[index] = col.x;
+        data[index + 3] = col.y;
+        data[index + 9] = col.z;
+        set(data);
     }
 
 }

@@ -5,6 +5,8 @@
  */
 package jmodelling.math.vec;
 
+import jmodelling.math.mat.Mat3f;
+
 /**
  *
  * @author ANTONIO
@@ -55,7 +57,7 @@ public class Vec3f {
         this.z = other.z;
     }
     
-    public float[] toFloatArray() {
+    public float[] toArray() {
         return new float[]{x, y, z};
     }
 
@@ -171,6 +173,27 @@ public class Vec3f {
     
     public Vec3f cross_(Vec3f other){
         return cross_(this, other);
+    }
+    
+    public static void mul(Mat3f src1, Vec3f src2, Vec3f dst){
+        dst.x = src1.m00 * src2.x + src1.m01 * src2.y + src1.m02 * src2.z;
+        dst.x = src1.m10 * src2.x + src1.m11 * src2.y + src1.m12 * src2.z;
+        dst.x = src1.m20 * src2.x + src1.m21 * src2.y + src1.m22 * src2.z;
+    }
+    
+    public static Vec3f mul_(Mat3f src1, Vec3f src2){
+        Vec3f dst = new Vec3f();
+        mul(src1, src2, dst);
+        return dst;
+    }
+    
+    public Vec3f mul(Mat3f src){
+        mul(src, this.clone(), this);
+        return this;
+    }
+    
+    public Vec3f mul_(Mat3f src){
+        return mul_(src, this);
     }
     
 }

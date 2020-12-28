@@ -16,7 +16,7 @@ import jmodelling.math.vec.Vec3f;
 public class TransfMat {
 
     public static void perspective(float fovy, float aspect, float zNear, float zFar, Mat4f dst) {
-        float tanHalfFovy = (float) Math.tan(Math.toDegrees(fovy) * 0.5f);
+        float tanHalfFovy = (float) Math.tan(Math.toRadians(fovy) * 0.5f);
         dst.m00 = 1.0f / (aspect * tanHalfFovy);
         dst.m01 = 0.0f;
         dst.m02 = 0.0f;
@@ -28,10 +28,10 @@ public class TransfMat {
         dst.m20 = 0.0f;
         dst.m21 = 0.0f;
         dst.m22 = -(zFar + zNear) / (zFar - zNear);
-        dst.m23 = -1.0f;
+        dst.m23 = -2.0f * zFar * zNear / (zFar - zNear);
         dst.m30 = 0.0f;
         dst.m31 = 0.0f;
-        dst.m32 = -2.0f * zFar * zNear / (zFar - zNear);
+        dst.m32 = -1.0f;
         dst.m33 = 0.0f;
     }
 

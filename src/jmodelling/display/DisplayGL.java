@@ -7,8 +7,11 @@ package jmodelling.display;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -42,7 +45,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 1.0f,};
-
+    
     public DisplayGL() {
         addGLEventListener(this);
         addMouseListener(this);
@@ -73,30 +76,29 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
-        Mat4f p = TransfMat.perspective_(60.0f, (float)getWidth()/getHeight(), 0.1f, 100.0f);
-        Mat4f r = TransfMat.rotation_(45.0f, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -20.0f));
-        
-        p.print();
-        r.print();
-        t.print();
-        
-        gl.glLoadIdentity();
-        //gl.glMultMatrixf(p.toArray(), 0);
-        //gl.glMultMatrixf(r.toArray(), 0);
-        gl.glMultMatrixf(t.toArray(), 0);
-        
-        
-        gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.0f, -20.0f);
-        //gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);
+        Mat4f p = TransfMat.perspective_(60.0f, (float) getWidth() / getHeight(), 0.1f, 100.0f);
+        Mat4f rx = TransfMat.rotation_(45.0f, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotation_(0.0f, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotation_(25.0f, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -3.0f));
 
-        float[] matrix = new float[16]; 
-        gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0); 
-        
+        gl.glLoadIdentity();
+        gl.glMultMatrixf(p.toArray(), 0);
+        gl.glMultMatrixf(t.toArray(), 0);
+        gl.glMultMatrixf(rx.toArray(), 0);
+        gl.glMultMatrixf(ry.toArray(), 0);
+        gl.glMultMatrixf(rz.toArray(), 0);
+
+        /*gl.glLoadIdentity();
+        GLU glu = new GLU();
+        glu.gluPerspective(60.0f, (float)getWidth()/getHeight(), 0.1f, 100.0f);
+        gl.glTranslatef(0.0f, 0.0f, -20.0f);
+        gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
+        float[] matrix = new float[16];
+        gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
+
         new Mat4f(matrix).print();
-       
-        
+
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
             gl.glColor3fv(cubeColors, i * 3);

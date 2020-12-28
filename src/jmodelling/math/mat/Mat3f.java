@@ -30,17 +30,7 @@ public class Mat3f {
     }
 
     public Mat3f(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
-        this.m00 = m00;
-        this.m01 = m01;
-        this.m02 = m02;
-
-        this.m10 = m10;
-        this.m11 = m11;
-        this.m12 = m12;
-
-        this.m20 = m20;
-        this.m21 = m21;
-        this.m22 = m22;
+        set(m00, m01, m02, m10, m11, m12, m20, m21, m22);
     }
 
     public Mat3f(Mat3f other) {
@@ -66,8 +56,22 @@ public class Mat3f {
     public void print() {
         System.out.println(toString());
     }
+    
+    public final void set(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
+        this.m00 = m00;
+        this.m01 = m01;
+        this.m02 = m02;
 
-    public void set(Mat3f other) {
+        this.m10 = m10;
+        this.m11 = m11;
+        this.m12 = m12;
+
+        this.m20 = m20;
+        this.m21 = m21;
+        this.m22 = m22;
+    }
+
+    public final void set(Mat3f other) {
         this.m00 = other.m00;
         this.m01 = other.m01;
         this.m02 = other.m02;
@@ -81,7 +85,7 @@ public class Mat3f {
         this.m22 = other.m22;
     }
 
-    public void set(float[] data) {
+    public final void set(float[] data) {
         this.m00 = data[0];
         this.m01 = data[1];
         this.m02 = data[2];
@@ -209,7 +213,7 @@ public class Mat3f {
         float[] data = toArray();
         data[index] = col.x;
         data[index + 3] = col.y;
-        data[index + 9] = col.z;
+        data[index + 6] = col.z;
         set(data);
     }
 

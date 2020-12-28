@@ -11,7 +11,7 @@ package jmodelling.math.vec;
  */
 public class Vec3f {
 
-    private float x, y, z;
+    public float x, y, z;
 
     public Vec3f() {
         this.x = 0.0f;
@@ -26,9 +26,7 @@ public class Vec3f {
     }
 
     public Vec3f(Vec3f other) {
-        this.x = other.x;
-        this.y = other.y;
-        this.z = other.z;
+        set(other);
     }
 
     public Vec3f(float[] data) {

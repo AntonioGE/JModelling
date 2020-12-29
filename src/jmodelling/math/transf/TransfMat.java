@@ -147,4 +147,64 @@ public class TransfMat {
         return dst;
     }
     
+    public static void lookAt(Vec3f pos, Vec3f tar, Vec3f up, Mat4f dst){
+        Vec3f camDirection = pos.sub_(tar).normalize();
+        Vec3f camRight = up.cross_(camDirection).normalize();
+        Vec3f camUp = camDirection.cross_(camRight);
+        /*
+        dst.m00 = camRight.x;
+        dst.m10 = camRight.y;
+        dst.m20 = camRight.z;
+        dst.m30 = 0.0f;
+        
+        dst.m01 = camUp.x;
+        dst.m11 = camUp.y;
+        dst.m21 = camUp.z;
+        dst.m31 = 0.0f;
+        
+        dst.m02 = camDirection.x;
+        dst.m12 = camDirection.y;
+        dst.m22 = camDirection.z;
+        dst.m32 = 0.0f;
+        
+        dst.m03 = 0.0f;
+        dst.m13 = 0.0f;
+        dst.m23 = 0.0f;
+        dst.m33 = 1.0f;
+        */
+        
+        dst.m00 = camRight.x;
+        dst.m01 = camRight.y;
+        dst.m02 = camRight.z;
+        dst.m03 = 0.0f;
+        
+        dst.m10 = camUp.x;
+        dst.m11 = camUp.y;
+        dst.m12 = camUp.z;
+        dst.m13 = 0.0f;
+        
+        dst.m20 = camDirection.x;
+        dst.m21 = camDirection.y;
+        dst.m22 = camDirection.z;
+        dst.m23 = 0.0f;
+        
+        dst.m30 = 0.0f;
+        dst.m31 = 0.0f;
+        dst.m32 = 0.0f;
+        dst.m33 = 1.0f;
+        
+        Mat4f trans = Mat4f.identity();
+        trans.m03 = -pos.x;
+        trans.m13 = -pos.y;
+        trans.m23 = -pos.z;
+        
+        dst.mul(trans);
+        
+    }
+    
+    public static Mat4f lookAt_(Vec3f pos, Vec3f tar, Vec3f up){
+        Mat4f dst = new Mat4f();
+        lookAt(pos, tar, up, dst);
+        return dst;
+    }
 }

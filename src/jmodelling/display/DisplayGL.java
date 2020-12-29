@@ -77,22 +77,32 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         Mat4f p = TransfMat.perspective_(60.0f, (float) getWidth() / getHeight(), 0.1f, 100.0f);
-        Mat4f rx = TransfMat.rotation_(45.0f, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotation_(0.0f, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotation_(25.0f, new Vec3f(0.0f, 0.0f, 1.0f));
-        Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -3.0f));
+        //Mat4f rx = TransfMat.rotation_(45.0f, new Vec3f(1.0f, 0.0f, 0.0f));
+        //Mat4f ry = TransfMat.rotation_(0.0f, new Vec3f(0.0f, 1.0f, 0.0f));
+        //Mat4f rz = TransfMat.rotation_(25.0f, new Vec3f(0.0f, 0.0f, 1.0f));
+        //Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -3.0f));
+        Mat4f lookAt = TransfMat.lookAt_(
+                new Vec3f(5.0f, 5.0f, 10.0f), 
+                new Vec3f(0.0f, 0.0f, 0.0f),
+                new Vec3f(0.0f, 1.0f, 0.0f));
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
-        gl.glMultMatrixf(t.toArray(), 0);
-        gl.glMultMatrixf(rx.toArray(), 0);
-        gl.glMultMatrixf(ry.toArray(), 0);
-        gl.glMultMatrixf(rz.toArray(), 0);
+        gl.glMultMatrixf(lookAt.toArray(), 0);
+        //gl.glMultMatrixf(t.toArray(), 0);
+        //gl.glMultMatrixf(rx.toArray(), 0);
+        //gl.glMultMatrixf(ry.toArray(), 0);
+        //gl.glMultMatrixf(rz.toArray(), 0);
 
-        /*gl.glLoadIdentity();
+        
+        gl.glLoadIdentity();
         GLU glu = new GLU();
         glu.gluPerspective(60.0f, (float)getWidth()/getHeight(), 0.1f, 100.0f);
-        gl.glTranslatef(0.0f, 0.0f, -20.0f);
+        glu.gluLookAt(
+                5.0f, 5.0f, 10.0f, 
+                0.0f, 0.0f, 0.0f, 
+                0.0f, 1.0f, 0.0f);
+        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
@@ -122,7 +132,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        
     }
 
     @Override

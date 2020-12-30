@@ -224,4 +224,25 @@ public class Vec3f {
     public Vec3f rotate_(Vec3f axis, float degrees) {
         return rotate_(this, axis, degrees);
     }
+    
+    public static void rotateAround(Vec3f src, Vec3f center, Vec3f axis, float degrees, Vec3f dst){
+        Vec3f srcMoved = src.sub_(center);
+        rotate(srcMoved, axis, degrees, dst);
+        dst.add(center);
+    }
+    
+    public static Vec3f rotateAround_(Vec3f src, Vec3f center, Vec3f axis, float degrees){
+        Vec3f dst = new Vec3f();
+        rotateAround(src, center, axis, degrees, dst);
+        return dst;
+    }
+    
+    public Vec3f rotateAround(Vec3f center, Vec3f axis, float degrees){
+        rotateAround(this.clone(), center, axis, degrees, this);
+        return this;
+    }
+    
+    public Vec3f rotateAround_(Vec3f center, Vec3f axis, float degrees){
+        return rotateAround_(this, center, axis, degrees);
+    }
 }

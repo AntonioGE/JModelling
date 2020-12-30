@@ -46,6 +46,23 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 1.0f,};
     
+    private static final float axisCoords[] = new float[]{
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+    
+    private static final float axisColors[] = new float[]{
+        1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
+        0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 
+        0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+    };
+    
+    private float lastMouseX, lastMouseY;
+    private Vec3f camPos = new Vec3f(5.0f, 5.0f, 10.0f);
+    private Vec3f camTar = new Vec3f(0.0f, 0.0f, 0.0f);
+    private Vec3f camUp = new Vec3f(0.0f, 0.0f, 1.0f);
+    
     public DisplayGL() {
         addGLEventListener(this);
         addMouseListener(this);
@@ -82,9 +99,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         //Mat4f rz = TransfMat.rotation_(25.0f, new Vec3f(0.0f, 0.0f, 1.0f));
         //Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -3.0f));
         Mat4f lookAt = TransfMat.lookAt_(
-                new Vec3f(5.0f, 5.0f, 10.0f), 
-                new Vec3f(0.0f, 0.0f, 0.0f),
-                new Vec3f(0.0f, 1.0f, 0.0f));
+                camPos, 
+                camTar,
+                camUp);
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
@@ -94,20 +111,20 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         //gl.glMultMatrixf(ry.toArray(), 0);
         //gl.glMultMatrixf(rz.toArray(), 0);
 
-        
+        /*
         gl.glLoadIdentity();
         GLU glu = new GLU();
         glu.gluPerspective(60.0f, (float)getWidth()/getHeight(), 0.1f, 100.0f);
         glu.gluLookAt(
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
-                0.0f, 1.0f, 0.0f);
+                0.0f, 1.0f, 0.0f);*/
         /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
 
-        new Mat4f(matrix).print();
+        //new Mat4f(matrix).print();
 
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
@@ -115,6 +132,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             for (int j = 0; j < 4; j++, c += 3) {
                 gl.glVertex3fv(cubeCoords, c);
             }
+        }
+        gl.glEnd();
+
+        gl.glScalef(20.0f, 20.0f, 20.0f);
+        gl.glBegin(GL2.GL_LINES);
+        for (int i = 0, c = 0; i < 6; i++) {
+            gl.glColor3fv(axisColors, i * 3);
+            gl.glVertex3fv(axisCoords, i * 3);
         }
         gl.glEnd();
 
@@ -132,7 +157,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        lastMouseX = e.getX();
+        lastMouseY = e.getY();
     }
 
     @Override
@@ -152,7 +178,21 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        float sensitivity = 2.0f;
+        float deltaX = -(e.getX() - lastMouseX) / sensitivity;
+        float deltaY = -(e.getY() - lastMouseY) / sensitivity;
+        lastMouseX = e.getX();
+        lastMouseY = e.getY();
+        
+        Vec3f xRotAxis = camUp.clone();
+        camPos.rotateAround(camTar, xRotAxis, deltaX);
+        
+        Vec3f camDirection = camPos.sub_(camTar).normalize();
+        Vec3f camRight = camUp.cross_(camDirection).normalize();
+        Vec3f yRotAxis = camRight.clone();
+        camPos.rotateAround(camTar, yRotAxis, deltaY);
+        
+        repaint();
     }
 
     @Override

@@ -245,4 +245,25 @@ public class Vec3f {
     public Vec3f rotateAround_(Vec3f center, Vec3f axis, float degrees){
         return rotateAround_(this, center, axis, degrees);
     }
+    
+    public static void negate(Vec3f src, Vec3f dst){
+        dst.x = -src.x;
+        dst.y = -src.y;
+        dst.z = -src.z;
+    }
+    
+    public static Vec3f negate_(Vec3f src){
+        Vec3f dst = new Vec3f();
+        negate(src, dst);
+        return dst;
+    }
+    
+    public Vec3f negate(){
+        negate(this, this);
+        return this;
+    }
+    
+    public Vec3f negate_(){
+        return negate_(this);
+    }
 }

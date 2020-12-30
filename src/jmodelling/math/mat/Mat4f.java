@@ -38,25 +38,7 @@ public class Mat4f {
     }
 
     public Mat4f(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
-        this.m00 = m00;
-        this.m01 = m01;
-        this.m02 = m02;
-        this.m03 = m03;
-
-        this.m10 = m10;
-        this.m11 = m11;
-        this.m12 = m12;
-        this.m13 = m13;
-
-        this.m20 = m20;
-        this.m21 = m21;
-        this.m22 = m22;
-        this.m23 = m23;
-
-        this.m30 = m30;
-        this.m31 = m31;
-        this.m32 = m32;
-        this.m33 = m33;
+        set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
     }
 
     public Mat4f(Mat4f other) {
@@ -154,6 +136,28 @@ public class Mat4f {
         this.m33 = data[15];
     }
     
+    public void set(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
+        this.m00 = m00;
+        this.m01 = m01;
+        this.m02 = m02;
+        this.m03 = m03;
+
+        this.m10 = m10;
+        this.m11 = m11;
+        this.m12 = m12;
+        this.m13 = m13;
+
+        this.m20 = m20;
+        this.m21 = m21;
+        this.m22 = m22;
+        this.m23 = m23;
+
+        this.m30 = m30;
+        this.m31 = m31;
+        this.m32 = m32;
+        this.m33 = m33;
+    }
+
     public float[] toArray() {
         return new float[]{
             m00, m10, m20, m30, m01, m11, m21, m31, m02, m12, m22, m32, m03, m13, m23, m33
@@ -297,5 +301,62 @@ public class Mat4f {
         data[index + 8] = col.z;
         set(data);
     }*/
+    
+    public static void inverse(Mat4f src, Mat4f dst) {
+        float a = src.m00 * src.m11 - src.m01 * src.m10;
+        float b = src.m00 * src.m12 - src.m02 * src.m10;
+        float c = src.m00 * src.m13 - src.m03 * src.m10;
+        float d = src.m01 * src.m12 - src.m02 * src.m11;
+        float e = src.m01 * src.m13 - src.m03 * src.m11;
+        float f = src.m02 * src.m13 - src.m03 * src.m12;
+        float g = src.m20 * src.m31 - src.m21 * src.m30;
+        float h = src.m20 * src.m32 - src.m22 * src.m30;
+        float i = src.m20 * src.m33 - src.m23 * src.m30;
+        float j = src.m21 * src.m32 - src.m22 * src.m31;
+        float k = src.m21 * src.m33 - src.m23 * src.m31;
+        float l = src.m22 * src.m33 - src.m23 * src.m32;
+        
+        float det = a * l - b * k + c * j + d * i - e * h + f * g;
+        
+        /*
+        if(Math.abs(det) < 0.0001f){
+            return false;
+        }*/
+        
+        det = 1.0f / det;
+        dst.set(
+                (+src.m11 * l - src.m12 * k + src.m13 * j) * det,
+                (-src.m01 * l + src.m02 * k - src.m03 * j) * det,
+                (+src.m31 * f - src.m32 * e + src.m33 * d) * det,
+                (-src.m21 * f + src.m22 * e - src.m23 * d) * det,
+                (-src.m10 * l + src.m12 * i - src.m13 * h) * det,
+                (+src.m00 * l - src.m02 * i + src.m03 * h) * det,
+                (-src.m30 * f + src.m32 * c - src.m33 * b) * det,
+                (+src.m20 * f - src.m22 * c + src.m23 * b) * det,
+                (+src.m10 * k - src.m11 * i + src.m13 * g) * det,
+                (-src.m00 * k + src.m01 * i - src.m03 * g) * det,
+                (+src.m30 * e - src.m31 * c + src.m33 * a) * det,
+                (-src.m20 * e + src.m21 * c - src.m23 * a) * det,
+                (-src.m10 * j + src.m11 * h - src.m12 * g) * det,
+                (+src.m00 * j - src.m01 * h + src.m02 * g) * det,
+                (-src.m30 * d + src.m31 * b - src.m32 * a) * det,
+                (+src.m20 * d - src.m21 * b + src.m22 * a) * det);
+        //return true;
+    }
+    
+    public static Mat4f inverse_(Mat4f src){
+        Mat4f dst = new Mat4f();
+        inverse(src, dst);
+        return dst;
+    }
+    
+    public Mat4f inverse(){
+        inverse(this.clone(), this);
+        return this;
+    }
 
+    public Mat4f inverse_(){
+        return inverse_(this);
+    }
+    
 }

@@ -45,24 +45,25 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 1.0f,};
-    
+
     private static final float axisCoords[] = new float[]{
-        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
-        0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     };
-    
+
     private static final float axisColors[] = new float[]{
-        1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
-        0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 
+        1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
-    
+
     private float lastMouseX, lastMouseY;
-    private Vec3f camPos = new Vec3f(5.0f, 5.0f, 10.0f);
+    private Vec3f camPos = new Vec3f(-6.59f, 2.5f, 3.45f);
     private Vec3f camTar = new Vec3f(0.0f, 0.0f, 0.0f);
     private Vec3f camUp = new Vec3f(0.0f, 0.0f, 1.0f);
-    
+    private Vec3f camAngles = new Vec3f(63.0f, 0.0f, -110.0f);
+
     public DisplayGL() {
         addGLEventListener(this);
         addMouseListener(this);
@@ -94,23 +95,24 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         Mat4f p = TransfMat.perspective_(60.0f, (float) getWidth() / getHeight(), 0.1f, 100.0f);
-        //Mat4f rx = TransfMat.rotation_(45.0f, new Vec3f(1.0f, 0.0f, 0.0f));
-        //Mat4f ry = TransfMat.rotation_(0.0f, new Vec3f(0.0f, 1.0f, 0.0f));
-        //Mat4f rz = TransfMat.rotation_(25.0f, new Vec3f(0.0f, 0.0f, 1.0f));
-        //Mat4f t = TransfMat.translation_(new Vec3f(0.0f, 0.0f, -3.0f));
-        Mat4f lookAt = TransfMat.lookAt_(
-                camPos, 
-                camTar,
-                camUp);
+        Mat4f rx = TransfMat.rotation_(-camAngles.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotation_(-camAngles.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotation_(-camAngles.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(camPos.negate_());
+        //Mat4f lookAt = TransfMat.lookAt_(camPos, camTar, camUp);
+        Mat4f lookAt = TransfMat.lookAt_(new Vec3f(), new Vec3f(), camUp);
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
-        gl.glMultMatrixf(lookAt.toArray(), 0);
-        //gl.glMultMatrixf(t.toArray(), 0);
-        //gl.glMultMatrixf(rx.toArray(), 0);
-        //gl.glMultMatrixf(ry.toArray(), 0);
-        //gl.glMultMatrixf(rz.toArray(), 0);
+        //gl.glMultMatrixf(lookAt.toArray(), 0);
+        
 
+        gl.glMultMatrixf(rx.toArray(), 0);
+        gl.glMultMatrixf(ry.toArray(), 0);
+        gl.glMultMatrixf(rz.toArray(), 0);
+
+        gl.glMultMatrixf(t.toArray(), 0);
+        
         /*
         gl.glLoadIdentity();
         GLU glu = new GLU();
@@ -119,13 +121,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
-        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+ /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
 
         //new Mat4f(matrix).print();
-
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
             gl.glColor3fv(cubeColors, i * 3);
@@ -183,15 +184,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         float deltaY = -(e.getY() - lastMouseY) / sensitivity;
         lastMouseX = e.getX();
         lastMouseY = e.getY();
-        
+
         Vec3f xRotAxis = camUp.clone();
         camPos.rotateAround(camTar, xRotAxis, deltaX);
-        
+
         Vec3f camDirection = camPos.sub_(camTar).normalize();
         Vec3f camRight = camUp.cross_(camDirection).normalize();
         Vec3f yRotAxis = camRight.clone();
         camPos.rotateAround(camTar, yRotAxis, deltaY);
-        
+
         repaint();
     }
 

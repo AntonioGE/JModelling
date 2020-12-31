@@ -135,7 +135,7 @@ public class Mat4f {
         this.m23 = data[14];
         this.m33 = data[15];
     }
-    
+
     public void set(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
         this.m00 = m00;
         this.m01 = m01;
@@ -301,7 +301,6 @@ public class Mat4f {
         data[index + 8] = col.z;
         set(data);
     }*/
-    
     public static void inverse(Mat4f src, Mat4f dst) {
         float a = src.m00 * src.m11 - src.m01 * src.m10;
         float b = src.m00 * src.m12 - src.m02 * src.m10;
@@ -315,14 +314,13 @@ public class Mat4f {
         float j = src.m21 * src.m32 - src.m22 * src.m31;
         float k = src.m21 * src.m33 - src.m23 * src.m31;
         float l = src.m22 * src.m33 - src.m23 * src.m32;
-        
+
         float det = a * l - b * k + c * j + d * i - e * h + f * g;
-        
+
         /*
         if(Math.abs(det) < 0.0001f){
             return false;
         }*/
-        
         det = 1.0f / det;
         dst.set(
                 (+src.m11 * l - src.m12 * k + src.m13 * j) * det,
@@ -343,20 +341,20 @@ public class Mat4f {
                 (+src.m20 * d - src.m21 * b + src.m22 * a) * det);
         //return true;
     }
-    
-    public static Mat4f inverse_(Mat4f src){
+
+    public static Mat4f inverse_(Mat4f src) {
         Mat4f dst = new Mat4f();
         inverse(src, dst);
         return dst;
     }
-    
-    public Mat4f inverse(){
+
+    public Mat4f inverse() {
         inverse(this.clone(), this);
         return this;
     }
 
-    public Mat4f inverse_(){
+    public Mat4f inverse_() {
         return inverse_(this);
     }
-    
+
 }

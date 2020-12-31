@@ -138,7 +138,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glScalef(20.0f, 20.0f, 20.0f);
         gl.glBegin(GL2.GL_LINES);
-        for (int i = 0, c = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             gl.glColor3fv(axisColors, i * 3);
             gl.glVertex3fv(axisCoords, i * 3);
         }

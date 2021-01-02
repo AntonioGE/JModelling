@@ -268,7 +268,7 @@ public class Vec3f {
     }
     
     public static void anglesXZ(Vec3f src, Vec3f dst){
-        dst.x = (float) Math.toDegrees(Math.atan2(src.z, src.x));
+        dst.x = (float) Math.toDegrees(Math.atan2(src.z, Math.sqrt(src.x * src.x + src.y * src.y)));
         dst.y = 0.0f;
         dst.z = (float) Math.toDegrees(Math.atan2(src.y, src.x));
     }

@@ -197,7 +197,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         camPos.rotateAround(camTar, camUp, deltaX);
         //Vec3f camDir = camTar.sub_(camPos);
         //camAngles = camDir.anglesXZ().add(new Vec3f(0, 0, 90.0f));
+        Vec3f camDir = camTar.sub_(camPos).normalize();
+        Vec3f camRight = camDir.cross_(camUp).normalize();
+        camPos.rotateAround(camTar, camRight, deltaY);
+        
         camAngles = camDirToAngles();
+        
+        
         
         /*
         Vec3f xRotAxis = camUp.clone();

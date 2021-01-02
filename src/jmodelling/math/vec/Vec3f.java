@@ -288,4 +288,10 @@ public class Vec3f {
         return anglesXZ_(this);
     }
     
+    public static void anglesXZToVector(Vec3f src, Vec3f dst){
+        dst.x = (float) Math.cos(src.z);
+        dst.y = (float) Math.sin(src.z);
+        dst.z = (float) Math.sin(src.x);
+    }
+    
 }

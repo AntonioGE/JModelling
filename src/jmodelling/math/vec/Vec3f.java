@@ -266,4 +266,26 @@ public class Vec3f {
     public Vec3f negate_(){
         return negate_(this);
     }
+    
+    public static void anglesXZ(Vec3f src, Vec3f dst){
+        dst.x = (float) Math.toDegrees(Math.atan2(src.z, src.x));
+        dst.y = 0.0f;
+        dst.z = (float) Math.toDegrees(Math.atan2(src.y, src.x));
+    }
+    
+    public static Vec3f anglesXZ_(Vec3f src){
+        Vec3f dst = new Vec3f();
+        anglesXZ(src, dst);
+        return dst;
+    }
+    
+    public Vec3f anglesXZ(){
+        anglesXZ(this.clone(), this);
+        return this;
+    }
+    
+    public Vec3f anglesXZ_(){
+        return anglesXZ_(this);
+    }
+    
 }

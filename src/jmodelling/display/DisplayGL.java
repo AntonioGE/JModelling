@@ -60,9 +60,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     private float lastMouseX, lastMouseY;
     private Vec3f camPos = new Vec3f(-6.59f, 2.5f, 3.45f);
+    //private Vec3f camPos = new Vec3f(0.0f, 0.0f, 10.0f);
     private Vec3f camTar = new Vec3f(0.0f, 0.0f, 0.0f);
     private Vec3f camUp = new Vec3f(0.0f, 0.0f, 1.0f);
-    private Vec3f camAngles = new Vec3f(63.0f, 0.0f, -110.0f);
+    //private Vec3f camAngles = new Vec3f(63.0f, 0.0f, -110.0f);
+    private Vec3f camAngles = camDirToAngles();
+    //private Vec3f camAngles = new Vec3f(0.0f, 0.0f, 0.0f);
 
     public DisplayGL() {
         addGLEventListener(this);
@@ -113,6 +116,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glMultMatrixf(t.toArray(), 0);
         
+        //camPos.print();
+        //camPos.print();
+        camAngles.print();
         /*
         gl.glLoadIdentity();
         GLU glu = new GLU();
@@ -121,7 +127,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
- /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
@@ -136,6 +142,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
 
+        gl.glLineStipple(1, (short) 0xF0F0);
+        gl.glEnable(GL2.GL_LINE_STIPPLE);
+        
         gl.glScalef(20.0f, 20.0f, 20.0f);
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < 6; i++) {
@@ -185,6 +194,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         lastMouseX = e.getX();
         lastMouseY = e.getY();
 
+        camPos.rotateAround(camTar, camUp, deltaX);
+        Vec3f camDir = camTar.sub_(camPos);
+        //camAngles = camDir.anglesXZ().add(new Vec3f(0, 0, 90.0f));
+        camAngles = camDirToAngles();
+        
+        /*
         Vec3f xRotAxis = camUp.clone();
         camPos.rotateAround(camTar, xRotAxis, deltaX);
 
@@ -192,7 +207,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Vec3f camRight = camUp.cross_(camDirection).normalize();
         Vec3f yRotAxis = camRight.clone();
         camPos.rotateAround(camTar, yRotAxis, deltaY);
-
+        */
+        
         repaint();
     }
 
@@ -221,4 +237,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     }
 
+    //TODO: Move to camera class
+    private Vec3f camDirToAngles(){
+        Vec3f angles = camTar.sub_(camPos).anglesXZ();
+        angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
+        return angles;
+    }
+    
 }

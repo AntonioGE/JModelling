@@ -196,6 +196,27 @@ public class Vec3f {
         return mul_(src, this);
     }
 
+    public static void scale(Vec3f src, float scale, Vec3f dst){
+        dst.x = src.x * scale;
+        dst.y = src.y * scale;
+        dst.z = src.z * scale;
+    }
+    
+    public static Vec3f scale_(Vec3f src, float scale){
+        Vec3f dst = new Vec3f();
+        scale(src, scale, dst);
+        return dst;
+    }
+    
+    public Vec3f scale(float scale){
+        scale(this, scale, this);
+        return this;
+    }
+    
+    public Vec3f scale_(float scale){
+        return scale_(this, scale);
+    }
+    
     public static void rotate(Vec3f src, Vec3f axis, float degrees, Vec3f dst) {
         float cos = (float) Math.cos(Math.toRadians(degrees));
         float sin = (float) Math.sin(Math.toRadians(degrees));
@@ -292,6 +313,21 @@ public class Vec3f {
         dst.x = (float) Math.cos(src.z);
         dst.y = (float) Math.sin(src.z);
         dst.z = (float) Math.sin(src.x);
+    }
+    
+    public static Vec3f anglesXZToVector_(Vec3f src){
+        Vec3f dst = new Vec3f();
+        anglesXZToVector(src, dst);
+        return dst;
+    }
+    
+    public Vec3f anglesXZToVector(){
+        anglesXZToVector(this.clone(), this);
+        return this;
+    }
+    
+    public Vec3f anglesXZToVector_(){
+        return anglesXZToVector_(this);
     }
     
 }

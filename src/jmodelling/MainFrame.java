@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import jmodelling.display.DisplayGL;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -62,6 +63,12 @@ public class MainFrame extends JFrame{
     public static void main(String[] args) {
         // TODO code application logic here
 
+        Vec3f test = new Vec3f(3, 5, 3);
+        float norm = test.norm();
+        test.print();
+        test.anglesXZ().print();
+        test.anglesXZToVector().scale(norm).print();
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame("JNDS").setVisible(true);

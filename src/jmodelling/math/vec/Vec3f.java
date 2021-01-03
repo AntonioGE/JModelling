@@ -237,7 +237,49 @@ public class Vec3f {
     public Vec3f negate_() {
         return negate_(this);
     }
-    
+
+    public static void toDegrees(Vec3f src, Vec3f dst) {
+        dst.x = (float) Math.toDegrees(src.x);
+        dst.y = (float) Math.toDegrees(src.y);
+        dst.z = (float) Math.toDegrees(src.z);
+    }
+
+    public static Vec3f toDegrees_(Vec3f src) {
+        Vec3f dst = new Vec3f();
+        toDegrees(src, dst);
+        return dst;
+    }
+
+    public Vec3f toDegrees() {
+        toDegrees(this, this);
+        return this;
+    }
+
+    public Vec3f toDegrees_() {
+        return toDegrees_(this);
+    }
+
+    public static void toRadians(Vec3f src, Vec3f dst) {
+        dst.x = (float) Math.toRadians(src.x);
+        dst.y = (float) Math.toRadians(src.y);
+        dst.z = (float) Math.toRadians(src.z);
+    }
+
+    public static Vec3f toRadians_(Vec3f src) {
+        Vec3f dst = new Vec3f();
+        toRadians(src, dst);
+        return dst;
+    }
+
+    public Vec3f toRadians() {
+        toRadians(this, this);
+        return this;
+    }
+
+    public Vec3f toRadians_() {
+        return toRadians_(this);
+    }
+
     public static void rotate(Vec3f src, Vec3f axis, float radians, Vec3f dst) {
         float cos = (float) Math.cos(radians);
         float sin = (float) Math.sin(radians);
@@ -310,9 +352,9 @@ public class Vec3f {
     }
 
     public static void anglesXZToVector(Vec3f src, Vec3f dst) {
-        dst.x = (float) Math.cos(Math.toRadians(src.z));
-        dst.y = (float) Math.sin(Math.toRadians(src.z));
-        dst.z = (float) Math.tan(Math.toRadians(src.x));
+        dst.x = (float) (Math.cos(src.z) * Math.cos(src.x));
+        dst.y = (float) (Math.cos(src.z) * Math.sin(src.x));
+        dst.z = (float) Math.sin(src.z);
     }
 
     public static Vec3f anglesXZToVector_(Vec3f src) {
@@ -351,7 +393,7 @@ public class Vec3f {
 
     public static void rotateAroundDeg(Vec3f src, Vec3f center, Vec3f axis, float degrees, Vec3f dst) {
         Vec3f srcMoved = src.sub_(center);
-        rotateDeg(srcMoved, axis, degrees, dst);
+        rotateDeg(srcMoved, axis, (float) Math.toRadians(degrees), dst);
         dst.add(center);
     }
 
@@ -371,9 +413,8 @@ public class Vec3f {
     }
 
     public static void anglesXZDeg(Vec3f src, Vec3f dst) {
-        dst.x = (float) Math.toDegrees(Math.atan2(src.z, Math.sqrt(src.x * src.x + src.y * src.y)));
-        dst.y = 0.0f;
-        dst.z = (float) Math.toDegrees(Math.atan2(src.y, src.x));
+        anglesXZ(src, dst);
+        dst.toDegrees();
     }
 
     public static Vec3f anglesXZDeg_(Vec3f src) {
@@ -392,9 +433,7 @@ public class Vec3f {
     }
 
     public static void anglesXZDegToVector(Vec3f src, Vec3f dst) {
-        dst.x = (float) Math.cos(Math.toRadians(src.z));
-        dst.y = (float) Math.sin(Math.toRadians(src.z));
-        dst.z = (float) Math.tan(Math.toRadians(src.x));
+        anglesXZToVector(src.toRadians_(), dst);
     }
 
     public static Vec3f anglesXZDegToVector_(Vec3f src) {
@@ -411,7 +450,5 @@ public class Vec3f {
     public Vec3f anglesXZDegToVector_() {
         return anglesXZDegToVector_(this);
     }
-    
-    
 
 }

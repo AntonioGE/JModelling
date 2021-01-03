@@ -196,30 +196,51 @@ public class Vec3f {
         return mul_(src, this);
     }
 
-    public static void scale(Vec3f src, float scale, Vec3f dst){
+    public static void scale(Vec3f src, float scale, Vec3f dst) {
         dst.x = src.x * scale;
         dst.y = src.y * scale;
         dst.z = src.z * scale;
     }
-    
-    public static Vec3f scale_(Vec3f src, float scale){
+
+    public static Vec3f scale_(Vec3f src, float scale) {
         Vec3f dst = new Vec3f();
         scale(src, scale, dst);
         return dst;
     }
-    
-    public Vec3f scale(float scale){
+
+    public Vec3f scale(float scale) {
         scale(this, scale, this);
         return this;
     }
-    
-    public Vec3f scale_(float scale){
+
+    public Vec3f scale_(float scale) {
         return scale_(this, scale);
     }
+
+    public static void negate(Vec3f src, Vec3f dst) {
+        dst.x = -src.x;
+        dst.y = -src.y;
+        dst.z = -src.z;
+    }
+
+    public static Vec3f negate_(Vec3f src) {
+        Vec3f dst = new Vec3f();
+        negate(src, dst);
+        return dst;
+    }
+
+    public Vec3f negate() {
+        negate(this, this);
+        return this;
+    }
+
+    public Vec3f negate_() {
+        return negate_(this);
+    }
     
-    public static void rotate(Vec3f src, Vec3f axis, float degrees, Vec3f dst) {
-        float cos = (float) Math.cos(Math.toRadians(degrees));
-        float sin = (float) Math.sin(Math.toRadians(degrees));
+    public static void rotate(Vec3f src, Vec3f axis, float radians, Vec3f dst) {
+        float cos = (float) Math.cos(radians);
+        float sin = (float) Math.sin(radians);
         dst.x = axis.x * (axis.x * src.x + axis.y * src.y + axis.z * src.z) * (1.0f - cos)
                 + src.x * cos
                 + (-axis.z * src.y + axis.y * src.z) * sin;
@@ -231,103 +252,166 @@ public class Vec3f {
                 + (-axis.y * src.x + axis.x * src.y) * sin;
     }
 
-    public static Vec3f rotate_(Vec3f src, Vec3f axis, float degrees) {
+    public static Vec3f rotate_(Vec3f src, Vec3f axis, float radians) {
         Vec3f dst = new Vec3f();
-        rotate(src, axis, degrees, dst);
+        rotate(src, axis, radians, dst);
         return dst;
     }
 
-    public Vec3f rotate(Vec3f axis, float degrees) {
-        rotate(this.clone(), axis, degrees, this);
+    public Vec3f rotate(Vec3f axis, float radians) {
+        rotate(this.clone(), axis, radians, this);
         return this;
     }
 
-    public Vec3f rotate_(Vec3f axis, float degrees) {
-        return rotate_(this, axis, degrees);
+    public Vec3f rotate_(Vec3f axis, float radians) {
+        return rotate_(this, axis, radians);
     }
-    
-    public static void rotateAround(Vec3f src, Vec3f center, Vec3f axis, float degrees, Vec3f dst){
+
+    public static void rotateAround(Vec3f src, Vec3f center, Vec3f axis, float radians, Vec3f dst) {
         Vec3f srcMoved = src.sub_(center);
-        rotate(srcMoved, axis, degrees, dst);
+        rotate(srcMoved, axis, radians, dst);
         dst.add(center);
     }
-    
-    public static Vec3f rotateAround_(Vec3f src, Vec3f center, Vec3f axis, float degrees){
+
+    public static Vec3f rotateAround_(Vec3f src, Vec3f center, Vec3f axis, float radians) {
         Vec3f dst = new Vec3f();
-        rotateAround(src, center, axis, degrees, dst);
+        rotateAround(src, center, axis, radians, dst);
         return dst;
     }
-    
-    public Vec3f rotateAround(Vec3f center, Vec3f axis, float degrees){
-        rotateAround(this.clone(), center, axis, degrees, this);
+
+    public Vec3f rotateAround(Vec3f center, Vec3f axis, float radians) {
+        rotateAround(this.clone(), center, axis, radians, this);
         return this;
     }
-    
-    public Vec3f rotateAround_(Vec3f center, Vec3f axis, float degrees){
-        return rotateAround_(this, center, axis, degrees);
+
+    public Vec3f rotateAround_(Vec3f center, Vec3f axis, float radians) {
+        return rotateAround_(this, center, axis, radians);
     }
-    
-    public static void negate(Vec3f src, Vec3f dst){
-        dst.x = -src.x;
-        dst.y = -src.y;
-        dst.z = -src.z;
-    }
-    
-    public static Vec3f negate_(Vec3f src){
-        Vec3f dst = new Vec3f();
-        negate(src, dst);
-        return dst;
-    }
-    
-    public Vec3f negate(){
-        negate(this, this);
-        return this;
-    }
-    
-    public Vec3f negate_(){
-        return negate_(this);
-    }
-    
-    public static void anglesXZ(Vec3f src, Vec3f dst){
-        dst.x = (float) Math.toDegrees(Math.atan2(src.z, Math.sqrt(src.x * src.x + src.y * src.y)));
+
+    public static void anglesXZ(Vec3f src, Vec3f dst) {
+        dst.x = (float) (Math.atan2(src.z, Math.sqrt(src.x * src.x + src.y * src.y)));
         dst.y = 0.0f;
-        dst.z = (float) Math.toDegrees(Math.atan2(src.y, src.x));
+        dst.z = (float) (Math.atan2(src.y, src.x));
     }
-    
-    public static Vec3f anglesXZ_(Vec3f src){
+
+    public static Vec3f anglesXZ_(Vec3f src) {
         Vec3f dst = new Vec3f();
         anglesXZ(src, dst);
         return dst;
     }
-    
-    public Vec3f anglesXZ(){
+
+    public Vec3f anglesXZ() {
         anglesXZ(this.clone(), this);
         return this;
     }
-    
-    public Vec3f anglesXZ_(){
+
+    public Vec3f anglesXZ_() {
         return anglesXZ_(this);
     }
-    
-    public static void anglesXZToVector(Vec3f src, Vec3f dst){
-        dst.x = (float) Math.cos(src.z);
-        dst.y = (float) Math.sin(src.z);
-        dst.z = (float) Math.sin(src.x);
+
+    public static void anglesXZToVector(Vec3f src, Vec3f dst) {
+        dst.x = (float) Math.cos(Math.toRadians(src.z));
+        dst.y = (float) Math.sin(Math.toRadians(src.z));
+        dst.z = (float) Math.tan(Math.toRadians(src.x));
     }
-    
-    public static Vec3f anglesXZToVector_(Vec3f src){
+
+    public static Vec3f anglesXZToVector_(Vec3f src) {
         Vec3f dst = new Vec3f();
         anglesXZToVector(src, dst);
         return dst;
     }
-    
-    public Vec3f anglesXZToVector(){
+
+    public Vec3f anglesXZToVector() {
         anglesXZToVector(this.clone(), this);
         return this;
     }
-    
-    public Vec3f anglesXZToVector_(){
+
+    public Vec3f anglesXZToVector_() {
         return anglesXZToVector_(this);
     }
+
+    public static void rotateDeg(Vec3f src, Vec3f axis, float degrees, Vec3f dst) {
+        rotate(src, axis, (float) Math.toRadians(degrees), dst);
+    }
+
+    public static Vec3f rotateDeg_(Vec3f src, Vec3f axis, float degrees) {
+        Vec3f dst = new Vec3f();
+        rotateDeg(src, axis, degrees, dst);
+        return dst;
+    }
+
+    public Vec3f rotateDeg(Vec3f axis, float degrees) {
+        rotateDeg(this.clone(), axis, degrees, this);
+        return this;
+    }
+
+    public Vec3f rotateDeg_(Vec3f axis, float degrees) {
+        return rotateDeg_(this, axis, degrees);
+    }
+
+    public static void rotateAroundDeg(Vec3f src, Vec3f center, Vec3f axis, float degrees, Vec3f dst) {
+        Vec3f srcMoved = src.sub_(center);
+        rotateDeg(srcMoved, axis, degrees, dst);
+        dst.add(center);
+    }
+
+    public static Vec3f rotateAroundDeg_(Vec3f src, Vec3f center, Vec3f axis, float degrees) {
+        Vec3f dst = new Vec3f();
+        rotateAroundDeg(src, center, axis, degrees, dst);
+        return dst;
+    }
+
+    public Vec3f rotateAroundDeg(Vec3f center, Vec3f axis, float degrees) {
+        rotateAroundDeg(this.clone(), center, axis, degrees, this);
+        return this;
+    }
+
+    public Vec3f rotateAroundDeg_(Vec3f center, Vec3f axis, float degrees) {
+        return rotateAroundDeg_(this, center, axis, degrees);
+    }
+
+    public static void anglesXZDeg(Vec3f src, Vec3f dst) {
+        dst.x = (float) Math.toDegrees(Math.atan2(src.z, Math.sqrt(src.x * src.x + src.y * src.y)));
+        dst.y = 0.0f;
+        dst.z = (float) Math.toDegrees(Math.atan2(src.y, src.x));
+    }
+
+    public static Vec3f anglesXZDeg_(Vec3f src) {
+        Vec3f dst = new Vec3f();
+        anglesXZDeg(src, dst);
+        return dst;
+    }
+
+    public Vec3f anglesXZDeg() {
+        anglesXZDeg(this.clone(), this);
+        return this;
+    }
+
+    public Vec3f anglesXZDeg_() {
+        return anglesXZDeg_(this);
+    }
+
+    public static void anglesXZDegToVector(Vec3f src, Vec3f dst) {
+        dst.x = (float) Math.cos(Math.toRadians(src.z));
+        dst.y = (float) Math.sin(Math.toRadians(src.z));
+        dst.z = (float) Math.tan(Math.toRadians(src.x));
+    }
+
+    public static Vec3f anglesXZDegToVector_(Vec3f src) {
+        Vec3f dst = new Vec3f();
+        anglesXZDegToVector(src, dst);
+        return dst;
+    }
+
+    public Vec3f anglesXZDegToVector() {
+        anglesXZDegToVector(this.clone(), this);
+        return this;
+    }
+
+    public Vec3f anglesXZDegToVector_() {
+        return anglesXZDegToVector_(this);
+    }
     
+    
+
 }

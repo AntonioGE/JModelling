@@ -67,7 +67,7 @@ public class MainFrame extends JFrame{
         float norm = test.norm();
         test.print();
         test.anglesXZ().print();
-        test.anglesXZToVector().scale(norm).print();
+        test.anglesXZToVector().print();
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

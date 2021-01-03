@@ -393,7 +393,7 @@ public class Vec3f {
 
     public static void rotateAroundDeg(Vec3f src, Vec3f center, Vec3f axis, float degrees, Vec3f dst) {
         Vec3f srcMoved = src.sub_(center);
-        rotateDeg(srcMoved, axis, (float) Math.toRadians(degrees), dst);
+        rotateDeg(srcMoved, axis, degrees, dst);
         dst.add(center);
     }
 

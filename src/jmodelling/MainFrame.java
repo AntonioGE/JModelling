@@ -66,8 +66,9 @@ public class MainFrame extends JFrame{
         Vec3f test = new Vec3f(3, 5, 3);
         float norm = test.norm();
         test.print();
+        test.anglesXZDeg_().print();
         test.anglesXZ().print();
-        test.anglesXZToVector().print();
+        test.anglesXZToVector().scale(norm).print();
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

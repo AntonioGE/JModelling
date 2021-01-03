@@ -352,9 +352,9 @@ public class Vec3f {
     }
 
     public static void anglesXZToVector(Vec3f src, Vec3f dst) {
-        dst.x = (float) (Math.cos(src.z) * Math.cos(src.x));
-        dst.y = (float) (Math.cos(src.z) * Math.sin(src.x));
-        dst.z = (float) Math.sin(src.z);
+        dst.x = (float) (Math.cos(src.x) * Math.cos(src.z));
+        dst.y = (float) (Math.cos(src.x) * Math.sin(src.z));
+        dst.z = (float) Math.sin(src.x);
     }
 
     public static Vec3f anglesXZToVector_(Vec3f src) {

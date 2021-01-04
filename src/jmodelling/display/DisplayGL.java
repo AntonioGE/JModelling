@@ -200,11 +200,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         anglesRotated.z -= 90.0f;
         Vec3f camDir = anglesRotated.anglesXZDegToVector_();
         camDir.z = -camDir.z;
-        
+
         camPos = camTar.add_(camDir.negate()).scale(camPos.sub_(camTar).norm());
 
-        camAngles.print("CamAngles");
-        camDir.print("CamDir");
+        //camAngles.print("CamAngles");
+        //camDir.print("CamDir");
         //camPos = new Vec3f(0.0f, 0.0f, 1.0f).scale(camPos.norm()).
 
         /*
@@ -264,7 +264,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        float delta = 1.2f;
+        if (e.getWheelRotation() > 0) {
+            camPos.sub(camTar);
+            camPos.scale(delta);
+            camPos.add(camTar);
+        } else {
+            camPos.sub(camTar);
+            camPos.scale(1.0f / delta);
+            camPos.add(camTar);
+        }
 
+        repaint();
     }
 
     //TODO: Move to camera class

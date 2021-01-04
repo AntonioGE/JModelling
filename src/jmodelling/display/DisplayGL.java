@@ -118,7 +118,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         
         //camPos.print();
         //camPos.print();
-        camAngles.print();
+        //camAngles.print();
         /*
         gl.glLoadIdentity();
         GLU glu = new GLU();
@@ -189,20 +189,44 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     @Override
     public void mouseDragged(MouseEvent e) {
         float sensitivity = 2.0f;
-        float deltaX = -(e.getX() - lastMouseX) / sensitivity;
-        float deltaY = -(e.getY() - lastMouseY) / sensitivity;
+        float deltaX = (e.getX() - lastMouseX) / sensitivity;
+        float deltaY = (e.getY() - lastMouseY) / sensitivity;
         lastMouseX = e.getX();
         lastMouseY = e.getY();
 
+        
+        
+        camAngles.add(new Vec3f(deltaY, 0.0f, deltaX));
+        
+        Vec3f camDir = camAngles.add_(new Vec3f(0.0f, 0.0f, 0.0f)).anglesXZDegToVector();
+        camAngles.print("CamAngles");
+        camDir.print("CamDir");
+        //camPos = new Vec3f(0.0f, 0.0f, 1.0f).scale(camPos.norm()).
+        
+        /*
         camPos.rotateAroundDeg(camTar, camUp, deltaX);
         //Vec3f camDir = camTar.sub_(camPos);
         //camAngles = camDir.anglesXZ().add(new Vec3f(0, 0, 90.0f));
+        
+        
+        Vec3f camDir = camTar.sub_(camPos);
+        float norm = camDir.norm();
+        camDir.normalize();
+        Vec3f angles = camDir.anglesXZDeg_();
+        angles.x += deltaY;
+        camDir = angles.anglesXZDegToVector().negate();
+        camPos = camTar.add_(camDir.scale(norm));
+        camAngles = camDirToAngles();
+        //angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
+        camAngles.print();
+        */
+        
+        /*
         Vec3f camDir = camTar.sub_(camPos).normalize();
         Vec3f camRight = camDir.cross_(camUp).normalize();
         camPos.rotateAroundDeg(camTar, camRight, deltaY);
-        
         camAngles = camDirToAngles();
-        
+        */
         
         
         /*

@@ -63,12 +63,7 @@ public class MainFrame extends JFrame{
     public static void main(String[] args) {
         // TODO code application logic here
 
-        Vec3f test = new Vec3f(3, 5, 3);
-        float norm = test.norm();
-        test.print();
-        test.anglesXZDeg_().print();
-        test.anglesXZ().print();
-        test.anglesXZToVector().scale(norm).print();
+        new Vec3f(0, 0, 0).anglesXZDeg().print();
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

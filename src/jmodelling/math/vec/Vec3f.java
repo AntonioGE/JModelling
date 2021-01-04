@@ -50,6 +50,10 @@ public class Vec3f {
     public void print() {
         System.out.println(toString());
     }
+    
+    public void print(String name){
+        System.out.println(name + ": " + toString());
+    }
 
     public void set(Vec3f other) {
         this.x = other.x;
@@ -111,7 +115,7 @@ public class Vec3f {
     public Vec3f add_(Vec3f other) {
         return add_(this, other);
     }
-
+    
     public static void sub(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.x - src2.x;
         dst.y = src1.y - src2.y;

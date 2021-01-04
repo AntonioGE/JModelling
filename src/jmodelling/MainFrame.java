@@ -63,7 +63,8 @@ public class MainFrame extends JFrame{
     public static void main(String[] args) {
         // TODO code application logic here
 
-        new Vec3f(0, 0, 0).anglesXZDeg().print();
+        new Vec3f(0, 0, 0).anglesXZDegToVector().print();
+        new Vec3f(90, 0, -90).anglesXZDegToVector().print();
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

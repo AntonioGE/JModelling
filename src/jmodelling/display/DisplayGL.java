@@ -68,6 +68,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     //private Vec3f camAngles = new Vec3f(0.0f, 0.0f, 0.0f);
 
     public DisplayGL() {
+        super(generateCapabilities());
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -75,6 +77,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         addMouseWheelListener(this);
 
         setFocusable(true);
+
     }
 
     @Override
@@ -82,6 +85,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         GL2 gl = drawable.getGL().getGL2();
 
         gl.glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
+
+        gl.glEnable(GL2.GL_POLYGON_SMOOTH);
     }
 
     @Override
@@ -254,7 +259,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_1:
+                break;
+        }
     }
 
     @Override
@@ -283,6 +291,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Vec3f angles = camTar.sub_(camPos).anglesXZDeg();
         angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
         return angles;
+    }
+
+    //TODO: This should be put into a custom OpenGL panel initialization code
+    private static GLCapabilities generateCapabilities() {
+        final GLProfile gp = GLProfile.get(GLProfile.GL2);
+        GLCapabilities cap = new GLCapabilities(gp);
+        cap.setSampleBuffers(true);
+        cap.setNumSamples(8);
+        return cap;
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.camera;
 
+import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
 import jmodelling.math.vec.Vec3f;
 
@@ -48,4 +49,6 @@ public abstract class Cam extends Object3D {
         dirToRot(dir, rot);
     }
 
+    @Override
+    public abstract void renderOpaque(GL2 gl);
 }

@@ -7,6 +7,7 @@ package jmodelling.engine.object;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.math.mat.Mat3f;
+import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
@@ -56,11 +57,23 @@ public abstract class Object3D {
     
     public abstract void renderOpaque(GL2 gl);
     
-    public Mat3f getLocalAxis(){
+    public Mat4f getLocalAxis(){
+        Mat4f t = TransfMat.translation_(loc);
+        Mat4f rx = TransfMat.rotation_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotation_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotation_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        
+        
+        //return rz.mul(ry.mul(rx.mul(t)));
+        return t.mul(rz.mul(ry.mul(rx)));
+    }
+    
+    public Mat3f getLocalAxis3f(){
         Mat3f rx = TransfMat.rotation3f_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat3f ry = TransfMat.rotation3f_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat3f rz = TransfMat.rotation3f_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         
-        return rx.mul(ry.mul(rz));//TODO: Check multiplication order order
+        return rz.mul(ry.mul(rx));
     }
+    
 }

@@ -67,10 +67,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     );
 
     private Axis axis = new Axis("",
-            new Vec3f(0.0f, 0.0f, 3.0f),
-            new Vec3f(0.0f, 0.0f, 0.0f),
+            new Vec3f(0.5f, 0.0f, 0.5f),
+            new Vec3f(21.0f, 33.0f, 33.0f),
             new Vec3f(1.0f, 1.0f, 1.0f)
     );
+
+    private final int w = 100, h = 100;
+    private Axis[] cosas = new Axis[w * h];
 
     /*
     private CamArcball cam = new CamArcball("", 
@@ -91,6 +94,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
      */
     public DisplayGL() {
         super(generateCapabilities());
+
+        for (int i = 0, c = 0; i < w; i++) {
+            for (int j = 0; j < h; j++, c++) {
+                cosas[c] = new Axis("", 
+                        new Vec3f(i, j, (float) Math.random()),
+                        new Vec3f((float)Math.random()* 360.0f, (float)Math.random()* 360.0f, (float)Math.random()* 360.0f), 
+                        new Vec3f(1.0f, 1.0f, 1.0f));
+            }
+        }
 
         addGLEventListener(this);
         addMouseListener(this);
@@ -173,6 +185,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glPopMatrix();
 
+        axis.renderOpaque(gl);
+        
+        for(Axis axis : cosas){
+            axis.renderOpaque(gl);
+        }
+
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
 
@@ -184,6 +202,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
 
+        gl.glLineStipple(1, (short) 0xFFFF);
+
+        
+        
+        
     }
 
     @Override

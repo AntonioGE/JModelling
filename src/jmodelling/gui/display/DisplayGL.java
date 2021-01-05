@@ -19,6 +19,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
@@ -59,14 +60,28 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     };
 
     private float lastMouseX, lastMouseY;
+    private CamArcball cam = new CamArcball("", 
+            new Vec3f(5.99f, -6.7f, 3.85f), 
+            new Vec3f(0.0f, 0.0f, 0.0f)
+    );
+    /*
+    private CamArcball cam = new CamArcball("", 
+            new Vec3f(5.99f, -6.7f, 3.85f), 
+            new Vec3f(66.0f, 0.0f, 40.0f), 
+            new Vec3f(5.99f, -6.7f, 3.85f).norm()
+    );*/
+    
+    /*
     private Vec3f camPos = new Vec3f(-6.59f, 2.5f, 3.45f);
     //private Vec3f camPos = new Vec3f(0.0f, 0.0f, 10.0f);
     private Vec3f camTar = new Vec3f(0.0f, 0.0f, 0.0f);
+    private float distToTar = 5.0f;
     private Vec3f camUp = new Vec3f(0.0f, 0.0f, 1.0f);
     //private Vec3f camAngles = new Vec3f(63.0f, 0.0f, -110.0f);
     private Vec3f camAngles = camDirToAngles();
     //private Vec3f camAngles = new Vec3f(0.0f, 0.0f, 0.0f);
-
+    */
+    
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -103,12 +118,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         Mat4f p = TransfMat.perspective_(60.0f, (float) getWidth() / getHeight(), 0.1f, 100.0f);
-        Mat4f rx = TransfMat.rotation_(-camAngles.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotation_(-camAngles.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotation_(-camAngles.z, new Vec3f(0.0f, 0.0f, 1.0f));
-        Mat4f t = TransfMat.translation_(camPos.negate_());
+        Mat4f rx = TransfMat.rotation_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotation_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(cam.loc.negate_());
         //Mat4f lookAt = TransfMat.lookAt_(camPos, camTar, camUp);
-        Mat4f lookAt = TransfMat.lookAt_(new Vec3f(), new Vec3f(), camUp);
+        //Mat4f lookAt = TransfMat.lookAt_(new Vec3f(), new Vec3f(), camUp);
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
@@ -203,17 +218,25 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         lastMouseX = e.getX();
         lastMouseY = e.getY();
 
-        camAngles.add(new Vec3f(-deltaY, 0.0f, -deltaX));
+        cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
+        cam.getTar().print();
+        /*
+        cam.rot.add(new Vec3f(-deltaY, 0.0f, -deltaX));
 
-        Vec3f anglesRotated = camAngles.clone();
+        Vec3f anglesRotated = cam.rot.clone();
         anglesRotated.x += 90.0f;
         anglesRotated.z -= 90.0f;
         Vec3f camDir = anglesRotated.anglesXZDegToVector_();
         camDir.z = -camDir.z;
 
-        camPos = camTar.add_(camDir.negate()).scale(camPos.sub_(camTar).norm());
+        //Vec3f camTar = camPos.add_(camDir.scale_(distToTar));
+        
+        cam.loc = camTar.add_(camDir.negate()).scale(camPos.sub_(camTar).norm());
 
+        
         camAngles.print();
+        
+        */
         
         repaint();
     }
@@ -245,6 +268,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void mouseWheelMoved(MouseWheelEvent e) {
         float delta = 1.2f;
         if (e.getWheelRotation() > 0) {
+            //cam.distToTarget *= delta;
+            cam.moveTowardsTarget(cam.distToTarget * delta);
+        } else {
+            //cam.distToTarget /= delta;
+            cam.moveTowardsTarget(cam.distToTarget / delta);
+        }
+        /*
+        float delta = 1.2f;
+        if (e.getWheelRotation() > 0) {
             camPos.sub(camTar);
             camPos.scale(delta);
             camPos.add(camTar);
@@ -253,16 +285,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             camPos.scale(1.0f / delta);
             camPos.add(camTar);
         }
-
+        */
         repaint();
     }
-
+    
+    
+    /*
     //TODO: Move to camera class
     private Vec3f camDirToAngles() {
         Vec3f angles = camTar.sub_(camPos).anglesXZDeg();
         angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
         return angles;
-    }
+    }*/
 
     //TODO: This should be put into a custom OpenGL panel initialization code
     private static GLCapabilities generateCapabilities() {

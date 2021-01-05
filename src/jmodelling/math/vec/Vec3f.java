@@ -116,6 +116,27 @@ public class Vec3f {
         return add_(this, other);
     }
     
+    public static void add(Vec3f src, float x, float y, float z, Vec3f dst){
+        dst.x = src.x + x;
+        dst.y = src.y + y;
+        dst.z = src.z + z;
+    }
+    
+    public static Vec3f add_(Vec3f src, float x, float y, float z){
+        Vec3f dst = new Vec3f();
+        add(src, x, y, z, dst);
+        return dst;
+    }
+    
+    public Vec3f add(float x, float y, float z){
+        add(this, x, y, z, this);
+        return this;
+    }
+    
+    public Vec3f add_(float x, float y, float z){
+        return add_(this, x, y, z);
+    }
+    
     public static void sub(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.x - src2.x;
         dst.y = src1.y - src2.y;

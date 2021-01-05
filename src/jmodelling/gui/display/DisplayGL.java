@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.display;
+package jmodelling.gui.display;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -131,11 +131,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
- /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
 
+        gl.glPushMatrix();
+        gl.glTranslatef(-0.5f, -0.5f, -0.5f);
+        
         //new Mat4f(matrix).print();
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
@@ -146,6 +149,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
 
+        gl.glPopMatrix();
+        
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
 
@@ -208,42 +213,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         camPos = camTar.add_(camDir.negate()).scale(camPos.sub_(camTar).norm());
 
-        //camAngles.print("CamAngles");
-        //camDir.print("CamDir");
-        //camPos = new Vec3f(0.0f, 0.0f, 1.0f).scale(camPos.norm()).
-
-        /*
-        camPos.rotateAroundDeg(camTar, camUp, deltaX);
-        //Vec3f camDir = camTar.sub_(camPos);
-        //camAngles = camDir.anglesXZ().add(new Vec3f(0, 0, 90.0f));
-        
-        
-        Vec3f camDir = camTar.sub_(camPos);
-        float norm = camDir.norm();
-        camDir.normalize();
-        Vec3f angles = camDir.anglesXZDeg_();
-        angles.x += deltaY;
-        camDir = angles.anglesXZDegToVector().negate();
-        camPos = camTar.add_(camDir.scale(norm));
-        camAngles = camDirToAngles();
-        //angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
         camAngles.print();
-         */
- /*
-        Vec3f camDir = camTar.sub_(camPos).normalize();
-        Vec3f camRight = camDir.cross_(camUp).normalize();
-        camPos.rotateAroundDeg(camTar, camRight, deltaY);
-        camAngles = camDirToAngles();
-         */
- /*
-        Vec3f xRotAxis = camUp.clone();
-        camPos.rotateAround(camTar, xRotAxis, deltaX);
-
-        Vec3f camDirection = camPos.sub_(camTar).normalize();
-        Vec3f camRight = camUp.cross_(camDirection).normalize();
-        Vec3f yRotAxis = camRight.clone();
-        camPos.rotateAround(camTar, yRotAxis, deltaY);
-         */
+        
         repaint();
     }
 

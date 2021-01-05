@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling;
+package jmodelling.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import jmodelling.display.DisplayGL;
+import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.vec.Vec3f;
 
 /**

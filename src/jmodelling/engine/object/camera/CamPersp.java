@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.camera;
 
+import com.jogamp.opengl.GL2;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -15,6 +16,11 @@ public class CamPersp extends Cam{
     
     public CamPersp(String name, Vec3f loc, Vec3f rot) {
         super(name, loc, rot);
+    }
+
+    @Override
+    public void renderOpaque(GL2 gl) {
+
     }
     
 }

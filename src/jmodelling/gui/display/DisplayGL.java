@@ -20,6 +20,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import jmodelling.engine.object.camera.CamArcball;
+import jmodelling.engine.object.other.Axis;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
@@ -60,18 +61,25 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     };
 
     private float lastMouseX, lastMouseY;
-    private CamArcball cam = new CamArcball("", 
-            new Vec3f(5.99f, -6.7f, 3.85f), 
+    private CamArcball cam = new CamArcball("",
+            new Vec3f(5.99f, -6.7f, 3.85f),
             new Vec3f(0.0f, 0.0f, 0.0f)
     );
+
+    private Axis axis = new Axis("",
+            new Vec3f(0.0f, 0.0f, 3.0f),
+            new Vec3f(0.0f, 0.0f, 0.0f),
+            new Vec3f(1.0f, 1.0f, 1.0f)
+    );
+
     /*
     private CamArcball cam = new CamArcball("", 
             new Vec3f(5.99f, -6.7f, 3.85f), 
             new Vec3f(66.0f, 0.0f, 40.0f), 
             new Vec3f(5.99f, -6.7f, 3.85f).norm()
     );*/
-    
-    /*
+
+ /*
     private Vec3f camPos = new Vec3f(-6.59f, 2.5f, 3.45f);
     //private Vec3f camPos = new Vec3f(0.0f, 0.0f, 10.0f);
     private Vec3f camTar = new Vec3f(0.0f, 0.0f, 0.0f);
@@ -80,8 +88,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     //private Vec3f camAngles = new Vec3f(63.0f, 0.0f, -110.0f);
     private Vec3f camAngles = camDirToAngles();
     //private Vec3f camAngles = new Vec3f(0.0f, 0.0f, 0.0f);
-    */
-    
+     */
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -146,14 +153,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
-        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+ /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
 
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);
-        
+
         //new Mat4f(matrix).print();
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
@@ -165,7 +172,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnd();
 
         gl.glPopMatrix();
-        
+
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
 
@@ -236,8 +243,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         
         camAngles.print();
         
-        */
-        
+         */
+
         repaint();
     }
 
@@ -285,11 +292,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             camPos.scale(1.0f / delta);
             camPos.add(camTar);
         }
-        */
+         */
         repaint();
     }
-    
-    
+
     /*
     //TODO: Move to camera class
     private Vec3f camDirToAngles() {
@@ -297,7 +303,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
         return angles;
     }*/
-
     //TODO: This should be put into a custom OpenGL panel initialization code
     private static GLCapabilities generateCapabilities() {
         final GLProfile gp = GLProfile.get(GLProfile.GL2);

@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.camera;
 
+import com.jogamp.opengl.GL2;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -23,6 +24,11 @@ public class CamArcball extends Cam {
     public CamArcball(String name, Vec3f loc, Vec3f tar){
         super(name, loc, dirToRot_(tar.sub_(loc)));
         distToTarget = tar.sub_(loc).norm();
+    }
+    
+    @Override
+    public void renderOpaque(GL2 gl) {
+        
     }
     
     public void orbit(Vec3f dRot){
@@ -62,5 +68,8 @@ public class CamArcball extends Cam {
         //Set new distance to target
         this.distToTarget = distToTarget;
     }
+
+    
+    
     
 }

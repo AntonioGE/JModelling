@@ -48,15 +48,19 @@ public class Mat3f {
 
     @Override
     public String toString() {
-        return "|" + m00 + ", " + m01 + ", " + m02 + "|\n"
+        final String columnFormat = "|%-14s%-14s%-14s|\n";
+        return String.format(columnFormat, m00, m01, m02)
+                + String.format(columnFormat, m10, m11, m12)
+                + String.format(columnFormat, m20, m21, m22);
+        /*return "|" + m00 + ", " + m01 + ", " + m02 + "|\n"
                 + "|" + m10 + ", " + m11 + ", " + m12 + "|\n"
-                + "|" + m20 + ", " + m21 + ", " + m22 + "|";
+                + "|" + m20 + ", " + m21 + ", " + m22 + "|";*/
     }
 
     public void print() {
         System.out.println(toString());
     }
-    
+
     public final void set(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
         this.m00 = m00;
         this.m01 = m01;

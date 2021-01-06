@@ -21,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import javax.swing.SwingUtilities;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.math.mat.Mat4f;
@@ -203,7 +204,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     ((float) Math.random() - 0.5f) * locSpeed,
                     ((float) Math.random() - 0.5f) * locSpeed));
         }*/
-
         for (Axis axis : cosas) {
             axis.renderOpaque(gl);
         }
@@ -221,7 +221,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
-        cam.getLocalAxis().print();
+        
 
     }
 
@@ -258,13 +258,26 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        float sensitivity = 2.0f;
-        float deltaX = (e.getX() - lastMouseX) / sensitivity;
-        float deltaY = (e.getY() - lastMouseY) / sensitivity;
-        lastMouseX = e.getX();
-        lastMouseY = e.getY();
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            float sensitivity = 200.0f;
+            float deltaX = -(e.getX() - lastMouseX) / sensitivity;
+            float deltaY = (e.getY() - lastMouseY) / sensitivity;
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
+            
+            Vec3f trans = new Vec3f(deltaX, deltaY, 0.0f).scale(cam.distToTarget).mul(cam.getLocalAxis3f());
+            cam.loc.add(trans);
+            
+            
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            float sensitivity = 2.0f;
+            float deltaX = (e.getX() - lastMouseX) / sensitivity;
+            float deltaY = (e.getY() - lastMouseY) / sensitivity;
+            lastMouseX = e.getX();
+            lastMouseY = e.getY();
 
-        cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
+            cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
+        }
 
         repaint();
     }

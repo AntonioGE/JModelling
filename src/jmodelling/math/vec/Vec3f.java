@@ -202,8 +202,8 @@ public class Vec3f {
 
     public static void mul(Mat3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.m00 * src2.x + src1.m01 * src2.y + src1.m02 * src2.z;
-        dst.x = src1.m10 * src2.x + src1.m11 * src2.y + src1.m12 * src2.z;
-        dst.x = src1.m20 * src2.x + src1.m21 * src2.y + src1.m22 * src2.z;
+        dst.y = src1.m10 * src2.x + src1.m11 * src2.y + src1.m12 * src2.z;
+        dst.z = src1.m20 * src2.x + src1.m21 * src2.y + src1.m22 * src2.z;
     }
 
     public static Vec3f mul_(Mat3f src1, Vec3f src2) {

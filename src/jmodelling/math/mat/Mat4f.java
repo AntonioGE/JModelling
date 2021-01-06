@@ -60,10 +60,16 @@ public class Mat4f {
 
     @Override
     public String toString() {
+        final String columnFormat = "|%-14s%-14s%-14s%-14s|\n";
+        return String.format(columnFormat, m00, m01, m02, m03)
+                + String.format(columnFormat, m10, m11, m12, m13)
+                + String.format(columnFormat, m20, m21, m22, m23)
+                + String.format(columnFormat, m30, m31, m32, m33);
+        /*
         return "|" + m00 + ", " + m01 + ", " + m02 + ", " + m03 + "|\n"
                 + "|" + m10 + ", " + m11 + ", " + m12 + ", " + m13 + "|\n"
                 + "|" + m20 + ", " + m21 + ", " + m22 + ", " + m23 + "|\n"
-                + "|" + m30 + ", " + m31 + ", " + m32 + ", " + m33 + "|";
+                + "|" + m30 + ", " + m31 + ", " + m32 + ", " + m33 + "|";*/
     }
 
     public void print() {

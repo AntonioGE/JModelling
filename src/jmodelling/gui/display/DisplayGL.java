@@ -77,8 +77,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private final int w = 100, h = 100;
     private Axis[] cosas = new Axis[w * h];
 
-    private FPSAnimator animator;
-    
+
     /*
     private CamArcball cam = new CamArcball("", 
             new Vec3f(5.99f, -6.7f, 3.85f), 
@@ -101,9 +100,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         for (int i = 0, c = 0; i < w; i++) {
             for (int j = 0; j < h; j++, c++) {
-                cosas[c] = new Axis("", 
+                cosas[c] = new Axis("",
                         new Vec3f(i, j, (float) Math.random()),
-                        new Vec3f((float)Math.random()* 360.0f, (float)Math.random()* 360.0f, (float)Math.random()* 360.0f), 
+                        new Vec3f((float) Math.random() * 360.0f, (float) Math.random() * 360.0f, (float) Math.random() * 360.0f),
                         new Vec3f(1.0f, 1.0f, 1.0f));
             }
         }
@@ -125,9 +124,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
 
         gl.glEnable(GL2.GL_POLYGON_SMOOTH);
-        
-        animator = new FPSAnimator(this, 60);
-        animator.start();
     }
 
     @Override
@@ -172,7 +168,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
-        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+ /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
@@ -193,15 +189,22 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPopMatrix();
 
         axis.renderOpaque(gl);
-        
-        for(Axis axis : cosas){
+
+        /*
+        final float locSpeed = 0.5f;
+        for (Axis axis : cosas) {
             axis.rot.add(new Vec3f(
-                    (float)Math.random() * 10.0f, 
-                    (float)Math.random() * 10.0f, 
-                    (float)Math.random() * 10.0f));
-        }
-        
-        for(Axis axis : cosas){
+                    (float) Math.random() * 10.0f,
+                    (float) Math.random() * 10.0f,
+                    (float) Math.random() * 10.0f));
+
+            axis.loc.add(new Vec3f(
+                    ((float) Math.random() - 0.5f) * locSpeed,
+                    ((float) Math.random() - 0.5f) * locSpeed,
+                    ((float) Math.random() - 0.5f) * locSpeed));
+        }*/
+
+        for (Axis axis : cosas) {
             axis.renderOpaque(gl);
         }
 
@@ -218,9 +221,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
-        
-        cam.getLocalAxis3f().print();
-        
+        cam.getLocalAxis().print();
+
     }
 
     @Override
@@ -263,7 +265,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         lastMouseY = e.getY();
 
         cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
-        
+
         repaint();
     }
 

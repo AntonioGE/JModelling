@@ -66,7 +66,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private float lastMouseX, lastMouseY;
     private CamArcball cam = new CamArcball("",
             new Vec3f(5.99f, -6.7f, 3.85f),
-            new Vec3f(0.0f, 0.0f, 0.0f)
+            new Vec3f(0.0f, 0.0f, 0.0f),
+            60.0f
     );
 
     private Axis axis = new Axis("",
@@ -140,7 +141,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
-        Mat4f p = TransfMat.perspective_(60.0f, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
+        Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotation_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotation_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
@@ -259,15 +260,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     @Override
     public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            float sensitivity = 200.0f;
-            float deltaX = -(e.getX() - lastMouseX) / sensitivity;
-            float deltaY = (e.getY() - lastMouseY) / sensitivity;
+            final float deltaX = -(float)(e.getX() - lastMouseX) / (getWidth() / 2);
+            final float deltaY = (float)(e.getY() - lastMouseY) / (getHeight() / 2);
             lastMouseX = e.getX();
             lastMouseY = e.getY();
             
-            Vec3f trans = new Vec3f(deltaX, deltaY, 0.0f).scale(cam.distToTarget).mul(cam.getLocalAxis3f());
-            cam.loc.add(trans);
-            
+            final float aspect = (float)getWidth() / getHeight();
+            Vec3f trans = new Vec3f(
+                    deltaX * cam.distToTarget * (float)Math.tan(Math.toRadians(cam.fov / 2.0f)) * aspect,
+                    deltaY * cam.distToTarget * (float)Math.tan(Math.toRadians(cam.fov / 2.0f)),
+                    0.0f
+            );
+            cam.loc.add(trans.mul(cam.getLocalAxis3f()));
             
         } else if (SwingUtilities.isRightMouseButton(e)) {
             float sensitivity = 2.0f;

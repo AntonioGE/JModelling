@@ -15,15 +15,18 @@ import jmodelling.math.vec.Vec3f;
 public class CamArcball extends Cam {
 
     public float distToTarget;
+    public float fov;
 
-    public CamArcball(String name, Vec3f loc, Vec3f rot, float distToTarget) {
+    public CamArcball(String name, Vec3f loc, Vec3f rot, float distToTarget, float fov) {
         super(name, loc, rot);
         this.distToTarget = distToTarget;
+        this.fov = fov;
     }
    
-    public CamArcball(String name, Vec3f loc, Vec3f tar){
+    public CamArcball(String name, Vec3f loc, Vec3f tar, float fov){
         super(name, loc, dirToRot_(tar.sub_(loc)));
-        distToTarget = tar.sub_(loc).norm();
+        this.distToTarget = tar.sub_(loc).norm();
+        this.fov = fov;
     }
     
     @Override

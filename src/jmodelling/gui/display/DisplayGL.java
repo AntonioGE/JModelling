@@ -67,7 +67,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private CamArcball cam = new CamArcball("",
             new Vec3f(5.99f, -6.7f, 3.85f),
             new Vec3f(0.0f, 0.0f, 0.0f),
-            60.0f
+            CamArcball.Type.PERSPECTIVE,
+            0.1f,
+            1000f,
+            60.0f,
+            1.0f
     );
 
     private Axis axis = new Axis("",
@@ -142,6 +146,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
+        //Mat4f p = TransfMat.ortho_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotation_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotation_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
@@ -170,7 +175,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 5.0f, 5.0f, 10.0f, 
                 0.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f);*/
- /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
+        /*gl.glTranslatef(0.0f, 0.0f, -20.0f);
         gl.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);*/
         float[] matrix = new float[16];
         gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);

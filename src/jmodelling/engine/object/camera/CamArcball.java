@@ -6,6 +6,13 @@
 package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -24,7 +31,7 @@ public class CamArcball extends Cam {
     public float fov;
     public float orthoScale;
 
-    public CamArcball(String name, Vec3f loc, Vec3f rot, Type type, 
+    public CamArcball(String name, Vec3f loc, Vec3f rot, Type type,
             float zNear, float zFar, float distToTarget, float fov, float orthoScale) {
         super(name, loc, rot);
         this.type = type;
@@ -35,7 +42,7 @@ public class CamArcball extends Cam {
         this.orthoScale = orthoScale;
     }
 
-    public CamArcball(String name, Vec3f loc, Vec3f tar, Type type, 
+    public CamArcball(String name, Vec3f loc, Vec3f tar, Type type,
             float zNear, float zFar, float fov, float orthoScale) {
         super(name, loc, dirToRot_(tar.sub_(loc)));
         this.type = type;

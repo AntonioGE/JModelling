@@ -43,6 +43,41 @@ public class Vec3f {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Float.floatToIntBits(this.x);
+        hash = 41 * hash + Float.floatToIntBits(this.y);
+        hash = 41 * hash + Float.floatToIntBits(this.z);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vec3f other = (Vec3f) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.z) != Float.floatToIntBits(other.z)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
+    @Override
     public String toString() {
         return "[" + x + ", " + y + ", " + z + "]";
     }

@@ -6,6 +6,10 @@
 package jmodelling.engine.object.mesh;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import jmodelling.engine.object.mesh.edge.Edge;
+import jmodelling.engine.object.mesh.face.Quad;
+import jmodelling.engine.object.mesh.face.Tri;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 
 /**
@@ -14,6 +18,8 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  */
 public class Mesh {
     
-    public ArrayList<Vertex> vtx;
-    
+    public ArrayList<Vertex> vertices;
+    public HashSet<Quad> quads;
+    public HashSet<Tri> tris;
+    public HashSet<Edge> edges;
 }

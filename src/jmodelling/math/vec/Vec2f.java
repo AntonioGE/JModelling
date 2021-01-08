@@ -38,6 +38,37 @@ public class Vec2f {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 73 * hash + Float.floatToIntBits(this.x);
+        hash = 73 * hash + Float.floatToIntBits(this.y);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vec2f other = (Vec2f) obj;
+        if (Float.floatToIntBits(this.x) != Float.floatToIntBits(other.x)) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.y) != Float.floatToIntBits(other.y)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    
+    @Override
     public String toString() {
         return "[" + x + ", " + y +"]";
     }

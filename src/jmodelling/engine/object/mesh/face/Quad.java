@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.object.mesh.edge;
+package jmodelling.engine.object.mesh.face;
 
 import jmodelling.engine.object.mesh.vertex.Vertex;
 
@@ -11,13 +11,10 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  *
  * @author ANTONIO
  */
-public class Edge {
-    
-    public Vertex v1;
-    public Vertex v2;
-    
-    public Edge(Vertex v1, Vertex v2){
-        this.v1 = v1;
-        this.v2 = v2;
+public class Quad extends Face {
+
+    public Quad(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
+        super(v1, v2, v3, v4);
     }
+
 }

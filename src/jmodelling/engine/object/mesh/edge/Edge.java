@@ -3,17 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.object.mesh;
-
-import java.util.ArrayList;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+package jmodelling.engine.object.mesh.edge;
 
 /**
  *
  * @author ANTONIO
  */
-public class Mesh {
-    
-    public ArrayList<Vertex> vtx;
+public class Edge {
     
 }

@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.object.mesh;
+package jmodelling.engine.modes.object;
 
-import java.util.ArrayList;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.modes.Mode;
 
 /**
  *
  * @author ANTONIO
  */
-public class Mesh {
-    
-    public ArrayList<Vertex> vtx;
+public class ObjectMode extends Mode{
     
 }

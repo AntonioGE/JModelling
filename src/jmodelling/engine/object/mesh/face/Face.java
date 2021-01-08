@@ -18,8 +18,12 @@ public abstract class Face {
     
     public List<Vertex> vtxs;
     
+    public Face(List<Vertex> vtxs){
+        this.vtxs = vtxs;
+    }
+    
     public Face(Vertex... vtxs){
-        this.vtxs = Arrays.asList(vtxs);
+        this(Arrays.asList(vtxs));
     }
     
     public int size(){

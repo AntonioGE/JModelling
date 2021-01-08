@@ -13,7 +13,10 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  */
 public class Tri extends Face{
     
+    public static final int N_VERTICES = 3;
+    
     public Tri(Vertex v1, Vertex v2, Vertex v3) {
         super(v1, v2, v3);
     }
+    
 }

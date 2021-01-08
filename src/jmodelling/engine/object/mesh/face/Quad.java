@@ -13,8 +13,11 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  */
 public class Quad extends Face {
 
+    public static final int N_VERTICES = 4;
+    
     public Quad(Vertex v1, Vertex v2, Vertex v3, Vertex v4) {
         super(v1, v2, v3, v4);
     }
-
+    
+    
 }

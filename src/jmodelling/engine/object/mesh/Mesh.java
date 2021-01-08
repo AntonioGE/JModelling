@@ -73,13 +73,21 @@ public class Mesh {
     public void addVertex(Vertex vertex) {
         vertices.add(vertex);
     }
-
+    
+    public void addVertices(List<Vertex> vertices){
+        vertices.addAll(vertices);
+    }
+    
+    public void addVertices(Vertex... vertices){
+        addVertices(Arrays.asList(vertices));
+    }
+    
     public void removeVertices(List<Integer> indices) {
         List<Vertex> vtxsToRemove = ListUtils.getSubList(vertices, indices);
 
-        edges.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
-        quads.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
-        tris.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
+        edges.removeIf(edge -> edge.vtxs.stream().anyMatch(v1 -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v1)));
+        quads.removeIf(edge -> edge.vtxs.stream().anyMatch(v1 -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v1)));
+        tris.removeIf(edge -> edge.vtxs.stream().anyMatch(v1 -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v1)));
         indices.stream().sorted(Comparator.reverseOrder()).mapToInt(i -> i).forEach(vertices::remove);
     }
 

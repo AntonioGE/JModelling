@@ -80,7 +80,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             new Vec3f(1.0f, 1.0f, 1.0f)
     );
 
-    private final int w = 100, h = 100;
+    private final int w = 10, h = 100;
     private Axis[] cosas = new Axis[w * h];
 
     public DisplayGL() {

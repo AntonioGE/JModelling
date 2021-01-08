@@ -1,0 +1,256 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package jmodelling.math.vec;
+
+/**
+ *
+ * @author ANTONIO
+ */
+public class Vec2f {
+    
+    public float x, y;
+    
+
+    public Vec2f() {
+        this.x = 0.0f;
+        this.y = 0.0f;
+    }
+
+    public Vec2f(float x, float y) {
+        set(x, y);
+    }
+
+    public Vec2f(Vec2f other) {
+        set(other);
+    }
+
+    public Vec2f(float[] data) {
+        this.x = data[0];
+        this.y = data[1];
+    }
+
+    @Override
+    public Vec2f clone() {
+        return new Vec2f(this);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y +"]";
+    }
+
+    public void print() {
+        System.out.println(toString());
+    }
+    
+    public void print(String name){
+        System.out.println(name + ": " + toString());
+    }
+
+    public void set(Vec2f other) {
+        this.x = other.x;
+        this.y = other.y;
+    }
+    
+    public void set(float x, float y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public float[] toArray() {
+        return new float[]{x, y};
+    }
+
+    public float norm() {
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    public static void normalize(Vec2f src, Vec2f dst) {
+        float invNorm = 1.0f / src.norm();
+        dst.x = src.x * invNorm;
+        dst.y = src.y * invNorm;
+    }
+
+    public static Vec2f normalize(Vec2f src) {
+        normalize(src, src);
+        return src;
+    }
+
+    public static Vec2f normalize_(Vec2f src) {
+        Vec2f dst = new Vec2f();
+        normalize(src, dst);
+        return dst;
+    }
+
+    public Vec2f normalize() {
+        return normalize(this);
+    }
+
+    public Vec2f normalize_() {
+        return normalize_(this);
+    }
+
+    public static void add(Vec2f src1, Vec2f src2, Vec2f dst) {
+        dst.x = src1.x + src2.x;
+        dst.y = src1.y + src2.y;
+    }
+
+    public static Vec2f add_(Vec2f src1, Vec2f src2) {
+        Vec2f dst = new Vec2f();
+        add(src1, src2, dst);
+        return dst;
+    }
+
+    public Vec2f add(Vec2f other) {
+        add(this, other, this);
+        return this;
+    }
+
+    public Vec2f add_(Vec2f other) {
+        return add_(this, other);
+    }
+    
+    public static void add(Vec2f src, float x, float y, Vec2f dst){
+        dst.x = src.x + x;
+        dst.y = src.y + y;
+    }
+    
+    public static Vec2f add_(Vec2f src, float x, float y){
+        Vec2f dst = new Vec2f();
+        add(src, x, y, dst);
+        return dst;
+    }
+    
+    public Vec2f add(float x, float y){
+        add(this, x, y, this);
+        return this;
+    }
+    
+    public Vec2f add_(float x, float y){
+        return add_(this, x, y);
+    }
+    
+    public static void sub(Vec2f src1, Vec2f src2, Vec2f dst) {
+        dst.x = src1.x - src2.x;
+        dst.y = src1.y - src2.y;
+    }
+
+    public static Vec2f sub_(Vec2f src1, Vec2f src2) {
+        Vec2f dst = new Vec2f();
+        sub(src1, src2, dst);
+        return dst;
+    }
+
+    public Vec2f sub(Vec2f other) {
+        sub(this, other, this);
+        return this;
+    }
+
+    public Vec2f sub_(Vec2f other) {
+        return sub_(this, other);
+    }
+
+    public static void dot(Vec2f src1, Vec2f src2, Vec2f dst) {
+        dst.x = src1.x * src2.x;
+        dst.y = src1.y * src2.y;
+    }
+
+    public static Vec2f dot_(Vec2f src1, Vec2f src2) {
+        Vec2f dst = new Vec2f();
+        dot(src1, src2, dst);
+        return dst;
+    }
+
+    public Vec2f dot(Vec2f other) {
+        dot(this, other, this);
+        return this;
+    }
+
+    public Vec2f dot_(Vec2f other) {
+        return dot_(this, other);
+    }
+    
+    //TODO: Create Mat2f class and implement multiplication with Vec2f
+    /*
+    public static void mul(Mat3f src1, Vec3f src2, Vec3f dst) {
+        dst.x = src1.m00 * src2.x + src1.m01 * src2.y + src1.m02 * src2.z;
+        dst.y = src1.m10 * src2.x + src1.m11 * src2.y + src1.m12 * src2.z;
+        dst.z = src1.m20 * src2.x + src1.m21 * src2.y + src1.m22 * src2.z;
+    }
+
+    public static Vec3f mul_(Mat3f src1, Vec3f src2) {
+        Vec3f dst = new Vec3f();
+        mul(src1, src2, dst);
+        return dst;
+    }
+
+    public Vec3f mul(Mat3f src) {
+        mul(src, this.clone(), this);
+        return this;
+    }
+
+    public Vec3f mul_(Mat3f src) {
+        return mul_(src, this);
+    }
+    */
+
+    public static void scale(Vec2f src, float scale, Vec2f dst) {
+        dst.x = src.x * scale;
+        dst.y = src.y * scale;
+    }
+
+    public static Vec2f scale_(Vec2f src, float scale) {
+        Vec2f dst = new Vec2f();
+        scale(src, scale, dst);
+        return dst;
+    }
+
+    public Vec2f scale(float scale) {
+        scale(this, scale, this);
+        return this;
+    }
+
+    public Vec2f scale_(float scale) {
+        return scale_(this, scale);
+    }
+
+    public static void negate(Vec2f src, Vec2f dst) {
+        dst.x = -src.x;
+        dst.y = -src.y;
+    }
+
+    public static Vec2f negate_(Vec2f src) {
+        Vec2f dst = new Vec2f();
+        negate(src, dst);
+        return dst;
+    }
+
+    public Vec2f negate() {
+        negate(this, this);
+        return this;
+    }
+
+    public Vec2f negate_() {
+        return negate_(this);
+    }
+
+    public static float angle(Vec2f src){
+        return (float) Math.atan2(src.y, src.x);
+    }
+    
+    public float angle(){
+        return angle(this);
+    }
+    
+    public static float angleDeg(Vec2f src){
+        return (float) Math.toDegrees(angle(src));
+    }
+    
+    public float angleDeg(){
+        return angleDeg(this);
+    }
+
+}

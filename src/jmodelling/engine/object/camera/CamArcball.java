@@ -13,6 +13,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import jmodelling.math.mat.Mat4f;
+import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -81,7 +83,6 @@ public class CamArcball extends Cam {
     }
 
     public Vec3f getTar() {
-        //return getDir().scale(distToTarget).add(loc);
         return locRotToTarget_(loc, rot, distToTarget);
     }
 
@@ -96,4 +97,5 @@ public class CamArcball extends Cam {
         this.distToTarget = distToTarget;
     }
 
+    
 }

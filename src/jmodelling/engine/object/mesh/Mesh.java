@@ -7,6 +7,9 @@ package jmodelling.engine.object.mesh;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import jmodelling.engine.object.mesh.edge.Edge;
@@ -14,7 +17,7 @@ import jmodelling.engine.object.mesh.face.Face;
 import jmodelling.engine.object.mesh.face.Quad;
 import jmodelling.engine.object.mesh.face.Tri;
 import jmodelling.engine.object.mesh.vertex.Vertex;
-import jmodelling.utils.ArrayUtils;
+import jmodelling.utils.ListUtils;
 
 /**
  *
@@ -23,26 +26,34 @@ import jmodelling.utils.ArrayUtils;
 public class Mesh {
 
     public ArrayList<Vertex> vertices;
+    public HashSet<Edge> edges;
     public HashSet<Quad> quads;
     public HashSet<Tri> tris;
-    public HashSet<Edge> edges;
 
-    private boolean addFace(Integer... vInds) {
+    public Mesh() {
+        vertices = new ArrayList<>();
+        edges = new HashSet<>();
+        quads = new HashSet<>();
+        tris = new HashSet<>();
+
+    }
+
+    public boolean addFace(List<Integer> vInds) {
         //Check if indices are within the vertices list
-        if(!ArrayUtils.areIndicesInRange(vertices, vInds)){
+        if (!ListUtils.areIndicesInRange(vertices, vInds)) {
             return false;
         }
-        
+
         //Check if indices are not duplicated
-        if(ArrayUtils.hasDuplicates(vInds)){
+        if (ListUtils.hasDuplicates(vInds)) {
             return false;
         }
-        
+
         //Get vertices
-        List<Vertex> subList = ArrayUtils.getSubList(vertices, vInds);
-        
+        List<Vertex> subList = ListUtils.getSubList(vertices, vInds);
+
         //Add face
-        switch (vInds.length) {
+        switch (vInds.size()) {
             case Tri.N_VERTICES:
                 tris.add(new Tri(subList.get(0), subList.get(1), subList.get(2)));
                 break;
@@ -54,6 +65,25 @@ public class Mesh {
         }
         return true;
     }
-    
-    
+
+    public boolean addFace(Integer... vInds) {
+        return addFace(Arrays.asList(vInds));
+    }
+
+    public void addVertex(Vertex vertex) {
+        vertices.add(vertex);
+    }
+
+    public void removeVertices(List<Integer> indices) {
+        List<Vertex> vtxsToRemove = ListUtils.getSubList(vertices, indices);
+
+        edges.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
+        quads.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
+        tris.removeIf(edge -> edge.vtxs.stream().anyMatch(v -> vtxsToRemove.stream().anyMatch(v2 -> v2 == v)));
+        indices.stream().sorted(Comparator.reverseOrder()).mapToInt(i -> i).forEach(vertices::remove);
+    }
+
+    public void removeVertices(Integer... indices) {
+        removeVertices(Arrays.asList(indices));
+    }
 }

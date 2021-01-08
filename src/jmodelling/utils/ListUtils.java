@@ -7,6 +7,7 @@ package jmodelling.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author ANTONIO
  */
-public class ArrayUtils {
+public class ListUtils {
 
     public static boolean areIndicesInRange(List<?> list, List<Integer> indices) {
         return indices.stream().noneMatch((index) -> (index < 0 || index >= list.size()));
@@ -45,5 +46,14 @@ public class ArrayUtils {
         return getSubList(list, Arrays.asList(indices));
     }
 
+    public static void removeAll(List<?> list, List<Integer> indices) {
+        indices.stream()
+                .sorted(Comparator.reverseOrder())
+                .forEach(list::remove);
+    }
     
+    public static void removeAll(List<?> list, Integer... indices){
+        removeAll(list, Arrays.asList(indices));
+    }
+
 }

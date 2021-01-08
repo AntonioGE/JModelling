@@ -14,28 +14,28 @@ import jmodelling.math.vec.Vec3f;
  * @author ANTONIO
  */
 public class Vertex {
-    
+
     public Vec3f pos;
-    public Vec2f tex; 
+    public Vec2f tex;
     public Vec3f nrm;
     public Vec3f clr;
-    
-    public Vertex(Vec3f pos){
-        this.pos.set(pos);
+
+    public Vertex(Vec3f pos) {
+        this.pos = new Vec3f(pos);
         this.tex = new Vec2f(0.0f, 0.0f);
         this.nrm = new Vec3f(0.0f, 0.0f, 1.0f);
         this.clr = new Vec3f(1.0f, 1.0f, 1.0f);
     }
-    
-    public Vertex(Vec3f pos, Vec2f tex, Vec3f nrm, Vec3f clr){
-        this.pos.set(pos);
-        this.tex.set(tex);
-        this.nrm.set(nrm);
-        this.clr.set(clr);
+
+    public Vertex(Vec3f pos, Vec2f tex, Vec3f nrm, Vec3f clr) {
+        this.pos = new Vec3f(pos);
+        this.tex = new Vec2f(tex);
+        this.nrm = new Vec3f(nrm);
+        this.clr = new Vec3f(clr);
     }
-    
+
     @Override
-    public Vertex clone(){
+    public Vertex clone() {
         return new Vertex(pos, tex, nrm, clr);
     }
 
@@ -75,7 +75,5 @@ public class Vertex {
         }
         return true;
     }
-    
-    
-    
+
 }

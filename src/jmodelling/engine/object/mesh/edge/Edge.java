@@ -5,6 +5,9 @@
  */
 package jmodelling.engine.object.mesh.edge;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 
 /**
@@ -13,11 +16,13 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  */
 public class Edge {
     
-    public Vertex v1;
-    public Vertex v2;
+    public List<Vertex> vtxs;
     
-    public Edge(Vertex v1, Vertex v2){
-        this.v1 = v1;
-        this.v2 = v2;
+    public Edge(List<Vertex> vtxs){
+        this.vtxs = vtxs;
+    }
+    
+    public Edge(Vertex... vtxs){
+        this(Arrays.asList(vtxs));
     }
 }

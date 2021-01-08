@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.modes.object;
+package jmodelling.engine.editor.viewport.object;
 
-import jmodelling.engine.modes.Mode;
+import jmodelling.engine.editor.viewport.Mode;
 
 /**
  *

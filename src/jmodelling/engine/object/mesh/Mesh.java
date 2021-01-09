@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.mesh;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,23 @@ public class Mesh {
     public HashSet<Quad> quads;
     public HashSet<Tri> tris;
 
+    /*
+    public FloatBuffer vEdges;
+    public FloatBuffer cEdges;
+    
+    public FloatBuffer vFaceCenter;
+    public FloatBuffer cFaceCenter;
+    */
+    public FloatBuffer vQuads;
+    public FloatBuffer tQuads;
+    public FloatBuffer nQuads;
+    public FloatBuffer cQuads;
+
+    public FloatBuffer vTris;
+    public FloatBuffer tTris;
+    public FloatBuffer nTris;
+    public FloatBuffer cTris;
+
     public Mesh() {
         vertices = new ArrayList<>();
         edges = new HashSet<>();
@@ -38,7 +56,7 @@ public class Mesh {
 
     }
 
-    public boolean addFace(List<Vertex> vertices){
+    public boolean addFace(List<Vertex> vertices) {
         //Add face
         switch (vertices.size()) {
             case Tri.N_VERTICES:
@@ -50,19 +68,19 @@ public class Mesh {
             default:
                 return false;
         }
-        
+
         //Add edges
-        for(int i = 0; i < vertices.size(); i++){
+        for (int i = 0; i < vertices.size(); i++) {
             edges.add(new Edge(vertices.get(i), vertices.get(i % vertices.size())));
         }
-        
+
         return true;
     }
-    
-    public boolean addFace(Vertex... vertices){
+
+    public boolean addFace(Vertex... vertices) {
         return addFace(Arrays.asList(vertices));
     }
-    
+
     public boolean addFaceInds(List<Integer> vInds) {
         //Check if indices are within the vertices list
         if (!ListUtils.areIndicesInRange(vertices, vInds)) {
@@ -88,15 +106,15 @@ public class Mesh {
     public void addVertex(Vertex vertex) {
         vertices.add(vertex);
     }
-    
-    public void addVertices(List<Vertex> vertices){
+
+    public void addVertices(List<Vertex> vertices) {
         vertices.addAll(vertices);
     }
-    
-    public void addVertices(Vertex... vertices){
+
+    public void addVertices(Vertex... vertices) {
         addVertices(Arrays.asList(vertices));
     }
-    
+
     public void removeVertices(List<Integer> indices) {
         List<Vertex> vtxsToRemove = ListUtils.getSubList(vertices, indices);
 

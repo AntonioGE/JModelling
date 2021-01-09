@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.renderer;
+package jmodelling.engine.object.mesh.generator;
+
+import jmodelling.engine.object.mesh.Mesh;
 
 /**
  *
  * @author ANTONIO
  */
-public class Renderer {
-    
-    
-    
+public class Cube extends Mesh{
     
 }

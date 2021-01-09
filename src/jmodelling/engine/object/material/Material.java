@@ -11,4 +11,6 @@ package jmodelling.engine.object.material;
  */
 public class Material {
     
+    public String name;
+    
 }

@@ -18,7 +18,7 @@ public class Scene {
     public HashMap<String, Object3D> objects;
     
     public Scene(){
-        
+        objects = new HashMap<>();
     }
     
 }

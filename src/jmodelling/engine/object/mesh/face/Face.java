@@ -8,6 +8,7 @@ package jmodelling.engine.object.mesh.face;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 
 /**
@@ -17,6 +18,7 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
 public abstract class Face {
     
     public List<Vertex> vtxs;
+    public Material material;
     
     public Face(List<Vertex> vtxs){
         this.vtxs = vtxs;

@@ -38,7 +38,32 @@ public class Mesh {
 
     }
 
-    public boolean addFace(List<Integer> vInds) {
+    public boolean addFace(List<Vertex> vertices){
+        //Add face
+        switch (vertices.size()) {
+            case Tri.N_VERTICES:
+                tris.add(new Tri(vertices.get(0), vertices.get(1), vertices.get(2)));
+                break;
+            case Quad.N_VERTICES:
+                quads.add(new Quad(vertices.get(0), vertices.get(1), vertices.get(2), vertices.get(3)));
+                break;
+            default:
+                return false;
+        }
+        
+        //Add edges
+        for(int i = 0; i < vertices.size(); i++){
+            edges.add(new Edge(vertices.get(i), vertices.get(i % vertices.size())));
+        }
+        
+        return true;
+    }
+    
+    public boolean addFace(Vertex... vertices){
+        return addFace(Arrays.asList(vertices));
+    }
+    
+    public boolean addFaceInds(List<Integer> vInds) {
         //Check if indices are within the vertices list
         if (!ListUtils.areIndicesInRange(vertices, vInds)) {
             return false;
@@ -49,25 +74,15 @@ public class Mesh {
             return false;
         }
 
-        //Get vertices
+        //Get vertices that form the face
         List<Vertex> subList = ListUtils.getSubList(vertices, vInds);
 
         //Add face
-        switch (vInds.size()) {
-            case Tri.N_VERTICES:
-                tris.add(new Tri(subList.get(0), subList.get(1), subList.get(2)));
-                break;
-            case Quad.N_VERTICES:
-                quads.add(new Quad(subList.get(0), subList.get(1), subList.get(2), subList.get(3)));
-                break;
-            default:
-                return false;
-        }
-        return true;
+        return addFace(subList);
     }
 
     public boolean addFace(Integer... vInds) {
-        return addFace(Arrays.asList(vInds));
+        return addFaceInds(Arrays.asList(vInds));
     }
 
     public void addVertex(Vertex vertex) {

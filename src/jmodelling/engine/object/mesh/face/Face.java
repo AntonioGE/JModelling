@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.mesh.face;
 
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +18,12 @@ import jmodelling.engine.object.mesh.vertex.Vertex;
  */
 public abstract class Face {
     
-    public List<Vertex> vtxs;
+    public List<Vertex> vertices;
     public Material material;
     
     public Face(List<Vertex> vtxs){
-        this.vtxs = vtxs;
+        //this.material = material;
+        this.vertices = vtxs;
     }
     
     public Face(Vertex... vtxs){
@@ -29,7 +31,8 @@ public abstract class Face {
     }
     
     public int size(){
-        return vtxs.size();
+        return vertices.size();
     }
+    
     
 }

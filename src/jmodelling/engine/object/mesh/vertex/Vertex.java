@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.mesh.vertex;
 
+import java.nio.FloatBuffer;
 import java.util.Objects;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -15,6 +16,11 @@ import jmodelling.math.vec.Vec3f;
  */
 public class Vertex {
 
+    public static final int POS_SIZE = 3;
+    public static final int TEX_SIZE = 2;
+    public static final int NRM_SIZE = 3;
+    public static final int CLR_SIZE = 3;
+    
     public Vec3f pos;
     public Vec2f tex;
     public Vec3f nrm;

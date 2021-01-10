@@ -5,6 +5,7 @@
  */
 package jmodelling.engine.object.mesh.face;
 
+import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 
 /**

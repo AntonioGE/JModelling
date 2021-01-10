@@ -5,6 +5,7 @@
  */
 package jmodelling.math.vec;
 
+import java.nio.FloatBuffer;
 import jmodelling.math.mat.Mat3f;
 
 /**
@@ -74,8 +75,6 @@ public class Vec3f {
         }
         return true;
     }
-    
-    
 
     @Override
     public String toString() {
@@ -85,8 +84,8 @@ public class Vec3f {
     public void print() {
         System.out.println(toString());
     }
-    
-    public void print(String name){
+
+    public void print(String name) {
         System.out.println(name + ": " + toString());
     }
 
@@ -98,6 +97,12 @@ public class Vec3f {
 
     public float[] toArray() {
         return new float[]{x, y, z};
+    }
+
+    public void writeInBuffer(FloatBuffer buffer, int offset) {
+        buffer.put(offset, x);
+        buffer.put(offset + 1, y);
+        buffer.put(offset + 2, z);
     }
 
     public float norm() {
@@ -150,28 +155,28 @@ public class Vec3f {
     public Vec3f add_(Vec3f other) {
         return add_(this, other);
     }
-    
-    public static void add(Vec3f src, float x, float y, float z, Vec3f dst){
+
+    public static void add(Vec3f src, float x, float y, float z, Vec3f dst) {
         dst.x = src.x + x;
         dst.y = src.y + y;
         dst.z = src.z + z;
     }
-    
-    public static Vec3f add_(Vec3f src, float x, float y, float z){
+
+    public static Vec3f add_(Vec3f src, float x, float y, float z) {
         Vec3f dst = new Vec3f();
         add(src, x, y, z, dst);
         return dst;
     }
-    
-    public Vec3f add(float x, float y, float z){
+
+    public Vec3f add(float x, float y, float z) {
         add(this, x, y, z, this);
         return this;
     }
-    
-    public Vec3f add_(float x, float y, float z){
+
+    public Vec3f add_(float x, float y, float z) {
         return add_(this, x, y, z);
     }
-    
+
     public static void sub(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.x - src2.x;
         dst.y = src1.y - src2.y;

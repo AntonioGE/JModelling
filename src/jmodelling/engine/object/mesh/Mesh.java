@@ -19,4 +19,9 @@ public class Mesh {
     public HashMap<Material, Shape> tris;
     public HashMap<Material, Shape> quads;
     
+    public Mesh(HashMap<Material, Shape> tris, HashMap<Material, Shape> quads){
+        this.tris = tris;
+        this.quads = quads;
+    }
+    
 }

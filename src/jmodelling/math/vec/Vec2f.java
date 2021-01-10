@@ -5,6 +5,8 @@
  */
 package jmodelling.math.vec;
 
+import java.nio.FloatBuffer;
+
 /**
  *
  * @author ANTONIO
@@ -93,6 +95,11 @@ public class Vec2f {
 
     public float[] toArray() {
         return new float[]{x, y};
+    }
+    
+    public void writeInBuffer(FloatBuffer buffer, int offset) {
+        buffer.put(offset, x);
+        buffer.put(offset + 1, y);
     }
 
     public float norm() {

@@ -13,7 +13,7 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import jmodelling.engine.object.mesh.Mesh;
+import jmodelling.engine.object.mesh.MeshEditable;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.vec.Vec3f;
@@ -68,15 +68,15 @@ public class MainFrame extends JFrame{
         new Vec3f(0, 0, 0).anglesXZDegToVector().print();
         new Vec3f(90, 0, -90).anglesXZDegToVector().print();
         
-        Mesh mesh = new Mesh();
-        mesh.vertices.add(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
-        mesh.vertices.add(new Vertex(new Vec3f(1.0f, 0.0f, 0.0f)));
-        mesh.vertices.add(new Vertex(new Vec3f(0.0f, 1.0f, 0.0f)));
-        mesh.vertices.add(new Vertex(new Vec3f(1.0f, 1.0f, 0.0f)));
-        mesh.vertices.add(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
+        MeshEditable mesh = new MeshEditable();
+        mesh.addVertex(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
+        mesh.addVertex(new Vertex(new Vec3f(1.0f, 0.0f, 0.0f)));
+        mesh.addVertex(new Vertex(new Vec3f(0.0f, 1.0f, 0.0f)));
+        mesh.addVertex(new Vertex(new Vec3f(1.0f, 1.0f, 0.0f)));
+        mesh.addVertex(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
 
         for(int i = 0; i < 10000; i++){
-            mesh.vertices.add(new Vertex(new Vec3f()));
+            mesh.addVertex(new Vertex(new Vec3f()));
         }
         
         mesh.addFace(0, 1, 2);

@@ -3,20 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.object.mesh;
+package jmodelling.engine.object.mesh.shape;
 
-import java.util.HashMap;
+import java.nio.FloatBuffer;
 import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.shape.Shape;
 
 /**
  *
  * @author ANTONIO
  */
-public class Mesh {
+public class Shape {
     
-    public HashMap<String, Material> materials;
-    public HashMap<Material, Shape> tris;
-    public HashMap<Material, Shape> quads;
+    public Material material;
     
+    public FloatBuffer vCoords;
+    public FloatBuffer tCoords;
+    public FloatBuffer nCoords;
+    public FloatBuffer colors;
 }

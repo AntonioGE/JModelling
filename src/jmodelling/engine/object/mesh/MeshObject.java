@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jmodelling.engine.object.mesh.generator;
+package jmodelling.engine.object.mesh;
 
-import jmodelling.engine.object.mesh.MeshEditable;
+import jmodelling.engine.object.Object3D;
 
 /**
  *
  * @author ANTONIO
  */
-public class Cube extends MeshEditable{
+public abstract class MeshObject extends Object3D{
+    
+    public Mesh mesh;
     
 }

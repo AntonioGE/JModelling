@@ -38,6 +38,7 @@ public class Shape {
             v.tex.writeInBuffer(tCoords, vertexOffset * Vertex.TEX_SIZE);
             v.nrm.writeInBuffer(nCoords, vertexOffset * Vertex.NRM_SIZE);
             v.clr.writeInBuffer(colors, vertexOffset * Vertex.CLR_SIZE);
+            vertexOffset ++;
         }
     }
 }

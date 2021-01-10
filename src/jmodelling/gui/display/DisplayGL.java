@@ -23,6 +23,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.object.camera.CamArcball;
+import jmodelling.engine.object.mesh.MeshEditable;
+import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.object.mesh.generator.EmptyMesh;
+import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
@@ -83,6 +87,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private final int w = 10, h = 100;
     private Axis[] cosas = new Axis[w * h];
 
+    private MeshObject meshObject;
+    
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -94,6 +100,16 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                         new Vec3f(1.0f, 1.0f, 1.0f));
             }
         }
+        
+        MeshEditable meshEditable = new MeshEditable();
+        meshEditable.addVertex(new Vertex(new Vec3f(0.0f, -1.0f, 2.0f)));
+        meshEditable.addVertex(new Vertex(new Vec3f(3.0f, -4.0f, 5.0f)));
+        meshEditable.addVertex(new Vertex(new Vec3f(-6.0f, 7.0f, -8.0f)));
+        meshEditable.addVertex(new Vertex(new Vec3f(9.0f, -10.0f, 11.0f)));
+        meshEditable.addFace(0, 1, 2);
+        meshEditable.addFace(1, 2, 3);
+        meshObject = new EmptyMesh();
+        meshObject.mesh = meshEditable.toMesh();
 
         addGLEventListener(this);
         addMouseListener(this);
@@ -140,9 +156,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glMultMatrixf(rz.toArray(), 0);
         gl.glMultMatrixf(t.toArray(), 0);
 
+        gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+        meshObject.renderOpaque(gl);
+        
+        
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);
-
+        
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
             gl.glColor3fv(cubeColors, i * 3);
@@ -151,9 +171,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         }
         gl.glEnd();
-
         gl.glPopMatrix();
-
+        
+        
+        
         axis.renderOpaque(gl);
 
         for (Axis axis : cosas) {
@@ -162,7 +183,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
-
+        
         gl.glScalef(20.0f, 20.0f, 20.0f);
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < 6; i++) {

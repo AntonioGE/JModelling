@@ -20,6 +20,10 @@ public abstract class MeshObject extends Object3D {
 
     public Mesh mesh;
 
+    public MeshObject(Mesh mesh){
+        this.mesh = mesh;
+    }
+    
     @Override
     public void renderOpaque(GL2 gl) {
         renderShapes(gl, mesh.tris, GL2.GL_TRIANGLES);

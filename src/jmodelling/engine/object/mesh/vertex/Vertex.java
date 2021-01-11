@@ -26,6 +26,10 @@ public class Vertex {
     public Vec3f nrm;
     public Vec3f clr;
 
+    public Vertex(float x, float y, float z){
+        this(new Vec3f(x, y, z));
+    }
+    
     public Vertex(Vec3f pos) {
         this.pos = new Vec3f(pos);
         this.tex = new Vec2f(0.0f, 0.0f);

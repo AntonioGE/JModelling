@@ -144,7 +144,7 @@ public class MeshEditable {
     }
 
     public void addVertices(List<Vertex> vertices) {
-        vertices.addAll(vertices);
+        this.vertices.addAll(vertices);
     }
 
     public void addVertices(Vertex... vertices) {

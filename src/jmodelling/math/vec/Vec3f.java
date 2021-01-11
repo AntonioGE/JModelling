@@ -89,10 +89,18 @@ public class Vec3f {
         System.out.println(name + ": " + toString());
     }
 
-    public void set(Vec3f other) {
+    public Vec3f set(Vec3f other) {
         this.x = other.x;
         this.y = other.y;
         this.z = other.z;
+        return this;
+    }
+    
+    public Vec3f set(float x, float y, float z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
     }
 
     public float[] toArray() {
@@ -198,25 +206,12 @@ public class Vec3f {
         return sub_(this, other);
     }
 
-    public static void dot(Vec3f src1, Vec3f src2, Vec3f dst) {
-        dst.x = src1.x * src2.x;
-        dst.y = src1.y * src2.y;
-        dst.z = src1.z * src2.z;
+    public static float dot(Vec3f src1, Vec3f src2) {
+        return src1.x * src2.x + src1.y * src2.y + src1.z * src2.z;
     }
 
-    public static Vec3f dot_(Vec3f src1, Vec3f src2) {
-        Vec3f dst = new Vec3f();
-        dot(src1, src2, dst);
-        return dst;
-    }
-
-    public Vec3f dot(Vec3f other) {
-        dot(this, other, this);
-        return this;
-    }
-
-    public Vec3f dot_(Vec3f other) {
-        return dot_(this, other);
+    public float dot(Vec3f other) {
+        return dot(this, other);
     }
 
     public static void cross(Vec3f src1, Vec3f src2, Vec3f dst) {

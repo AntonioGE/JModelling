@@ -25,11 +25,13 @@ import javax.swing.SwingUtilities;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditable;
 import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
+import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -88,6 +90,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Axis[] cosas = new Axis[w * h];
 
     private MeshObject meshObject;
+    private MeshObject cube;
     
     public DisplayGL() {
         super(generateCapabilities());
@@ -102,15 +105,16 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         
         MeshEditable meshEditable = new MeshEditable();
-        meshEditable.addVertex(new Vertex(new Vec3f(0.0f, -1.0f, 2.0f)));
+        meshEditable.addVertex(new Vertex(new Vec3f(-6.0f, -1.0f, 2.0f), new Vec2f(0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f)));
         meshEditable.addVertex(new Vertex(new Vec3f(3.0f, -4.0f, 5.0f)));
         meshEditable.addVertex(new Vertex(new Vec3f(-6.0f, 7.0f, -8.0f)));
         meshEditable.addVertex(new Vertex(new Vec3f(9.0f, -10.0f, 11.0f)));
         meshEditable.addFace(0, 1, 2);
         meshEditable.addFace(1, 2, 3);
-        meshObject = new EmptyMesh();
-        meshObject.mesh = meshEditable.toMesh();
+        meshObject = new EmptyMesh(meshEditable.toMesh());
 
+        cube = new EmptyMesh(new Cube().toMesh());
+        
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -159,6 +163,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
         meshObject.renderOpaque(gl);
         
+        cube.renderOpaque(gl);
         
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);

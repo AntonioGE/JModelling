@@ -89,9 +89,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private final int w = 10, h = 100;
     private Axis[] cosas = new Axis[w * h];
 
-    private MeshObject meshObject;
     private MeshObject cube;
-    
+
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -103,18 +102,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                         new Vec3f(1.0f, 1.0f, 1.0f));
             }
         }
-        
-        MeshEditable meshEditable = new MeshEditable();
-        meshEditable.addVertex(new Vertex(new Vec3f(-6.0f, -1.0f, 2.0f), new Vec2f(0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f)));
-        meshEditable.addVertex(new Vertex(new Vec3f(3.0f, -4.0f, 5.0f)));
-        meshEditable.addVertex(new Vertex(new Vec3f(-6.0f, 7.0f, -8.0f)));
-        meshEditable.addVertex(new Vertex(new Vec3f(9.0f, -10.0f, 11.0f)));
-        meshEditable.addFace(0, 1, 2);
-        meshEditable.addFace(1, 2, 3);
-        meshObject = new EmptyMesh(meshEditable.toMesh());
 
         cube = new EmptyMesh(new Cube().toMesh());
-        
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -154,6 +144,29 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
         gl.glLoadIdentity();
+
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+
+        //float[] ambientLight = {1f, 1f, 1f, 0f};
+        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, ambientLight, 0);
+
+        //float[] specularLight = {1f, 1f, 1f, 0f};
+        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, specularLight, 0);
+
+        float[] diffuseLight = {1f, 1f, 1f, 0f};
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuseLight, 0);
+
+        //float[] emissionLight = {1f, 1f, 1f, 0f};
+        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_EMISSION, emissionLight, 0);
+
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{0.0f, 1.0f, 0.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA);
+        
+        gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
         gl.glMultMatrixf(rx.toArray(), 0);
         gl.glMultMatrixf(ry.toArray(), 0);
@@ -161,13 +174,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glMultMatrixf(t.toArray(), 0);
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-        meshObject.renderOpaque(gl);
-        
+
         cube.renderOpaque(gl);
-        
+
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);
-        
+
         gl.glBegin(GL2.GL_QUADS);
         for (int i = 0, c = 0; i < 6; i++) {
             gl.glColor3fv(cubeColors, i * 3);
@@ -177,9 +189,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
         gl.glPopMatrix();
-        
-        
-        
+
         axis.renderOpaque(gl);
 
         for (Axis axis : cosas) {
@@ -188,7 +198,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
-        
+
         gl.glScalef(20.0f, 20.0f, 20.0f);
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < 6; i++) {

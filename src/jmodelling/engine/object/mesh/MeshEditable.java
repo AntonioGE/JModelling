@@ -93,6 +93,10 @@ public class MeshEditable {
     }
     
     public boolean addFace(List<Vertex> vertices) {
+        vertices.stream().filter((vertex) -> (!this.vertices.contains(vertex))).forEachOrdered((vertex) -> {
+            this.vertices.add(vertex);
+        });
+        
         //Add face
         switch (vertices.size()) {
             case Tri.N_VERTICES:

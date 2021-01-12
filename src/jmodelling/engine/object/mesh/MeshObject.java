@@ -26,8 +26,12 @@ public abstract class MeshObject extends Object3D {
     
     @Override
     public void renderOpaque(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+        
         renderShapes(gl, mesh.tris, GL2.GL_TRIANGLES);
         renderShapes(gl, mesh.quads, GL2.GL_QUADS);
+        gl.glPopMatrix();
     }
 
     //TODO: Remove this temporary method
@@ -36,16 +40,19 @@ public abstract class MeshObject extends Object3D {
         shapes.entrySet().forEach((shape) -> {
             gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
             gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
             gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
             gl.glTexCoordPointer(Vertex.TEX_SIZE, GL2.GL_FLOAT, 0, shape.getValue().tCoords);
             gl.glColorPointer(Vertex.CLR_SIZE, GL2.GL_FLOAT, 0, shape.getValue().colors);
+            gl.glNormalPointer(GL2.GL_FLOAT, 0, shape.getValue().nCoords);
             gl.glVertexPointer(Vertex.POS_SIZE, GL2.GL_FLOAT, 0, shape.getValue().vCoords);
 
             gl.glDrawArrays(shapeType, 0, shape.getValue().vCoords.limit() / Vertex.POS_SIZE);
 
             gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
             gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+            gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
             gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         });
 

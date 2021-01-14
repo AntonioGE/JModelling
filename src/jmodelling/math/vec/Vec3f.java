@@ -1,25 +1,7 @@
 /*
- * MIT License
- * 
- * Copyright (c) 2021 Antonio GE
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package jmodelling.math.vec;
 
@@ -27,6 +9,7 @@ import java.nio.FloatBuffer;
 import jmodelling.math.mat.Mat3f;
 
 /**
+ * 3D float vector
  *
  * @author ANTONIO
  */
@@ -34,22 +17,44 @@ public class Vec3f {
 
     public float x, y, z;
 
+    /**
+     * Constructs a Vec3f with all values set to 0.0f
+     */
     public Vec3f() {
         this.x = 0.0f;
         this.y = 0.0f;
         this.z = 0.0f;
     }
 
+    /**
+     * Constructs a Vec3f with the x, y, z values
+     *
+     * @param x The X coordinate
+     * @param y The Y coordinate
+     * @param z The Z coordinate
+     */
     public Vec3f(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
+    /**
+     * Constructs a Vec3f as a copy of the input Vec3f
+     *
+     * @param other the vector to copy
+     */
     public Vec3f(Vec3f other) {
-        set(other);
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
     }
 
+    /**
+     * Constructs a Vec3f using a float array containing the x, y, z coordinates
+     *
+     * @param data the array containing the x, y, z coordinates
+     */
     public Vec3f(float[] data) {
         this.x = data[0];
         this.y = data[1];
@@ -99,42 +104,86 @@ public class Vec3f {
         return "[" + x + ", " + y + ", " + z + "]";
     }
 
+    /**
+     * Prints the coordinates of the Vec3f
+     */
     public void print() {
         System.out.println(toString());
     }
 
+    /**
+     * Prints the name and the coordinates of the Vec3f
+     *
+     * @param name the name of the vector
+     */
     public void print(String name) {
         System.out.println(name + ": " + toString());
     }
 
+    /**
+     * Copies the content of the vector
+     *
+     * @param other the vector to be copied
+     * @return the copy
+     */
     public Vec3f set(Vec3f other) {
         this.x = other.x;
         this.y = other.y;
         this.z = other.z;
         return this;
     }
-    
-    public Vec3f set(float x, float y, float z){
+
+    /**
+     * Sets the X, Y, Z coordinates into the vector
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @return the current vector
+     */
+    public Vec3f set(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
         return this;
     }
 
+    /**
+     * Creates a float array containing the X, Y, Z coordinates of the vector
+     *
+     * @return the new float array containing the X, Y,Z of the vector
+     */
     public float[] toArray() {
         return new float[]{x, y, z};
     }
 
+    /**
+     * Writes the vector data into a <tt>FloatBuffer</tt> at the offset location
+     *
+     * @param buffer the buffer to write in
+     * @param offset the position
+     */
     public void writeInBuffer(FloatBuffer buffer, int offset) {
         buffer.put(offset, x);
         buffer.put(offset + 1, y);
         buffer.put(offset + 2, z);
     }
 
+    /**
+     * Calculates the norm of the vector
+     *
+     * @return the norm of the vector
+     */
     public float norm() {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
-
+    
+    /**
+     * Normalizes the vector.
+     *
+     * @param src input vector to be normalized
+     * @param dst resulting destination vector
+     */
     public static void normalize(Vec3f src, Vec3f dst) {
         float invNorm = 1.0f / src.norm();
         dst.x = src.x * invNorm;
@@ -142,42 +191,92 @@ public class Vec3f {
         dst.z = src.z * invNorm;
     }
 
+    /**
+     * Normalizes the vector and modifies the input vector.
+     * 
+     * @param src input vector to be normalized
+     * @return same input vector normalized
+     */
     public static Vec3f normalize(Vec3f src) {
         normalize(src, src);
         return src;
     }
 
+    /**
+     * Normalizes the vector.
+     *
+     * @param src input vector to be normalized
+     * @return new normalized vector
+     */
     public static Vec3f normalize_(Vec3f src) {
         Vec3f dst = new Vec3f();
         normalize(src, dst);
         return dst;
     }
 
+    /**
+     * Normalizes the vector.
+     *
+     * @return this normalized vector
+     */
     public Vec3f normalize() {
         return normalize(this);
     }
 
+    /**
+     * Normalizes the vector.
+     *
+     * @return new normalized vector
+     */
     public Vec3f normalize_() {
         return normalize_(this);
     }
 
+    /**
+     * Adds the coordinates of two vectors.
+     *
+     * @param src1 first vector to be added
+     * @param src2 second vector to be added
+     * @param dst destination vector for storing the result
+     */
     public static void add(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.x + src2.x;
         dst.y = src1.y + src2.y;
         dst.z = src1.z + src2.z;
     }
 
+    /**
+     * Adds the coordinates of two vectors.
+     *
+     * @param src1 first vector to be added
+     * @param src2 second vector to be added
+     * @return new vector storing the result of the operation
+     */
     public static Vec3f add_(Vec3f src1, Vec3f src2) {
         Vec3f dst = new Vec3f();
         add(src1, src2, dst);
         return dst;
     }
 
+    /**
+     * Adds the coordinates of this vector with another one and stores the 
+     * result in this vector.
+     *
+     * @param other vector to be added
+     * @return this vector storing the operation result
+     */
     public Vec3f add(Vec3f other) {
         add(this, other, this);
         return this;
     }
 
+    /**
+     * Adds the coordinates of this vector with another one and stores the 
+     * result in a new vector.
+     *
+     * @param other vector to be added
+     * @return new vector storing the operation result
+     */
     public Vec3f add_(Vec3f other) {
         return add_(this, other);
     }

@@ -161,25 +161,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
-        gl.glLoadIdentity();
-
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
-
-        //float[] ambientLight = {1f, 1f, 1f, 0f};
-        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, ambientLight, 0);
-        //float[] specularLight = {1f, 1f, 1f, 0f};
-        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, specularLight, 0);
-        float[] diffuseLight = {1f, 1f, 1f, 0f};
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuseLight, 0);
-
-        //float[] emissionLight = {1f, 1f, 1f, 0f};
-        //gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_EMISSION, emissionLight, 0);
-        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{0.0f, 1.0f, 0.0f, 0.0f}, 0);
-
         gl.glEnable(GL2.GL_BLEND);
-        gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);

@@ -320,115 +320,257 @@ public class Vec3f {
         return add_(this, x, y, z);
     }
 
+    /**
+     * Subtracts the coordinates of this vector with another one and stores the 
+     * result in a new vector.
+     *
+     * @param src1 first vector to be subtracted
+     * @param src2 second vector to subtract
+     * @param dst destination vector for storing the result
+     */
     public static void sub(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.x - src2.x;
         dst.y = src1.y - src2.y;
         dst.z = src1.z - src2.z;
     }
 
+    /**
+     * Subtracts the coordinates of two vectors.
+     *
+     * @param src1 first vector to be subtracted
+     * @param src2 second vector to subtract
+     * @return new vector storing the result of the operation
+     */
     public static Vec3f sub_(Vec3f src1, Vec3f src2) {
         Vec3f dst = new Vec3f();
         sub(src1, src2, dst);
         return dst;
     }
 
+    /**
+     * Subctracts the coordinates of this vector with another one and stores the 
+     * result in this vector.
+     *
+     * @param other vector to subtract
+     * @return this vector storing the operation result
+     */
     public Vec3f sub(Vec3f other) {
         sub(this, other, this);
         return this;
     }
 
+    /**
+     * Subtracts the coordinates of this vector with another one and stores the 
+     * result in a new vector.
+     *
+     * @param other vector to subtract
+     * @return new vector storing the operation result
+     */
     public Vec3f sub_(Vec3f other) {
         return sub_(this, other);
     }
 
+    /**
+     * Performs the dot product operation of two vectors.
+     *
+     * @param src1 first vector
+     * @param src2 second vector
+     * @return dot product result
+     */
     public static float dot(Vec3f src1, Vec3f src2) {
         return src1.x * src2.x + src1.y * src2.y + src1.z * src2.z;
     }
 
+    /**
+     * Performs the dot product operation of the current vector with another
+     *
+     * @param other vector to peform dot product with
+     * @return dot product result
+     */
     public float dot(Vec3f other) {
         return dot(this, other);
     }
 
+    /**
+     * Performs the cross product operation.
+     *
+     * @param src1 first input vector
+     * @param src2 second input vector
+     * @param dst output vector to store the operation result
+     */
     public static void cross(Vec3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.y * src2.z - src1.z * src2.y;
         dst.y = src1.z * src2.x - src1.x * src2.z;
         dst.z = src1.x * src2.y - src1.y * src2.x;
     }
 
+    /**
+     * Performs the cross product operation.
+     *
+     * @param src1 first input vector
+     * @param src2 second input vector
+     * @return output vector to store the operation result
+     */
     public static Vec3f cross_(Vec3f src1, Vec3f src2) {
         Vec3f dst = new Vec3f();
         cross(src1, src2, dst);
         return dst;
     }
 
+    /**
+     * Performs the cross product operation and stores result in this vector.
+     *
+     * @param other second vector to perform cross product
+     * @return this vector storing the cross product result
+     */
     public Vec3f cross(Vec3f other) {
         cross(this.clone(), other, this);
         return this;
     }
 
+    /**
+     * Performs the cross product operation storing the result in a new vector
+     *
+     * @param other second vector to perform cross product
+     * @return new vector storing the cross product result
+     */
     public Vec3f cross_(Vec3f other) {
         return cross_(this, other);
     }
 
+    /**
+     * Performs matrix-vector multiplication
+     *
+     * @param src1 input matrix
+     * @param src2 input vector
+     * @param dst output vector
+     */
     public static void mul(Mat3f src1, Vec3f src2, Vec3f dst) {
         dst.x = src1.m00 * src2.x + src1.m01 * src2.y + src1.m02 * src2.z;
         dst.y = src1.m10 * src2.x + src1.m11 * src2.y + src1.m12 * src2.z;
         dst.z = src1.m20 * src2.x + src1.m21 * src2.y + src1.m22 * src2.z;
     }
 
+    /**
+     * Performs matrix-vector multiplication
+     *
+     * @param src1 input matrix
+     * @param src2 input vector
+     * @return output vector storing the operation result
+     */
     public static Vec3f mul_(Mat3f src1, Vec3f src2) {
         Vec3f dst = new Vec3f();
         mul(src1, src2, dst);
         return dst;
     }
 
+    /**
+     * Multiplies this vector with a matrix
+     *
+     * @param src input matrix
+     * @return this output vector storing the operation result
+     */
     public Vec3f mul(Mat3f src) {
         mul(src, this.clone(), this);
         return this;
     }
 
+    /**
+     * Multiplies this vector with a matrix
+     *
+     * @param src input matrix
+     * @return new output vector storing the operation result
+     */
     public Vec3f mul_(Mat3f src) {
         return mul_(src, this);
     }
 
+    /**
+     * Scales a vector by a scalar value
+     *
+     * @param src input vector
+     * @param scale scalar value
+     * @param dst output scaled vector
+     */
     public static void scale(Vec3f src, float scale, Vec3f dst) {
         dst.x = src.x * scale;
         dst.y = src.y * scale;
         dst.z = src.z * scale;
     }
 
+    /**
+     * Scales a vector by a scalar value
+     *
+     * @param src input vector
+     * @param scale scalar value
+     * @return new scaled vector
+     */
     public static Vec3f scale_(Vec3f src, float scale) {
         Vec3f dst = new Vec3f();
         scale(src, scale, dst);
         return dst;
     }
 
+    /**
+     * Scales this vector by a scalar value
+     *
+     * @param scale scalar value
+     * @return this scaled vector
+     */
     public Vec3f scale(float scale) {
         scale(this, scale, this);
         return this;
     }
 
+    /**
+     * Scales this vector by a scalar value
+     *
+     * @param scale scalar value
+     * @return new scaled vector
+     */
     public Vec3f scale_(float scale) {
         return scale_(this, scale);
     }
 
+    /**
+     * Negates a vector
+     *
+     * @param src input vector to be negated
+     * @param dst output negated vector
+     */
     public static void negate(Vec3f src, Vec3f dst) {
         dst.x = -src.x;
         dst.y = -src.y;
         dst.z = -src.z;
     }
 
+    /**
+     * Negates a vector
+     *
+     * @param src input vector to be negated
+     * @return new negated vector
+     */
     public static Vec3f negate_(Vec3f src) {
         Vec3f dst = new Vec3f();
         negate(src, dst);
         return dst;
     }
 
+    /**
+     * Negates this vector
+     *
+     * @return this negated vector
+     */
     public Vec3f negate() {
         negate(this, this);
         return this;
     }
 
+    /**
+     * Negates this vector
+     *
+     * @return new negated vector
+     */
     public Vec3f negate_() {
         return negate_(this);
     }

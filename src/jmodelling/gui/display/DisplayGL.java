@@ -161,6 +161,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
+        Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
+        
+        p.print();
+        
         gl.glEnable(GL2.GL_BLEND);
 
         gl.glLoadIdentity();
@@ -169,6 +173,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glMultMatrixf(ry.toArray(), 0);
         gl.glMultMatrixf(rz.toArray(), 0);
         gl.glMultMatrixf(t.toArray(), 0);
+        
+        gl.glLoadMatrixf(transf.toArray(), 0);
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 

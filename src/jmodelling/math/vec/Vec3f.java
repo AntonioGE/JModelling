@@ -575,23 +575,45 @@ public class Vec3f {
         return negate_(this);
     }
 
+    /**
+     * Converts a vector of angles from radians to degrees
+     *
+     * @param src input vector of angles in radians
+     * @param dst output vector of angles in degrees
+     */
     public static void toDegrees(Vec3f src, Vec3f dst) {
         dst.x = (float) Math.toDegrees(src.x);
         dst.y = (float) Math.toDegrees(src.y);
         dst.z = (float) Math.toDegrees(src.z);
     }
 
+    /**
+     * Converts a vector of angles from radians to degrees
+     *
+     * @param src input vector of angles in radians
+     * @return vector of angles in degrees
+     */
     public static Vec3f toDegrees_(Vec3f src) {
         Vec3f dst = new Vec3f();
         toDegrees(src, dst);
         return dst;
     }
 
+    /**
+     * Converts this vector of angles from radians to degrees
+     *
+     * @return this vector of angles in degrees
+     */
     public Vec3f toDegrees() {
         toDegrees(this, this);
         return this;
     }
 
+    /**
+     * Converts this vector of angles from radians to degrees in a new vector
+     *
+     * @return new vector of angles in degrees
+     */
     public Vec3f toDegrees_() {
         return toDegrees_(this);
     }

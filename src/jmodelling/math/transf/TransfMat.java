@@ -205,4 +205,18 @@ public class TransfMat {
         lookAt(pos, tar, up, dst);
         return dst;
     }
+    
+    public static void eulerToMat(Vec3f angles, Mat3f rot){
+        Mat3f rx = TransfMat.rotation3f_(angles.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat3f ry = TransfMat.rotation3f_(angles.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat3f rz = TransfMat.rotation3f_(angles.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        
+        rot.set(rz.mul(ry.mul(rx)));
+    }
+    
+    public static Mat3f eulerToMat_(Vec3f angles){
+        Mat3f dst = new Mat3f();
+        eulerToMat(angles, dst);
+        return dst;
+    }
 }

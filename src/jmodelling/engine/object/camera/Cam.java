@@ -25,6 +25,7 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
+import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -38,12 +39,15 @@ public abstract class Cam extends Object3D {
     }
 
     public static void rotToDir(Vec3f rot, Vec3f dir) {
-        dir.set(rot.add_(90.0f, 0.0f, -90.0f).anglesXZDegToVector());
-        dir.z = -dir.z;
+        dir.mul(TransfMat.eulerToMat_(rot));
+        
+        //Alternate method:
+        //dir.set(rot.add_(90.0f, 0.0f, -90.0f).anglesXZDegToVector());
+        //dir.z = -dir.z;
     }
 
     public static Vec3f rotToDir_(Vec3f angles) {
-        Vec3f dir = new Vec3f();
+        Vec3f dir = new Vec3f(0.0f, 0.0f, -1.0f);
         rotToDir(angles, dir);
         return dir;
     }

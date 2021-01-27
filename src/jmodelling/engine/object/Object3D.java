@@ -87,11 +87,7 @@ public abstract class Object3D {
     }
     
     public Mat3f getLocalAxis3f(){
-        Mat3f rx = TransfMat.rotation3f_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat3f ry = TransfMat.rotation3f_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat3f rz = TransfMat.rotation3f_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
-        
-        return rz.mul(ry.mul(rx));
+        return TransfMat.eulerToMat_(rot);
     }
     
 }

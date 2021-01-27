@@ -89,7 +89,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     private float lastMouseX, lastMouseY;
     private CamArcball cam = new CamArcball("",
-            new Vec3f(5.99f, -6.7f, 3.85f),
+            //new Vec3f(5.99f, -6.7f, 3.85f),
+            new Vec3f(0.0f, -5.0f, 0.0f),
             new Vec3f(0.0f, 0.0f, 0.0f),
             CamArcball.Type.PERSPECTIVE,
             0.1f,
@@ -162,9 +163,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
         Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
-        
+
         p.print();
-        
+
         gl.glEnable(GL2.GL_BLEND);
 
         gl.glLoadIdentity();
@@ -173,7 +174,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glMultMatrixf(ry.toArray(), 0);
         gl.glMultMatrixf(rz.toArray(), 0);
         gl.glMultMatrixf(t.toArray(), 0);
-        
+
         gl.glLoadMatrixf(transf.toArray(), 0);
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
@@ -212,7 +213,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
-        
         cam.getDir().print();
         new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
     }
@@ -231,6 +231,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void mousePressed(MouseEvent e) {
         lastMouseX = e.getX();
         lastMouseY = e.getY();
+
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            cam.viewRayToWorld(e.getX(), e.getY(), getWidth(), getHeight()).print("Ray");
+        }
+
     }
 
     @Override

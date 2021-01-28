@@ -209,25 +209,14 @@ public class Vec2f {
         return sub_(this, other);
     }
 
-    public static void dot(Vec2f src1, Vec2f src2, Vec2f dst) {
-        dst.x = src1.x * src2.x;
-        dst.y = src1.y * src2.y;
+    public static float dot(Vec2f src1, Vec2f src2) {
+        return src1.x * src2.x + src1.y * src2.y;
     }
 
-    public static Vec2f dot_(Vec2f src1, Vec2f src2) {
-        Vec2f dst = new Vec2f();
-        dot(src1, src2, dst);
-        return dst;
+    public float dot(Vec2f other) {
+        return dot(this, other);
     }
 
-    public Vec2f dot(Vec2f other) {
-        dot(this, other, this);
-        return this;
-    }
-
-    public Vec2f dot_(Vec2f other) {
-        return dot_(this, other);
-    }
     
     //TODO: Create Mat2f class and implement multiplication with Vec2f
     /*

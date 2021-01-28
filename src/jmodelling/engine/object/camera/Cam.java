@@ -26,6 +26,7 @@ package jmodelling.engine.object.camera;
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
 import jmodelling.math.transf.TransfMat;
+import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -40,7 +41,7 @@ public abstract class Cam extends Object3D {
 
     public static void rotToDir(Vec3f rot, Vec3f dir) {
         dir.mul(TransfMat.eulerToMat_(rot));
-        
+
         //Alternate method:
         //dir.set(rot.add_(90.0f, 0.0f, -90.0f).anglesXZDegToVector());
         //dir.z = -dir.z;
@@ -69,6 +70,22 @@ public abstract class Cam extends Object3D {
 
     public void setDir(Vec3f dir) {
         dirToRot(dir, rot);
+    }
+
+    /**
+     * Converts pixel screen coordinates to view coordinates
+     * 
+     * @param xMouse pixel X coordiante
+     * @param yMouse pixel Y coordinate
+     * @param screenWidth screen width in pixels
+     * @param screenHeight screen height in pixels
+     * @return XY coordinates in view coordinates
+     */
+    public static Vec2f pixelToView(int xMouse, int yMouse, int screenWidth, int screenHeight) {
+        final float aspect = (float) screenWidth / screenHeight;
+        return new Vec2f(
+                ((float) xMouse / (screenWidth / 2) - 1.0f),
+                -((float) yMouse / (screenHeight / 2) - 1.0f) * aspect);
     }
 
     @Override

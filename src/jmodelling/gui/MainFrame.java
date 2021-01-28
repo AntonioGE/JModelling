@@ -35,6 +35,7 @@ import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.MeshEditable;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.gui.display.DisplayGL;
+import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -121,6 +122,7 @@ public class MainFrame extends JFrame{
         meshe.removeVertices(0);
         
         System.out.println((System.nanoTime() - before));
+        
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

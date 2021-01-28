@@ -107,16 +107,13 @@ public class CamArcball extends Cam {
         this.distToTarget = distToTarget;
     }
 
-    public Vec3f viewRayToWorld(Vec2f posView) {
+    public Vec3f viewPosToRay(Vec2f posView) {
         final float tan = (float) Math.tan(Math.toRadians(fov / 2.0f));
         return new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(getLocalAxis3f());
     }
 
-    public Vec3f viewRayToWorld(int xMouse, int yMouse, int screenWidth, int screenHeight) {
-        final float aspect = (float) screenWidth / screenHeight;
-        final float x = ((float) xMouse / (screenWidth / 2) - 1.0f);
-        final float y = ((float) yMouse / (screenHeight / 2) - 1.0f) * aspect;
-        return viewRayToWorld(new Vec2f(x, y));
+    public Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
+        return viewPosToRay(pixelToView(xMouse, yMouse, screenWidth, screenHeight));
     }
 
 }

@@ -46,20 +46,20 @@ public abstract class Object3D {
         this.rot = rot;
         this.sca = sca;
     }
-    
+
     public Object3D(String name, Vec3f loc, Vec3f rot) {
         this(name, loc, rot, new Vec3f(1.0f, 1.0f, 1.0f));
     }
-    
+
     public Object3D(String name, Vec3f loc) {
         this(name, loc, new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(1.0f, 1.0f, 1.0f));
     }
-    
+
     public Object3D(Vec3f loc, Vec3f rot, Vec3f sca) {
         this("", loc, rot, sca);
     }
-    
-    public Object3D(Vec3f loc, Vec3f rot){
+
+    public Object3D(Vec3f loc, Vec3f rot) {
         this("", loc, rot, new Vec3f(1.0f, 1.0f, 1.0f));
     }
 
@@ -72,22 +72,21 @@ public abstract class Object3D {
     public Object3D(Vec3f loc) {
         this(loc, new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(1.0f, 1.0f, 1.0f));
     }
-    
+
     public abstract void renderOpaque(GL2 gl);
-    
-    public Mat4f getLocalAxis(){
+
+    public Mat4f getLocalAxis() {
         Mat4f t = TransfMat.translation_(loc);
         Mat4f rx = TransfMat.rotation_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotation_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotation_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
-        
-        
+
         //return rz.mul(ry.mul(rx.mul(t)));
         return t.mul(rz.mul(ry.mul(rx)));
     }
-    
-    public Mat3f getLocalAxis3f(){
+
+    public Mat3f getLocalAxis3f() {
         return TransfMat.eulerToMat_(rot);
     }
-    
+
 }

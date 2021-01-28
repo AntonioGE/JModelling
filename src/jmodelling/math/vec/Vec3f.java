@@ -78,6 +78,7 @@ public class Vec3f {
         this.y = data[1];
         this.z = data[2];
     }
+    
 
     @Override
     public Vec3f clone() {

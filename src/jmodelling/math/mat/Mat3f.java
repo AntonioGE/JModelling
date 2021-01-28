@@ -124,7 +124,7 @@ public class Mat3f {
 
     public float[] toArray() {
         return new float[]{
-            m00, m01, m02, m10, m11, m12, m20, m21, m22
+            m00, m10, m20, m01, m11, m21, m02, m12, m22
         };
     }
 
@@ -238,6 +238,16 @@ public class Mat3f {
         data[index + 3] = col.y;
         data[index + 6] = col.z;
         set(data);
+    }
+
+    public Vec3f getRow(int index) {
+        float[] data = toArray();
+        return new Vec3f(data[index], data[index + 3], data[index + 6]);
+    }
+
+    public Vec3f getCol(int index) {
+        float[] data = toArray();
+        return new Vec3f(data[index * 3], data[index * 3 + 1], data[index * 3 + 2]);
     }
 
 }

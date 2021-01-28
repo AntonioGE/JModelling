@@ -40,6 +40,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
+import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditable;
 import jmodelling.engine.object.mesh.MeshObject;
@@ -109,6 +110,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Axis[] cosas = new Axis[w * h];
 
     private MeshObject cube;
+    
+    private boolean grab = false;
+    private int lastGrabX, lastGrabY;
+    private int mouseX, mouseY;
+    private Vec3f objPos = new Vec3f();
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -164,7 +170,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
-        p.print();
+        transf.print();
+        cam.getLocalAxis3f().print();
 
         gl.glEnable(GL2.GL_BLEND);
 
@@ -233,7 +240,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         lastMouseY = e.getY();
 
         if (SwingUtilities.isLeftMouseButton(e)) {
-            cam.viewRayToWorld(e.getX(), e.getY(), getWidth(), getHeight()).print("Ray");
+            cam.viewPosToRay(e.getX(), e.getY(), getWidth(), getHeight()).print("Ray");
         }
 
     }
@@ -284,7 +291,34 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        mouseX = e.getX();
+        mouseY = e.getY();
+        
+        if(grab){
+            Vec3f axis = cam.getLocalAxis3f().getRow(0);
+            Vec2f axis2d = new Vec2f(axis.x, axis.y).normalize();
+            
+            axis2d.print("Axis 2d");
+            
+            Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
+            Vec2f p = Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight());
+            
+            o.print("o");
+            p.print("p");
+            
+            float proy = p.sub_(o).dot(axis2d);
+            Vec2f q = o.add_(axis2d.scale_(proy));
+            
+            Vec3f a = cam.viewPosToRay(lastGrabX, lastGrabY, getWidth(), getHeight());
+            Vec3f c = cam.viewPosToRay(q);
+            Vec3f b = new Vec3f(1.0f, 0.0f, 0.0f);
+            float d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * cam.distToTarget;
+            cube.loc.x = objPos.x + d;
+            
+            repaint();
+            //cube.loc.add(b.scale(d))
+            
+        }
     }
 
     @Override
@@ -295,7 +329,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_1:
+            case KeyEvent.VK_G:
+                grab = true;
+                lastGrabX = mouseX;
+                lastGrabY = mouseY;
+                objPos = cube.loc.clone();
                 break;
         }
     }

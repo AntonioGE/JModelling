@@ -74,7 +74,7 @@ public abstract class Cam extends Object3D {
 
     /**
      * Converts pixel screen coordinates to view coordinates
-     * 
+     *
      * @param xMouse pixel X coordiante
      * @param yMouse pixel Y coordinate
      * @param screenWidth screen width in pixels
@@ -83,9 +83,12 @@ public abstract class Cam extends Object3D {
      */
     public static Vec2f pixelToView(int xMouse, int yMouse, int screenWidth, int screenHeight) {
         final float aspect = (float) screenWidth / screenHeight;
-        return new Vec2f(
+        /*return new Vec2f(
                 ((float) xMouse / (screenWidth / 2) - 1.0f),
-                -((float) yMouse / (screenHeight / 2) - 1.0f) * aspect);
+                -((float) yMouse / (screenHeight / 2) - 1.0f) * aspect);*/
+        return new Vec2f(
+                ((float) xMouse / (screenWidth / 2) - 1.0f) * aspect,
+                -((float) yMouse / (screenHeight / 2) - 1.0f));
     }
 
     @Override

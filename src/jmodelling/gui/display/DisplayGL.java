@@ -115,6 +115,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private int lastGrabX, lastGrabY;
     private int mouseX, mouseY;
     private Vec3f objPos = new Vec3f();
+    private float distToObj;
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -309,10 +310,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             float proy = p.sub_(o).dot(axis2d);
             Vec2f q = o.add_(axis2d.scale_(proy));
             
+            
+            
             Vec3f a = cam.viewPosToRay(lastGrabX, lastGrabY, getWidth(), getHeight());
             Vec3f c = cam.viewPosToRay(q);
             Vec3f b = new Vec3f(1.0f, 0.0f, 0.0f);
-            float d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * cam.distToTarget;
+            float d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
             cube.loc.x = objPos.x + d;
             
             repaint();
@@ -334,6 +337,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 lastGrabX = mouseX;
                 lastGrabY = mouseY;
                 objPos = cube.loc.clone();
+                distToObj = cube.loc.sub_(cam.loc).norm();
                 break;
         }
     }

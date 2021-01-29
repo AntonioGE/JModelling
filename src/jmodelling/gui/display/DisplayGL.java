@@ -39,6 +39,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
@@ -110,12 +111,20 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Axis[] cosas = new Axis[w * h];
 
     private MeshObject cube;
-    
+
     private boolean grab = false;
     private int lastGrabX, lastGrabY;
     private int mouseX, mouseY;
     private Vec3f objPos = new Vec3f();
     private float distToObj;
+
+    private ArrayList<Vec3f> points = new ArrayList<Vec3f>() {
+        {
+
+        }
+    };
+    
+    private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -147,7 +156,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
 
+        gl.glEnable(GL2.GL_MULTISAMPLE);
         gl.glEnable(GL2.GL_POLYGON_SMOOTH);
+        gl.glEnable(GL2.GL_POINT_SMOOTH);
+        //gl.glEnable(GL2.GL_LINE_SMOOTH);
+
     }
 
     @Override
@@ -171,9 +184,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
-        transf.print();
-        cam.getLocalAxis3f().print();
-
+        //transf.print();
+        //cam.getLocalAxis3f().print();
         gl.glEnable(GL2.GL_BLEND);
 
         gl.glLoadIdentity();
@@ -202,6 +214,25 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnd();
         gl.glPopMatrix();
 
+        gl.glPointSize(4.0f);
+        gl.glBegin(GL2.GL_POINTS);
+        for (Vec3f point : points) {
+            gl.glColor3f(0.0f, 0.0f, 0.0f);
+            gl.glVertex3f(point.x, point.y, point.z);
+        }
+        gl.glEnd();
+        
+        gl.glBegin(GL2.GL_LINES);
+        for(int i = 0; i < lines.size() / 2; i++){
+            Vec3f p1 = lines.get(i * 2);
+            Vec3f p2 = lines.get(i * 2 + 1);
+            gl.glColor3f(1.0f, 0.5f, 0.0f);
+            gl.glVertex3f(p1.x, p1.y, p1.z);
+            gl.glColor3f(1.0f, 0.5f, 0.0f);
+            gl.glVertex3f(p2.x, p2.y, p2.z);
+        }
+        gl.glEnd();
+
         axis.renderOpaque(gl);
 
         for (Axis axis : cosas) {
@@ -211,6 +242,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
 
+        gl.glPushMatrix();
         gl.glScalef(20.0f, 20.0f, 20.0f);
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < 6; i++) {
@@ -218,11 +250,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             gl.glVertex3fv(axisCoords, i * 3);
         }
         gl.glEnd();
+        gl.glPopMatrix();
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
-        cam.getDir().print();
-        new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
+        //cam.getDir().print();
+        //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
     }
 
     @Override
@@ -294,33 +327,30 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
-        
-        if(grab){
+
+        if (grab) {
+            //Get axis of movement
             Vec3f axis = cam.getLocalAxis3f().getRow(0);
             Vec2f axis2d = new Vec2f(axis.x, axis.y).normalize();
-            
-            axis2d.print("Axis 2d");
-            
+
+            axis2d.print("axis 2D");
+
             Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
             Vec2f p = Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight());
-            
-            o.print("o");
-            p.print("p");
-            
+
             float proy = p.sub_(o).dot(axis2d);
             Vec2f q = o.add_(axis2d.scale_(proy));
-            
-            
-            
+
+            p.print("p");
+            q.print("q");
+
             Vec3f a = cam.viewPosToRay(lastGrabX, lastGrabY, getWidth(), getHeight());
             Vec3f c = cam.viewPosToRay(q);
             Vec3f b = new Vec3f(1.0f, 0.0f, 0.0f);
             float d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
             cube.loc.x = objPos.x + d;
-            
+
             repaint();
-            //cube.loc.add(b.scale(d))
-            
         }
     }
 
@@ -338,6 +368,27 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 lastGrabY = mouseY;
                 objPos = cube.loc.clone();
                 distToObj = cube.loc.sub_(cam.loc).norm();
+                break;
+            case KeyEvent.VK_SPACE:
+                /*
+                for (int i = 0; i < getWidth(); i+=20) {
+                    for (int j = 0; j < getHeight(); j+=20) {
+                        Vec3f a = cam.viewPosToRay(i, j, getWidth(), getHeight());
+                        Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
+
+                        points.add(p);
+                    }
+                }*/
+                
+                Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
+                Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
+                
+                lines.add(p);
+                lines.add(cam.loc);
+                
+                points.add(p);
+                
+                repaint();
                 break;
         }
     }

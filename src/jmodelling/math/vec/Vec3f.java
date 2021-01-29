@@ -811,4 +811,12 @@ public class Vec3f {
         return anglesXZDegToVector_(this);
     }
 
+    public static float dist(Vec3f src1, Vec3f src2){
+        return src1.sub_(src2).norm();
+    }
+    
+    public float dist(Vec3f other){
+        return dist(this, other);
+    }
+    
 }

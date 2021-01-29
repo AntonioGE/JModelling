@@ -117,13 +117,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private int mouseX, mouseY;
     private Vec3f objPos = new Vec3f();
     private float distToObj;
-
+    private Mat4f transf;
+    
     private ArrayList<Vec3f> points = new ArrayList<Vec3f>() {
         {
 
         }
     };
-    
+
     private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
     public DisplayGL() {
@@ -182,9 +183,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
-        Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
+        transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
-        //transf.print();
+        transf.print();
         //cam.getLocalAxis3f().print();
         gl.glEnable(GL2.GL_BLEND);
 
@@ -221,9 +222,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             gl.glVertex3f(point.x, point.y, point.z);
         }
         gl.glEnd();
-        
+
         gl.glBegin(GL2.GL_LINES);
-        for(int i = 0; i < lines.size() / 2; i++){
+        for (int i = 0; i < lines.size() / 2; i++) {
             Vec3f p1 = lines.get(i * 2);
             Vec3f p2 = lines.get(i * 2 + 1);
             gl.glColor3f(1.0f, 0.5f, 0.0f);
@@ -333,6 +334,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             Vec3f axis = cam.getLocalAxis3f().getRow(0);
             Vec2f axis2d = new Vec2f(axis.x, axis.y).normalize();
 
+            //transf.
+            
             axis2d.print("axis 2D");
 
             Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
@@ -363,11 +366,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_G:
-                grab = true;
-                lastGrabX = mouseX;
-                lastGrabY = mouseY;
-                objPos = cube.loc.clone();
-                distToObj = cube.loc.sub_(cam.loc).norm();
+                if (grab) {
+                    grab = false;
+                } else {
+                    grab = true;
+                    lastGrabX = mouseX;
+                    lastGrabY = mouseY;
+                    objPos = cube.loc.clone();
+                    distToObj = cube.loc.sub_(cam.loc).norm();
+                }
                 break;
             case KeyEvent.VK_SPACE:
                 /*
@@ -378,14 +385,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
                         points.add(p);
                     }
-                }*/
+                }
+                */
                 
                 Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
                 Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
-                
+
                 lines.add(p);
                 lines.add(cam.loc);
-                
+
                 points.add(p);
                 
                 repaint();

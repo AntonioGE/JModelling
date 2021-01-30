@@ -250,7 +250,40 @@ public class Vec3f {
     public Vec3f normalize_() {
         return normalize_(this);
     }
+    
+    /**
+     * Generates a random vector.
+     * 
+     * @param dst destination random vector
+     */
+    public static void rand(Vec3f dst){
+        dst.x = (float) Math.random();
+        dst.y = (float) Math.random();
+        dst.z = (float) Math.random();
+    }
 
+    /**
+     * Generates a random vector.
+     * 
+     * @return new random vector
+     */
+    public static Vec3f rand_(){
+        Vec3f dst = new Vec3f();
+        rand(dst);
+        return dst;
+    }
+    
+    /**
+     * Converts this vector into a random vector
+     * 
+     * @return this random vector
+     */
+    public Vec3f rand(){
+        rand(this);
+        return this;
+    }
+    
+    
     /**
      * Adds the coordinates of two vectors.
      *

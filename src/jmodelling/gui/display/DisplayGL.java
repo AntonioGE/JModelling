@@ -119,6 +119,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Vec3f objPos = new Vec3f();
     private float distToObj;
     private Mat4f transf;
+    private Vec3f moveAxis;
     
     private ArrayList<Vec3f> points = new ArrayList<Vec3f>() {
         {
@@ -240,6 +241,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         for (Axis axis : cosas) {
             axis.renderOpaque(gl);
         }
+        
+        if(grab){
+            gl.glPushMatrix();
+            gl.glTranslatef(objPos.x, objPos.y, objPos.z);
+            final float inf = 10000f;
+            gl.glColor3f(1.0f, 1.0f, 1.0f);
+            gl.glBegin(GL2.GL_LINES);
+            gl.glVertex3f(moveAxis.x * inf, moveAxis.y * inf, moveAxis.z * inf);
+            gl.glVertex3f(-moveAxis.x * inf, -moveAxis.y * inf, -moveAxis.z * inf);
+            gl.glEnd();
+            gl.glPopMatrix();
+        }
 
         gl.glLineStipple(1, (short) 0xF0F0);
         gl.glEnable(GL2.GL_LINE_STIPPLE);
@@ -344,7 +357,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             axis2D.x *= (float) getWidth() / getHeight();
             axis2D.normalize();
             */
-            Vec3f moveAxis = new Vec3f(0.0f, 0.0f, 1.0f);
+            
             
             Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
             Vec4f p2 = new Vec4f(objPos, 1.0f);
@@ -404,7 +417,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     lastGrabY = mouseY;
                     objPos = cube.loc.clone();
                     distToObj = cube.loc.sub_(cam.loc).norm();
+                    moveAxis = Vec3f.rand_().normalize();
                 }
+                repaint();
                 break;
             case KeyEvent.VK_SPACE:
                 /*

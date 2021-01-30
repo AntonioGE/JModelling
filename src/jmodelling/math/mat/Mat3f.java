@@ -249,5 +249,34 @@ public class Mat3f {
         float[] data = toArray();
         return new Vec3f(data[index * 3], data[index * 3 + 1], data[index * 3 + 2]);
     }
+    
+    public static void transp(Mat3f src, Mat3f dst) {
+        dst.m00 = src.m00;
+        dst.m01 = src.m10;
+        dst.m02 = src.m20;
+
+        dst.m10 = src.m01;
+        dst.m11 = src.m11;
+        dst.m12 = src.m21;
+
+        dst.m20 = src.m02;
+        dst.m21 = src.m12;
+        dst.m22 = src.m22;
+    }
+
+    public static Mat3f transp_(Mat3f src) {
+        Mat3f dst = new Mat3f();
+        transp(src, dst);
+        return dst;
+    }
+
+    public Mat3f transp() {
+        transp(this.clone(), this);
+        return this;
+    }
+
+    public Mat3f transp_() {
+        return transp_(this);
+    }
 
 }

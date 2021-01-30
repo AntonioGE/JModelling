@@ -83,7 +83,28 @@ public class Vec4f {
         this.w = data[3];
     }
     
-
+    /**
+     * Constructs a Vec4f using the coordiantes of a Vec3f and the w coordinate
+     * 
+     * @param other
+     * @param w 
+     */
+    public Vec4f(Vec3f other, float w){
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
+        this.w = w;
+    }
+    
+    /**
+     * Constructs a Vec4f using the coordiantes of a Vec3f and w of 1.0f
+     * 
+     * @param other
+     */
+    public Vec4f(Vec3f other){
+        this(other, 1.0f);
+    }
+    
     @Override
     public Vec4f clone() {
         return new Vec4f(this);

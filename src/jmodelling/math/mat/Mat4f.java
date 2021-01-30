@@ -381,4 +381,41 @@ public class Mat4f {
         return inverse_(this);
     }
 
+    public static void transp(Mat4f src, Mat4f dst) {
+        dst.m00 = src.m00;
+        dst.m01 = src.m10;
+        dst.m02 = src.m20;
+        dst.m03 = src.m30;
+
+        dst.m10 = src.m01;
+        dst.m11 = src.m11;
+        dst.m12 = src.m21;
+        dst.m13 = src.m31;
+
+        dst.m20 = src.m02;
+        dst.m21 = src.m12;
+        dst.m22 = src.m22;
+        dst.m23 = src.m32;
+
+        dst.m30 = src.m03;
+        dst.m31 = src.m13;
+        dst.m32 = src.m23;
+        dst.m33 = src.m33;
+    }
+
+    public static Mat4f transp_(Mat4f src) {
+        Mat4f dst = new Mat4f();
+        transp(src, dst);
+        return dst;
+    }
+
+    public Mat4f transp() {
+        transp(this.clone(), this);
+        return this;
+    }
+
+    public Mat4f transp_() {
+        return transp_(this);
+    }
+
 }

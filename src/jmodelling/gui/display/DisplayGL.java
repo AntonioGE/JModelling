@@ -120,7 +120,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private float distToObj;
     private Mat4f transf;
     private Vec3f moveAxis;
-    
+
     private ArrayList<Vec3f> points = new ArrayList<Vec3f>() {
         {
 
@@ -241,10 +241,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         for (Axis axis : cosas) {
             axis.renderOpaque(gl);
         }
-        
-        if(grab){
+
+        if (grab) {
             gl.glPushMatrix();
             gl.glTranslatef(objPos.x, objPos.y, objPos.z);
+            objPos.print();
             final float inf = 10000f;
             gl.glColor3f(1.0f, 1.0f, 1.0f);
             gl.glBegin(GL2.GL_LINES);
@@ -356,9 +357,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             Vec2f axis2D = new Vec2f(xAxis.x - origin.x, xAxis.y - origin.y);
             axis2D.x *= (float) getWidth() / getHeight();
             axis2D.normalize();
-            */
-            
-            
+             */
             Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
             Vec4f p2 = new Vec4f(objPos, 1.0f);
             p1.mul(transf);
@@ -368,10 +367,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             Vec2f axis2D = new Vec2f(p1.x - p2.x, p1.y - p2.y);
             axis2D.x *= (float) getWidth() / getHeight();
             axis2D.normalize();
-            
+
             Vec2f o2d = new Vec2f(p2.x * (float) getWidth() / getHeight(), p2.y);
-            
-            
+
             axis2D.print("axis 4D");
 
             Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
@@ -379,18 +377,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
             float proyO = o.sub_(o2d).dot(axis2D);
             Vec2f q = o2d.add_(axis2D.scale_(proyO));
-            
+
             float proyP = p.sub_(o2d).dot(axis2D);
             Vec2f r = o2d.add_(axis2D.scale_(proyP));
 
             Vec3f a = cam.viewPosToRay(q);
             Vec3f c = cam.viewPosToRay(r);
-            Vec3f b = moveAxis;
+            Vec3f b = moveAxis.clone();
             float d;
             d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
-            if(!Float.isFinite(d)){
+            if (!Float.isFinite(d)) {
                 d = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z) * distToObj;
-                if(!Float.isFinite(d)){
+                if (!Float.isFinite(d)) {
                     d = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z) * distToObj;
                 }
             }
@@ -431,8 +429,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                         points.add(p);
                     }
                 }
-                */
-                
+                 */
+
                 Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
                 Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
 
@@ -440,7 +438,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 lines.add(cam.loc);
 
                 points.add(p);
-                
+
                 repaint();
                 break;
         }

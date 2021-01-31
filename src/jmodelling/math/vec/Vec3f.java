@@ -257,9 +257,9 @@ public class Vec3f {
      * @param dst destination random vector
      */
     public static void rand(Vec3f dst){
-        dst.x = (float) Math.random();
-        dst.y = (float) Math.random();
-        dst.z = (float) Math.random();
+        dst.x = (float) Math.random() * 2.0f - 1.0f;
+        dst.y = (float) Math.random() * 2.0f - 1.0f;
+        dst.z = (float) Math.random() * 2.0f - 1.0f;
     }
 
     /**

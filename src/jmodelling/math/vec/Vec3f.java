@@ -852,4 +852,50 @@ public class Vec3f {
         return dist(this, other);
     }
     
+    /**
+     * Proyects one vector onto another
+     * 
+     * @param src vector to be proyected
+     * @param dir direction of the proyection
+     * @param dst output proyected vector
+     */
+    public static void proy(Vec3f src, Vec3f dir, Vec3f dst){
+        dst.set(dir).normalize();
+        dst.scale(src.dot(dst));
+    }
+    
+    /**
+     * Proyects one vector onto another
+     * 
+     * @param src vector to be proyected
+     * @param dir direction of the proyection
+     * @return new proyected vector
+     */
+    public static Vec3f proy_(Vec3f src, Vec3f dir){
+        Vec3f dst = new Vec3f();
+        proy(src, dir, dst);
+        return dst;
+    }
+    
+    /**
+     * Proyects this vector onto another
+     * 
+     * @param dir direction of the proyection
+     * @return this proyected vector
+     */
+    public Vec3f proy(Vec3f dir){
+        proy(this.clone(), dir, this);
+        return this;
+    }
+    
+    /**
+     * Proyects this vector onto another
+     * 
+     * @param dir direction of the proyection
+     * @return new proyected vector
+     */
+    public Vec3f proy_(Vec3f dir){
+        return proy_(this, dir);
+    }
+    
 }

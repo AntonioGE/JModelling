@@ -101,14 +101,16 @@ public class Vec2f {
         System.out.println(name + ": " + toString());
     }
 
-    public void set(Vec2f other) {
+    public Vec2f set(Vec2f other) {
         this.x = other.x;
         this.y = other.y;
+        return this;
     }
     
-    public void set(float x, float y){
+    public Vec2f set(float x, float y){
         this.x = x;
         this.y = y;
+        return this;
     }
 
     public float[] toArray() {
@@ -296,6 +298,52 @@ public class Vec2f {
     
     public float angleDeg(){
         return angleDeg(this);
+    }
+    
+    /**
+     * Proyects one vector onto another
+     * 
+     * @param src vector to be proyected
+     * @param dir direction of the proyection
+     * @param dst output proyected vector
+     */
+    public static void proy(Vec2f src, Vec2f dir, Vec2f dst){
+        dst.set(dir).normalize();
+        dst.scale(src.dot(dst));
+    }
+    
+    /**
+     * Proyects one vector onto another
+     * 
+     * @param src vector to be proyected
+     * @param dir direction of the proyection
+     * @return new proyected vector
+     */
+    public static Vec2f proy_(Vec2f src, Vec2f dir){
+        Vec2f dst = new Vec2f();
+        proy(src, dir, dst);
+        return dst;
+    }
+    
+    /**
+     * Proyects this vector onto another
+     * 
+     * @param dir direction of the proyection
+     * @return this proyected vector
+     */
+    public Vec2f proy(Vec2f dir){
+        proy(this.clone(), dir, this);
+        return this;
+    }
+    
+    /**
+     * Proyects this vector onto another
+     * 
+     * @param dir direction of the proyection
+     * @return new proyected vector
+     */
+    public Vec2f proy_(Vec2f dir){
+        return proy_(this, dir);
     }
 
 }

@@ -24,6 +24,8 @@
 package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
+import jmodelling.math.mat.Mat4f;
+import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
@@ -107,13 +109,17 @@ public class CamArcball extends Cam {
         this.distToTarget = distToTarget;
     }
 
+    @Override
     public Vec3f viewPosToRay(Vec2f posView) {
         final float tan = (float) Math.tan(Math.toRadians(fov / 2.0f));
         return new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(getLocalAxis3f());
     }
 
+    @Override
     public Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
         return viewPosToRay(pixelToView(xMouse, yMouse, screenWidth, screenHeight));
     }
+    
+    
 
 }

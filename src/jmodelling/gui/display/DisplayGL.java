@@ -49,6 +49,7 @@ import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.other.Axis;
+import jmodelling.engine.transform.Transform;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -345,19 +346,19 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         mouseY = e.getY();
 
         if (grab) {
-            //Get axis of movement
 
+            //tempLocalFunction();
+            
+            Vec3f trans = Transform.transViewToWorld(objPos, moveAxis,
+                    Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
+                    transf, cam, (float) getWidth() / getHeight());
+
+            cube.loc.set(objPos.add_(trans));
+
+            
+            
             /*
-            Vec4f xAxis = new Vec4f(1.0f, 0.0f, 0.0f, 1.0f);
-            Vec4f origin = new Vec4f(0.0f, 0.0f, 0.0f, 1.0f);
-            xAxis.mul(transf);
-            origin.mul(transf);
-            xAxis.scale(1.0f / xAxis.w);
-            origin.scale(1.0f / origin.w);
-            Vec2f axis2D = new Vec2f(xAxis.x - origin.x, xAxis.y - origin.y);
-            axis2D.x *= (float) getWidth() / getHeight();
-            axis2D.normalize();
-             */
             Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
             Vec4f p2 = new Vec4f(objPos, 1.0f);
             p1.mul(transf);
@@ -393,9 +394,47 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 }
             }
             cube.loc = objPos.add_(b.scale(d));
-
+             */
             repaint();
         }
+    }
+
+    public void tempLocalFunction() {
+        Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
+        Vec4f p2 = new Vec4f(objPos, 1.0f);
+        p1.mul(transf);
+        p2.mul(transf);
+        p1.scale(1.0f / p1.w);
+        p2.scale(1.0f / p2.w);
+        Vec2f axis2D = new Vec2f(p1.x - p2.x, p1.y - p2.y);
+        axis2D.x *= (float) getWidth() / getHeight();
+        axis2D.normalize();
+
+        Vec2f o2d = new Vec2f(p2.x * (float) getWidth() / getHeight(), p2.y);
+
+        axis2D.print("axis 4D");
+
+        Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
+        Vec2f p = Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight());
+
+        float proyO = o.sub_(o2d).dot(axis2D);
+        Vec2f q = o2d.add_(axis2D.scale_(proyO));
+
+        float proyP = p.sub_(o2d).dot(axis2D);
+        Vec2f r = o2d.add_(axis2D.scale_(proyP));
+
+        Vec3f a = cam.viewPosToRay(q);
+        Vec3f c = cam.viewPosToRay(r);
+        Vec3f b = moveAxis.clone();
+        float d;
+        d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
+        if (!Float.isFinite(d)) {
+            d = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z) * distToObj;
+            if (!Float.isFinite(d)) {
+                d = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z) * distToObj;
+            }
+        }
+        cube.loc = objPos.add_(b.scale(d));
     }
 
     @Override

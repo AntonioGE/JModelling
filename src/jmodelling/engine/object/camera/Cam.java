@@ -25,6 +25,7 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
+import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -71,7 +72,7 @@ public abstract class Cam extends Object3D {
     public void setDir(Vec3f dir) {
         dirToRot(dir, rot);
     }
-
+    
     /**
      * Converts pixel screen coordinates to view coordinates
      *
@@ -82,15 +83,21 @@ public abstract class Cam extends Object3D {
      * @return XY coordinates in view coordinates
      */
     public static Vec2f pixelToView(int xMouse, int yMouse, int screenWidth, int screenHeight) {
-        final float aspect = (float) screenWidth / screenHeight;
-        /*return new Vec2f(
+        //final float aspect = (float) screenWidth / screenHeight;
+        return new Vec2f(
                 ((float) xMouse / (screenWidth / 2) - 1.0f),
-                -((float) yMouse / (screenHeight / 2) - 1.0f) * aspect);*/
+                -((float) yMouse / (screenHeight / 2) - 1.0f));
+        /*
+        final float aspect = (float) screenWidth / screenHeight;
         return new Vec2f(
                 ((float) xMouse / (screenWidth / 2) - 1.0f) * aspect,
-                -((float) yMouse / (screenHeight / 2) - 1.0f));
+                -((float) yMouse / (screenHeight / 2) - 1.0f));*/
     }
 
+    public abstract Vec3f viewPosToRay(Vec2f posView);
+    
+    public abstract Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight);
+    
     @Override
     public abstract void renderOpaque(GL2 gl);
 }

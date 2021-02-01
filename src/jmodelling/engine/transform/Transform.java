@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.transform;
 
+import jmodelling.engine.object.camera.Cam;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.math.vec.Vec4f;
@@ -88,19 +89,78 @@ public class Transform {
         return dst;
     }
     
-    /*
-    public static void vec3fToVec2f(){
-        Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
-        Vec4f p2 = new Vec4f(objPos, 1.0f);
-        p1.mul(camTransf);
-        p2.mul(camTransf);
-        p1.scale(1.0f / p1.w);
-        p2.scale(1.0f / p2.w);
-        Vec2f axis2D = new Vec2f(p1.x - p2.x, p1.y - p2.y);
-        axis2D.x *= (float) screenWidth / screenHeight;
-        axis2D.normalize();
+    /**
+     * Converts a translation from view coordinates to world coordinates
+     * 
+     * @param src initial position of the point to be translated 
+     * @param dir direction of the translation
+     * @param p0 initial position of point in view coordinates 
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param dst output vector representing the translation  
+     */
+    public static void transViewToWorld(Vec3f src, Vec3f dir, 
+            Vec2f p0, Vec2f p1, 
+            Mat4f camTransf, Cam cam, float aspect, 
+            Vec3f dst){
+        
+        //Convert the translation direction from world coordinates to view
+        Vec2f dir2dTail = worldToView(src, camTransf);
+        Vec2f dir2dHead = worldToView(src.add_(dir).scale(1.0f), camTransf);//TODO: Study how set the 1.0f value
+        Vec2f dir2d = dir2dHead.sub_(dir2dTail).normalize();
+        
+        //Project the view points onto the translation line in view coordinates
+        Vec2f p0Proy = p0.sub_(dir2dTail).proy(dir2d).add(dir2dTail);
+        Vec2f p1Proy = p1.sub_(dir2dTail).proy(dir2d).add(dir2dTail);
+        
+        //Apply the aspect ratio to the projected points
+        p0Proy.x *= aspect;
+        p1Proy.x *= aspect;
+        
+        //Generate rays from view coordinates to world coordinates
+        Vec3f a = cam.viewPosToRay(p0Proy);
+        Vec3f c = cam.viewPosToRay(p1Proy);
+        Vec3f b = dir;
+        
+        //Calculate the translation value
+        float d;
+        d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x);
+        if (!Float.isFinite(d)) {
+            d = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z);
+            if (!Float.isFinite(d)) {
+                d = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z);
+            }
+        }
+        
+        //Calculate the distance between the initial point and the camera
+        final float distToSrc = Vec3f.dist(src, cam.loc);
+        
+        dst.set(dir).scale(d * distToSrc);
     }
     
+    /**
+     * Converts a translation from view coordinates to world coordinates
+     * 
+     * @param src initial position of the point to be translated 
+     * @param dir direction of the translation
+     * @param p0 initial position of point in view coordinates 
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @return vector representing the translation
+     */
+    public static Vec3f transViewToWorld(Vec3f src, Vec3f dir, 
+            Vec2f p0, Vec2f p1, 
+            Mat4f camTransf, Cam cam, float aspect){
+        Vec3f dst = new Vec3f();
+        transViewToWorld(src, dir, p0, p1, camTransf, cam, aspect, dst);
+        return dst;
+    }
+    
+    /*
     public static void translateViewTo3D(
             Vec2f start, Vec2f end, 
             Vec3f objPos, Vec3f moveAxis, 

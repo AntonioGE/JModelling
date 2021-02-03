@@ -162,12 +162,32 @@ public class Transform {
     
     public static void planarTranslation(Vec3f src, 
             Vec2f p0, Vec2f p1, 
-            Mat4f camTransf, Cam cam, float aspect,
+            Cam cam, float aspect,
             Vec3f dst){
         
+        //Get camera direction
         Vec3f dir = cam.getDir();
         
+        //Calculate the distance from the camera to the plane of translation
+        float dist = src.projPointOnLine_(cam.loc, dir).sub(cam.loc).norm();
         
+        //Generate rays for the initial point and final point
+        Vec3f ray0 = cam.viewPosToRayAspect(p0, aspect);
+        Vec3f ray1 = cam.viewPosToRayAspect(p1, aspect);
+        
+        //Calculate the translations for both points
+        Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0)).sub(dir).scale(dist);
+        Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1)).sub(dir).scale(dist);
+        
+        dst.set(t1.sub_(t0));
+    }
+    
+    public static Vec3f planarTranslation(Vec3f src, 
+            Vec2f p0, Vec2f p1, 
+            Cam cam, float aspect){
+        Vec3f dst = new Vec3f();
+        planarTranslation(src, p0, p1, cam, aspect, dst);
+        return dst;
     }
     
     /*

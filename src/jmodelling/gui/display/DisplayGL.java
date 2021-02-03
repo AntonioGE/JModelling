@@ -347,10 +347,17 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         if (grab) {
 
+            /*
             Vec3f trans = Transform.linearTranslation(objPos, moveAxis,
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
                     transf, cam, (float) getWidth() / getHeight());
+            */
+            
+            Vec3f trans = Transform.planarTranslation(objPos,
+                    Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
+                    cam, (float) getWidth() / getHeight());
 
             cube.loc.set(objPos.add_(trans));
 

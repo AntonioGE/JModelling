@@ -112,6 +112,15 @@ public abstract class Cam extends Object3D {
 
     public abstract Vec3f viewPosToRay(Vec2f posView);
     
+    /**
+     * Converts a point in 2D view coordinates into a ray applying the aspect ratio
+     * 
+     * @param posView point in 2D view coordinates 
+     * @param aspect aspect ratio of the screen
+     * @return ray
+     */
+    public abstract Vec3f viewPosToRayAspect(Vec2f posView, float aspect);
+    
     public abstract Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight);
     
     @Override

@@ -930,11 +930,11 @@ public class Vec3f {
      * @param lineDir direction of the projection line
      * @return this projected point
      */
-    public Vec3f projPointOnLine(Vec3f linePos, Vec3f lineDir){
+    public Vec3f projPointOnLine(Vec3f linePos, Vec3f lineDir) {
         projPointOnLine(this.clone(), linePos, lineDir, this);
         return this;
     }
-    
+
     /**
      * Projects this point onto a line storing the result in a new vector
      *
@@ -942,10 +942,16 @@ public class Vec3f {
      * @param lineDir direction of the projection line
      * @return new projected point
      */
-    public Vec3f projPointOnLine_(Vec3f linePos, Vec3f lineDir){
+    public Vec3f projPointOnLine_(Vec3f linePos, Vec3f lineDir) {
         return projPointOnLine_(this, linePos, lineDir);
     }
-    
+
+    public static void projLineOnPlane(Vec3f linePos, Vec3f lineDir, Vec3f planePos, Vec3f planeNorm, Vec3f dst) {
+        normalize(lineDir, dst);
+        float t = (planeNorm.dot(planePos) - planeNorm.dot(linePos)) / planeNorm.dot(dst);
+        dst.scale(t).add(linePos);
+    }
+
     /*
     public static void proy(Vec3f src1Pos, Vec3f src1Dir, Vec3f src2Pos, Vec3f src2Dir, Vec3f dstPos, Vec3f dstDir){
         

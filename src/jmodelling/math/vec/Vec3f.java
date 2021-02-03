@@ -78,7 +78,6 @@ public class Vec3f {
         this.y = data[1];
         this.z = data[2];
     }
-    
 
     @Override
     public Vec3f clone() {
@@ -196,7 +195,7 @@ public class Vec3f {
     public float norm() {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
-    
+
     /**
      * Normalizes the vector.
      *
@@ -212,7 +211,7 @@ public class Vec3f {
 
     /**
      * Normalizes the vector and modifies the input vector.
-     * 
+     *
      * @param src input vector to be normalized
      * @return same input vector normalized
      */
@@ -250,13 +249,13 @@ public class Vec3f {
     public Vec3f normalize_() {
         return normalize_(this);
     }
-    
+
     /**
      * Generates a random vector.
-     * 
+     *
      * @param dst destination random vector
      */
-    public static void rand(Vec3f dst){
+    public static void rand(Vec3f dst) {
         dst.x = (float) Math.random() * 2.0f - 1.0f;
         dst.y = (float) Math.random() * 2.0f - 1.0f;
         dst.z = (float) Math.random() * 2.0f - 1.0f;
@@ -264,26 +263,25 @@ public class Vec3f {
 
     /**
      * Generates a random vector.
-     * 
+     *
      * @return new random vector
      */
-    public static Vec3f rand_(){
+    public static Vec3f rand_() {
         Vec3f dst = new Vec3f();
         rand(dst);
         return dst;
     }
-    
+
     /**
      * Converts this vector into a random vector
-     * 
+     *
      * @return this random vector
      */
-    public Vec3f rand(){
+    public Vec3f rand() {
         rand(this);
         return this;
     }
-    
-    
+
     /**
      * Adds the coordinates of two vectors.
      *
@@ -311,7 +309,7 @@ public class Vec3f {
     }
 
     /**
-     * Adds the coordinates of this vector with another one and stores the 
+     * Adds the coordinates of this vector with another one and stores the
      * result in this vector.
      *
      * @param other vector to be added
@@ -323,7 +321,7 @@ public class Vec3f {
     }
 
     /**
-     * Adds the coordinates of this vector with another one and stores the 
+     * Adds the coordinates of this vector with another one and stores the
      * result in a new vector.
      *
      * @param other vector to be added
@@ -355,7 +353,7 @@ public class Vec3f {
     }
 
     /**
-     * Subtracts the coordinates of this vector with another one and stores the 
+     * Subtracts the coordinates of this vector with another one and stores the
      * result in a new vector.
      *
      * @param src1 first vector to be subtracted
@@ -382,7 +380,7 @@ public class Vec3f {
     }
 
     /**
-     * Subctracts the coordinates of this vector with another one and stores the 
+     * Subctracts the coordinates of this vector with another one and stores the
      * result in this vector.
      *
      * @param other vector to subtract
@@ -394,7 +392,7 @@ public class Vec3f {
     }
 
     /**
-     * Subtracts the coordinates of this vector with another one and stores the 
+     * Subtracts the coordinates of this vector with another one and stores the
      * result in a new vector.
      *
      * @param other vector to subtract
@@ -844,58 +842,118 @@ public class Vec3f {
         return anglesXZDegToVector_(this);
     }
 
-    public static float dist(Vec3f src1, Vec3f src2){
+    public static float dist(Vec3f src1, Vec3f src2) {
         return src1.sub_(src2).norm();
     }
-    
-    public float dist(Vec3f other){
+
+    public float dist(Vec3f other) {
         return dist(this, other);
     }
-    
+
     /**
-     * Proyects one vector onto another
-     * 
+     * Projects one vector onto another
+     *
      * @param src vector to be proyected
      * @param dir direction of the proyection
      * @param dst output proyected vector
      */
-    public static void proy(Vec3f src, Vec3f dir, Vec3f dst){
+    public static void proj(Vec3f src, Vec3f dir, Vec3f dst) {
         dst.set(dir).normalize();
         dst.scale(src.dot(dst));
     }
-    
+
     /**
-     * Proyects one vector onto another
-     * 
+     * Projects one vector onto another
+     *
      * @param src vector to be proyected
      * @param dir direction of the proyection
      * @return new proyected vector
      */
-    public static Vec3f proy_(Vec3f src, Vec3f dir){
+    public static Vec3f proj_(Vec3f src, Vec3f dir) {
         Vec3f dst = new Vec3f();
-        proy(src, dir, dst);
+        proj(src, dir, dst);
         return dst;
     }
-    
+
     /**
-     * Proyects this vector onto another
-     * 
+     * Projects this vector onto another
+     *
      * @param dir direction of the proyection
      * @return this proyected vector
      */
-    public Vec3f proy(Vec3f dir){
-        proy(this.clone(), dir, this);
+    public Vec3f proj(Vec3f dir) {
+        proj(this.clone(), dir, this);
+        return this;
+    }
+
+    /**
+     * Projects this vector onto another
+     *
+     * @param dir direction of the proyection
+     * @return new proyected vector
+     */
+    public Vec3f proj_(Vec3f dir) {
+        return proj_(this, dir);
+    }
+
+    /**
+     * Projects a point onto a line
+     *
+     * @param pointPos position of the point to be projected
+     * @param linePos point belonging to the projection line
+     * @param lineDir direction of the projection line
+     * @param dst output projected point
+     */
+    public static void projPointOnLine(Vec3f pointPos, Vec3f linePos, Vec3f lineDir, Vec3f dst) {
+        sub(pointPos, linePos, dst);
+        dst.proj(lineDir).add(linePos);
+    }
+
+    /**
+     * Projects a point onto a line
+     *
+     * @param pointPos position of the point to be projected
+     * @param linePos point belonging to the projection line
+     * @param lineDir direction of the projection line
+     * @return new projected point
+     */
+    public static Vec3f projPointOnLine_(Vec3f pointPos, Vec3f linePos, Vec3f lineDir) {
+        Vec3f dst = new Vec3f();
+        projPointOnLine(pointPos, linePos, lineDir, dst);
+        return dst;
+    }
+
+    /**
+     * Projects this point onto a line and stores the result in this vector
+     *
+     * @param linePos point belonging to the projection line
+     * @param lineDir direction of the projection line
+     * @return this projected point
+     */
+    public Vec3f projPointOnLine(Vec3f linePos, Vec3f lineDir){
+        projPointOnLine(this.clone(), linePos, lineDir, this);
         return this;
     }
     
     /**
-     * Proyects this vector onto another
-     * 
-     * @param dir direction of the proyection
-     * @return new proyected vector
+     * Projects this point onto a line storing the result in a new vector
+     *
+     * @param linePos point belonging to the projection line
+     * @param lineDir direction of the projection line
+     * @return new projected point
      */
-    public Vec3f proy_(Vec3f dir){
-        return proy_(this, dir);
+    public Vec3f projPointOnLine_(Vec3f linePos, Vec3f lineDir){
+        return projPointOnLine_(this, linePos, lineDir);
     }
     
+    /*
+    public static void proy(Vec3f src1Pos, Vec3f src1Dir, Vec3f src2Pos, Vec3f src2Dir, Vec3f dstPos, Vec3f dstDir){
+        
+        Vec3f tail = proy_(src1Pos.sub_(src2Pos), src2Dir);
+        Vec3f head = proy_(src1Pos.add_(src1Dir), src2Dir);
+        
+        dstPos.set(tail.add(head))
+        
+        
+    }*/
 }

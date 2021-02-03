@@ -93,6 +93,22 @@ public abstract class Cam extends Object3D {
                 ((float) xMouse / (screenWidth / 2) - 1.0f) * aspect,
                 -((float) yMouse / (screenHeight / 2) - 1.0f));*/
     }
+    
+    /**
+     * Converts pixel screen coordinates to view coordinates applying the aspect ratio correction
+     *
+     * @param xMouse pixel X coordiante
+     * @param yMouse pixel Y coordinate
+     * @param screenWidth screen width in pixels
+     * @param screenHeight screen height in pixels
+     * @return XY coordinates in view coordinates
+     */
+    public static Vec2f pixelToViewAspect(int xMouse, int yMouse, int screenWidth, int screenHeight) {
+        final float aspect = (float) screenWidth / screenHeight;
+        return new Vec2f(
+                ((float) xMouse / (screenWidth / 2) - 1.0f) * aspect,
+                -((float) yMouse / (screenHeight / 2) - 1.0f));
+    }
 
     public abstract Vec3f viewPosToRay(Vec2f posView);
     

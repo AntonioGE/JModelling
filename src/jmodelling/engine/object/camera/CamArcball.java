@@ -117,7 +117,7 @@ public class CamArcball extends Cam {
 
     @Override
     public Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
-        return viewPosToRay(pixelToView(xMouse, yMouse, screenWidth, screenHeight));
+        return viewPosToRay(pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
     }
     
     

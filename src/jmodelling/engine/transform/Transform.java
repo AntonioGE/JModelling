@@ -90,7 +90,7 @@ public class Transform {
     }
     
     /**
-     * Converts a translation from view coordinates to world coordinates
+     * Converts a translation along a 3D vector from view coordinates to world coordinates
      * 
      * @param src initial position of the point to be translated 
      * @param dir direction of the translation
@@ -99,14 +99,14 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @param cam camera
      * @param aspect screen aspect ratio
-     * @param dst output vector representing the translation  
+     * @param dst output Vec3f representing the translation  
      */
-    public static void transViewToWorld(Vec3f src, Vec3f dir, 
+    public static void linearTranslation(Vec3f src, Vec3f dir, 
             Vec2f p0, Vec2f p1, 
             Mat4f camTransf, Cam cam, float aspect, 
             Vec3f dst){
         
-        //Convert the translation direction from world coordinates to view
+        //Convert the translation direction from world to view coordinates
         Vec2f dir2dTail = worldToView(src, camTransf);
         Vec2f dir2dHead = worldToView(src.add_(dir).scale(1.0f), camTransf);//TODO: Study how set the 1.0f value
         Vec2f dir2d = dir2dHead.sub_(dir2dTail).normalize();
@@ -141,7 +141,7 @@ public class Transform {
     }
     
     /**
-     * Converts a translation from view coordinates to world coordinates
+     * Converts a translation along a 3D vector from view coordinates to world coordinates
      * 
      * @param src initial position of the point to be translated 
      * @param dir direction of the translation
@@ -150,14 +150,24 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @param cam camera
      * @param aspect screen aspect ratio
-     * @return vector representing the translation
+     * @return Vec3f representing the translation
      */
-    public static Vec3f transViewToWorld(Vec3f src, Vec3f dir, 
+    public static Vec3f linearTranslation(Vec3f src, Vec3f dir, 
             Vec2f p0, Vec2f p1, 
             Mat4f camTransf, Cam cam, float aspect){
         Vec3f dst = new Vec3f();
-        transViewToWorld(src, dir, p0, p1, camTransf, cam, aspect, dst);
+        linearTranslation(src, dir, p0, p1, camTransf, cam, aspect, dst);
         return dst;
+    }
+    
+    public static void planarTranslation(Vec3f src, 
+            Vec2f p0, Vec2f p1, 
+            Mat4f camTransf, Cam cam, float aspect,
+            Vec3f dst){
+        
+        Vec3f dir = cam.getDir();
+        
+        
     }
     
     /*

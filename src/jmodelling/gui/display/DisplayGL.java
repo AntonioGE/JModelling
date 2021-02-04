@@ -118,6 +118,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private int lastGrabX, lastGrabY;
     private int mouseX, mouseY;
     private Vec3f objPos = new Vec3f();
+    private Vec3f objRot = new Vec3f();
     private float distToObj;
     private Mat4f transf;
     private Vec3f moveAxis;
@@ -143,7 +144,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
 
         cube = new EmptyMesh(new Cube().toMesh());
-
+        
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -181,9 +182,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
         Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
-        Mat4f rx = TransfMat.rotation_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotation_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotation_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
 
         transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
@@ -354,14 +355,20 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     transf, cam, (float) getWidth() / getHeight());
             */
             
+            /*
             Vec3f trans = Transform.planarTranslation(objPos,
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
                     cam, (float) getWidth() / getHeight());
-
-            cube.loc.set(objPos.add_(trans));
-
             
+            cube.loc.set(objPos.add_(trans));*/
+
+            Vec3f rot = Transform.planarRotation(objPos, 
+                    Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
+                    transf, cam, (float) getWidth() / getHeight());
+            
+            cube.rot.set(objRot.add_(rot.toDegrees()));
             
             /*
             Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
@@ -421,6 +428,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     lastGrabX = mouseX;
                     lastGrabY = mouseY;
                     objPos = cube.loc.clone();
+                    objRot = cube.rot.clone();
                     distToObj = cube.loc.sub_(cam.loc).norm();
                     moveAxis = Vec3f.rand_().normalize();
                 }

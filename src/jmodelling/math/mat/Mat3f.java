@@ -23,7 +23,6 @@
  */
 package jmodelling.math.mat;
 
-import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
 /**

@@ -77,9 +77,9 @@ public abstract class Object3D {
 
     public Mat4f getLocalAxis() {
         Mat4f t = TransfMat.translation_(loc);
-        Mat4f rx = TransfMat.rotation_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotation_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotation_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f rx = TransfMat.rotationDeg_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
 
         //return rz.mul(ry.mul(rx.mul(t)));
         return t.mul(rz.mul(ry.mul(rx)));

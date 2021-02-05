@@ -364,6 +364,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             cube.loc.set(objPos.add_(trans));*/
 
+            
             Mat3f rot = Transform.planarRotation(objPos, 
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
@@ -371,7 +372,19 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
             cube.rot.set(angles);
-            angles.print("angles");
+            
+            
+            /*
+            Mat3f rot = Transform.axisRotation_(objPos, 
+                    new Vec3f(1.0f, 0.0f, 0.0f),
+                    Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
+                    transf, cam, (float) getWidth() / getHeight());
+            
+            Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
+            cube.rot.set(angles);
+            */
+            
             //cube.rot.set(objRot.add_(rot.toDegrees()));
             
             /*

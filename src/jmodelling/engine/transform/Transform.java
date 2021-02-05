@@ -222,74 +222,54 @@ public class Transform {
         return dst;
     }
 
+    /**
+     * Converts a rotation from view coordinates to a rotation around a plane
+     * perpendicular to the camera direction
+     * 
+     * @param src initial position of the point to be rotated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param dst matrix representing the rotation
+     */
     public static void planarRotation(Vec3f src,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect,
-            Vec3f dst) {
+            Mat3f dst) {
 
         Vec2f center = worldToView(src, camTransf);
-
         Vec2f p0A = p0.clone();
         Vec2f p1A = p1.clone();
         
+        center.x *= aspect;
         p0A.x *= aspect;
         p1A.x *= aspect;
 
         float angle = p0A.sub(center).angle() - p1A.sub(center).angle();
         
-        Mat3f mat = TransfMat.rotation3f_(angle, cam.getDir());
-        dst.set(TransfMat.matToEuler_(mat));
+        TransfMat.rotation3f(angle, cam.getDir(), dst);
     }
     
-    public static Vec3f planarRotation(Vec3f src,
+    /**
+     * Converts a rotation from view coordinates to a rotation around a plane
+     * perpendicular to the camera direction
+     * 
+     * @param src initial position of the point to be rotated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @return new matrix representing the rotation
+     */
+    public static Mat3f planarRotation(Vec3f src,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect){
-        Vec3f dst = new Vec3f();
+        Mat3f dst = new Mat3f();
         planarRotation(src, p0, p1, camTransf, cam, aspect, dst);
         return dst;
     }
 
-    /*
-    public static void translateViewTo3D(
-            Vec2f start, Vec2f end, 
-            Vec3f objPos, Vec3f moveAxis, 
-            Mat4f camTransf, 
-            int screenWidth, int screenHeight) {
-        
-        Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
-        Vec4f p2 = new Vec4f(objPos, 1.0f);
-        p1.mul(camTransf);
-        p2.mul(camTransf);
-        p1.scale(1.0f / p1.w);
-        p2.scale(1.0f / p2.w);
-        Vec2f axis2D = new Vec2f(p1.x - p2.x, p1.y - p2.y);
-        axis2D.x *= (float) screenWidth / screenHeight;
-        axis2D.normalize();
-
-        Vec2f o2d = new Vec2f(p2.x * (float) screenWidth / screenHeight, p2.y);
-
-        axis2D.print("axis 4D");
-
-        Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()); 
-        Vec2f p = Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()); 
-
-        float proyO = o.sub_(o2d).dot(axis2D);
-        Vec2f q = o2d.add_(axis2D.scale_(proyO));
-
-        float proyP = p.sub_(o2d).dot(axis2D);
-        Vec2f r = o2d.add_(axis2D.scale_(proyP));
-
-        Vec3f a = cam.viewPosToRay(q);
-        Vec3f c = cam.viewPosToRay(r);
-        Vec3f b = moveAxis;
-        float d;
-        d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
-        if (!Float.isFinite(d)) {
-            d = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z) * distToObj;
-            if (!Float.isFinite(d)) {
-                d = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z) * distToObj;
-            }
-        }
-    }
-     */
 }

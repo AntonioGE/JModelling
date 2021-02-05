@@ -214,20 +214,34 @@ public class TransfMat {
         return dst;
     }
 
-    public static void eulerToMat(Vec3f angles, Mat3f rot) {
-        Mat3f rx = TransfMat.rotationDeg3f_(angles.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat3f ry = TransfMat.rotationDeg3f_(angles.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat3f rz = TransfMat.rotationDeg3f_(angles.z, new Vec3f(0.0f, 0.0f, 1.0f));
+    public static void eulerDegToMat(Vec3f degrees, Mat3f rot) {
+        Mat3f rx = TransfMat.rotationDeg3f_(degrees.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat3f ry = TransfMat.rotationDeg3f_(degrees.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat3f rz = TransfMat.rotationDeg3f_(degrees.z, new Vec3f(0.0f, 0.0f, 1.0f));
 
         rot.set(rz.mul(ry.mul(rx)));
     }
 
-    public static Mat3f eulerToMat_(Vec3f angles) {
+    public static Mat3f eulerDegToMat_(Vec3f degrees) {
         Mat3f dst = new Mat3f();
-        eulerToMat(angles, dst);
+        eulerDegToMat(degrees, dst);
         return dst;
     }
 
+     public static void eulerToMat(Vec3f radians, Mat3f rot) {
+        Mat3f rx = TransfMat.rotation3f_(radians.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat3f ry = TransfMat.rotation3f_(radians.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat3f rz = TransfMat.rotation3f_(radians.z, new Vec3f(0.0f, 0.0f, 1.0f));
+
+        rot.set(rz.mul(ry.mul(rx)));
+    }
+
+    public static Mat3f eulerToMat_(Vec3f radians) {
+        Mat3f dst = new Mat3f();
+        eulerToMat(radians, dst);
+        return dst;
+    }
+    
     public static void matToEuler(Mat3f mat, Vec3f dst) {
         float sy = (float) Math.sqrt(mat.m00 * mat.m00 + mat.m10 * mat.m10);
 
@@ -245,6 +259,17 @@ public class TransfMat {
     public static Vec3f matToEuler_(Mat3f mat){
         Vec3f dst = new Vec3f();
         matToEuler(mat, dst);
+        return dst;
+    }
+    
+    public static void matToEulerDeg(Mat3f mat, Vec3f dst) {
+        matToEuler(mat, dst);
+        dst.toDegrees();
+    }
+    
+    public static Vec3f matToEulerDeg_(Mat3f mat){
+        Vec3f dst = new Vec3f();
+        matToEulerDeg(mat, dst);
         return dst;
     }
 }

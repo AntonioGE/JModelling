@@ -41,7 +41,7 @@ public abstract class Cam extends Object3D {
     }
 
     public static void rotToDir(Vec3f rot, Vec3f dir) {
-        dir.mul(TransfMat.eulerToMat_(rot));
+        dir.mul(TransfMat.eulerDegToMat_(rot));
 
         //Alternate method:
         //dir.set(rot.add_(90.0f, 0.0f, -90.0f).anglesXZDegToVector());

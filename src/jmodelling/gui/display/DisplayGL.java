@@ -50,6 +50,7 @@ import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.transform.Transform;
+import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -247,7 +248,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         if (grab) {
             gl.glPushMatrix();
             gl.glTranslatef(objPos.x, objPos.y, objPos.z);
-            objPos.print();
+            //objPos.print();
             final float inf = 10000f;
             gl.glColor3f(1.0f, 1.0f, 1.0f);
             gl.glBegin(GL2.GL_LINES);
@@ -363,12 +364,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             cube.loc.set(objPos.add_(trans));*/
 
-            Vec3f rot = Transform.planarRotation(objPos, 
+            Mat3f rot = Transform.planarRotation(objPos, 
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
                     transf, cam, (float) getWidth() / getHeight());
             
-            cube.rot.set(objRot.add_(rot.toDegrees()));
+            Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
+            cube.rot.set(angles);
+            angles.print("angles");
+            //cube.rot.set(objRot.add_(rot.toDegrees()));
             
             /*
             Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);

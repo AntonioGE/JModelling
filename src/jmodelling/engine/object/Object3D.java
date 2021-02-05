@@ -86,7 +86,7 @@ public abstract class Object3D {
     }
 
     public Mat3f getLocalAxis3f() {
-        return TransfMat.eulerToMat_(rot);
+        return TransfMat.eulerDegToMat_(rot);
     }
 
 }

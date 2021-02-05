@@ -80,9 +80,10 @@ public abstract class Object3D {
         Mat4f rx = TransfMat.rotationDeg_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotationDeg_(rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f s = TransfMat.scale_(sca);
 
         //return rz.mul(ry.mul(rx.mul(t)));
-        return t.mul(rz.mul(ry.mul(rx)));
+        return t.mul(rz.mul(ry.mul(rx.mul(s))));
     }
 
     public Mat3f getLocalAxis3f() {

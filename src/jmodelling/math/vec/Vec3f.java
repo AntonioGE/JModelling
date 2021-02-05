@@ -518,6 +518,55 @@ public class Vec3f {
     }
 
     /**
+     * Performs element-wise (Hadamard product) multiplication of two vectors 
+     * 
+     * @param src1 vector to be multiplied
+     * @param src2 vector to be multiplied
+     * @param dst output vector containing the result
+     */
+    public static void had(Vec3f src1, Vec3f src2, Vec3f dst) {
+        dst.x = src1.x * src2.x;
+        dst.y = src1.y * src2.y;
+        dst.z = src1.z * src2.z;
+    }
+    
+    /**
+     * Performs element-wise multiplication (Hadamard product) of two vectors 
+     * 
+     * @param src1 vector to be multiplied
+     * @param src2 vector to be multiplied
+     * @return new vector containing the result
+     */
+    public static Vec3f had_(Vec3f src1, Vec3f src2){
+        Vec3f dst = new Vec3f();
+        had(src1, src2, dst);
+        return dst;
+    }
+    
+    /**
+     * Performs element-wise multiplication (Hadamard product) of this vector 
+     * with another and stores the result in this vector 
+     * 
+     * @param other vector to be multiplied
+     * @return this vector containing the result
+     */
+    public Vec3f had(Vec3f other){
+        had(this, other, this);
+        return this;
+    }
+    
+    /**
+     * Performs element-wise multiplication (Hadamard product) of this vector 
+     * with another and stores the result in a new vector
+     * 
+     * @param other vector to be multiplied
+     * @return new vector containing the result
+     */
+    public Vec3f had_(Vec3f other){
+        return had_(this, other);
+    }
+    
+    /**
      * Scales a vector by a scalar value
      *
      * @param src input vector

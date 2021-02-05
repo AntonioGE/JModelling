@@ -151,6 +151,14 @@ public class Vec2f {
         return normalize_(this);
     }
 
+    public static float dist(Vec2f src1, Vec2f src2) {
+        return src1.sub_(src2).norm();
+    }
+
+    public float dist(Vec2f other) {
+        return dist(this, other);
+    }
+    
     public static void add(Vec2f src1, Vec2f src2, Vec2f dst) {
         dst.x = src1.x + src2.x;
         dst.y = src1.y + src2.y;

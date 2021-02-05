@@ -58,9 +58,22 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @return vector in view coordinates
      */
-    public static Vec2f worldToView(Vec3f src, Mat4f camTransf) {
+    public static Vec2f worldToView_(Vec3f src, Mat4f camTransf) {
         Vec2f dst = new Vec2f();
         worldToView(src, camTransf, dst);
+        return dst;
+    }
+
+    public static void worldToViewAspect(Vec3f src, Mat4f camTransf,
+            float aspect, Vec2f dst) {
+        worldToView(src, camTransf, dst);
+        dst.x *= aspect;
+    }
+    
+    public static Vec2f worldToViewAspect_(Vec3f src, Mat4f camTransf,
+            float aspect){
+        Vec2f dst = new Vec2f();
+        worldToViewAspect(src, camTransf, aspect, dst);
         return dst;
     }
 
@@ -74,7 +87,7 @@ public class Transform {
      */
     public static void vectorWorldToView(Vec3f head, Vec3f tail, Mat4f camTransf, Vec2f dst) {
         worldToView(head, camTransf, dst);
-        dst.sub(worldToView(tail, camTransf));
+        dst.sub(worldToView_(tail, camTransf));
     }
 
     /**
@@ -85,7 +98,7 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @return vector in view coordinates
      */
-    public static Vec2f vectorWorldToView(Vec3f head, Vec3f tail, Mat4f camTransf) {
+    public static Vec2f vectorWorldToView_(Vec3f head, Vec3f tail, Mat4f camTransf) {
         Vec2f dst = new Vec2f();
         vectorWorldToView(head, tail, camTransf, dst);
         return dst;
@@ -110,8 +123,8 @@ public class Transform {
             Vec3f dst) {
 
         //Convert the translation direction from world to view coordinates
-        Vec2f dir2dTail = worldToView(src, camTransf);
-        Vec2f dir2dHead = worldToView(src.add_(dir).scale(1.0f), camTransf);//TODO: Study how set the 1.0f value
+        Vec2f dir2dTail = worldToView_(src, camTransf);
+        Vec2f dir2dHead = worldToView_(src.add_(dir).scale(1.0f), camTransf);//TODO: Study how set the 1.0f value
         Vec2f dir2d = dir2dHead.sub_(dir2dTail).normalize();
 
         //Project the view points onto the translation line in view coordinates
@@ -156,7 +169,7 @@ public class Transform {
      * @param aspect screen aspect ratio
      * @return Vec3f representing the translation
      */
-    public static Vec3f linearTranslation(Vec3f src, Vec3f dir,
+    public static Vec3f linearTranslation_(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect) {
         Vec3f dst = new Vec3f();
@@ -166,7 +179,7 @@ public class Transform {
 
     /**
      * Converts a translation from view coordinates to a translation in a plane
-     * perpendicular to the camera direction
+     * perpendicular to the camera direction in world coordinates
      *
      * @param src initial position of the point to be translated
      * @param p0 initial position of point in view coordinates
@@ -205,7 +218,7 @@ public class Transform {
 
     /**
      * Converts a translation from view coordinates to a translation in a plane
-     * perpendicular to the camera direction
+     * perpendicular to the camera direction in world coordinates
      *
      * @param src initial position of the point to be translated
      * @param p0 initial position of point in view coordinates
@@ -214,7 +227,7 @@ public class Transform {
      * @param aspect screen aspect ratio
      * @return new vector representing the translation
      */
-    public static Vec3f planarTranslation(Vec3f src,
+    public static Vec3f planarTranslation_(Vec3f src,
             Vec2f p0, Vec2f p1,
             Cam cam, float aspect) {
         Vec3f dst = new Vec3f();
@@ -223,7 +236,8 @@ public class Transform {
     }
 
     /**
-     * Converts a rotation from view coordinates to a rotation around axis
+     * Converts a rotation from view coordinates to a rotation around some axis
+     * in world coordinates
      *
      * @param src initial position of the point to be rotated
      * @param dir axis of rotation
@@ -232,14 +246,14 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @param cam camera
      * @param aspect screen aspect ratio
-     * @param dst matrix representing the rotation
+     * @param dst output matrix representing the rotation
      */
     public static void axisRotation(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect,
             Mat3f dst) {
 
-        Vec2f center = worldToView(src, camTransf);
+        Vec2f center = worldToView_(src, camTransf);
         Vec2f p0A = p0.clone();
         Vec2f p1A = p1.clone();
 
@@ -248,18 +262,19 @@ public class Transform {
         p1A.x *= aspect;
 
         float angle = p0A.sub(center).angle() - p1A.sub(center).angle();
-        
+
         //Negate the angle if the camera direction vector and rotation axis are
         //pointing on opposite directions
-        if(cam.getDir().dot(dir) < 0.0f){
+        if (cam.getDir().dot(dir) < 0.0f) {
             angle = -angle;
         }
-        
+
         TransfMat.rotation3f(angle, dir, dst);
     }
 
     /**
-     * Converts a rotation from view coordinates to a rotation around axis
+     * Converts a rotation from view coordinates to a rotation around some axis
+     * in world coordinates
      *
      * @param src initial position of the point to be rotated
      * @param dir axis of rotation
@@ -280,7 +295,7 @@ public class Transform {
 
     /**
      * Converts a rotation from view coordinates to a rotation around a plane
-     * perpendicular to the camera direction
+     * perpendicular to the camera direction in world coordinates
      *
      * @param src initial position of the point to be rotated
      * @param p0 initial position of point in view coordinates
@@ -288,7 +303,7 @@ public class Transform {
      * @param camTransf camera transformation matrix
      * @param cam camera
      * @param aspect screen aspect ratio
-     * @param dst matrix representing the rotation
+     * @param dst output matrix representing the rotation
      */
     public static void planarRotation(Vec3f src,
             Vec2f p0, Vec2f p1,
@@ -300,7 +315,7 @@ public class Transform {
 
     /**
      * Converts a rotation from view coordinates to a rotation around a plane
-     * perpendicular to the camera direction
+     * perpendicular to the camera direction in world coordinates
      *
      * @param src initial position of the point to be rotated
      * @param p0 initial position of point in view coordinates
@@ -310,7 +325,7 @@ public class Transform {
      * @param aspect screen aspect ratio
      * @return new matrix representing the rotation
      */
-    public static Mat3f planarRotation(Vec3f src,
+    public static Mat3f planarRotation_(Vec3f src,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect) {
         Mat3f dst = new Mat3f();
@@ -318,4 +333,31 @@ public class Transform {
         return dst;
     }
 
+    public static void scale(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, float aspect,
+            Vec3f dst) {
+        
+        Vec2f center = worldToView_(src, camTransf);
+        Vec2f p0A = p0.clone();
+        Vec2f p1A = p1.clone();
+
+        center.x *= aspect;
+        p0A.x *= aspect;
+        p1A.x *= aspect;
+        
+        float d0 = p0A.dist(center);
+        float d1 = p1A.dist(center);
+        
+        float scale = d1 / d0;
+        dst.set(scale, scale, scale);
+    }
+
+    public static Vec3f scale_(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, float aspect){
+        Vec3f dst = new Vec3f();
+        scale(src, p0, p1, camTransf, aspect, dst);
+        return dst;
+    }
 }

@@ -174,6 +174,34 @@ public class TransfMat {
         return dst;
     }
 
+    public static void scale(Vec3f scale, Mat4f dst){
+        dst.m00 = scale.x;
+        dst.m01 = 0.0f;
+        dst.m02 = 0.0f;
+        dst.m03 = 0.0f;
+
+        dst.m10 = 0.0f;
+        dst.m11 = scale.y;
+        dst.m12 = 0.0f;
+        dst.m13 = 0.0f;
+
+        dst.m20 = 0.0f;
+        dst.m21 = 0.0f;
+        dst.m22 = scale.z;
+        dst.m23 = 0.0f;
+
+        dst.m30 = 0.0f;
+        dst.m31 = 0.0f;
+        dst.m32 = 0.0f;
+        dst.m33 = 1.0f;
+    }
+    
+    public static Mat4f scale_(Vec3f scale){
+        Mat4f dst = new Mat4f();
+        scale(scale, dst);
+        return dst;
+    }
+    
     public static void lookAt(Vec3f pos, Vec3f tar, Vec3f up, Mat4f dst) {
         Vec3f camDirection = pos.sub_(tar).normalize();
         Vec3f camRight = up.cross_(camDirection).normalize();

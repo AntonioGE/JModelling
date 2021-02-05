@@ -120,6 +120,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private int mouseX, mouseY;
     private Vec3f objPos = new Vec3f();
     private Vec3f objRot = new Vec3f();
+    private Vec3f objSca = new Vec3f();
     private float distToObj;
     private Mat4f transf;
     private Vec3f moveAxis;
@@ -364,14 +365,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             cube.loc.set(objPos.add_(trans));*/
 
-            
-            Mat3f rot = Transform.planarRotation(objPos, 
+            /*
+            Mat3f rot = Transform.planarRotation_(objPos, 
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
                     transf, cam, (float) getWidth() / getHeight());
             
             Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
-            cube.rot.set(angles);
+            cube.rot.set(angles);*/
             
             
             /*
@@ -385,45 +386,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             cube.rot.set(angles);
             */
             
-            //cube.rot.set(objRot.add_(rot.toDegrees()));
+            Vec3f sca = Transform.scale_(objPos, 
+                    Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
+                    transf, (float) getWidth() / getHeight());
             
-            /*
-            Vec4f p1 = new Vec4f(objPos.add_(moveAxis), 1.0f);
-            Vec4f p2 = new Vec4f(objPos, 1.0f);
-            p1.mul(transf);
-            p2.mul(transf);
-            p1.scale(1.0f / p1.w);
-            p2.scale(1.0f / p2.w);
-            Vec2f axis2D = new Vec2f(p1.x - p2.x, p1.y - p2.y);
-            axis2D.x *= (float) getWidth() / getHeight();
-            axis2D.normalize();
-
-            Vec2f o2d = new Vec2f(p2.x * (float) getWidth() / getHeight(), p2.y);
-
-            axis2D.print("axis 4D");
-
-            Vec2f o = Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight());
-            Vec2f p = Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight());
-
-            float proyO = o.sub_(o2d).dot(axis2D);
-            Vec2f q = o2d.add_(axis2D.scale_(proyO));
-
-            float proyP = p.sub_(o2d).dot(axis2D);
-            Vec2f r = o2d.add_(axis2D.scale_(proyP));
-
-            Vec3f a = cam.viewPosToRay(q);
-            Vec3f c = cam.viewPosToRay(r);
-            Vec3f b = moveAxis.clone();
-            float d;
-            d = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * distToObj;
-            if (!Float.isFinite(d)) {
-                d = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z) * distToObj;
-                if (!Float.isFinite(d)) {
-                    d = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z) * distToObj;
-                }
-            }
-            cube.loc = objPos.add_(b.scale(d));
-             */
+            cube.sca.set(objSca.had_(sca));
+            
             repaint();
         }
     }
@@ -446,6 +415,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     lastGrabY = mouseY;
                     objPos = cube.loc.clone();
                     objRot = cube.rot.clone();
+                    objSca = cube.sca.clone();
                     distToObj = cube.loc.sub_(cam.loc).norm();
                     moveAxis = Vec3f.rand_().normalize();
                 }

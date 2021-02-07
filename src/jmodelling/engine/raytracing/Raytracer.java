@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.raytracing;
 
+import java.nio.FloatBuffer;
 import jmodelling.engine.object.mesh.face.Tri;
 import jmodelling.math.vec.Vec3f;
 
@@ -35,12 +36,9 @@ public class Raytracer {
     //Möller–Trumbore intersection algorithm
     public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
             Vec3f rayVector,
-            Tri inTriangle,
+            Vec3f vertex0, Vec3f vertex1, Vec3f vertex2,
             Vec3f outIntersectionPoint) {
         final float EPSILON = 0.0000001f;
-        Vec3f vertex0 = inTriangle.vertices.get(0).pos;
-        Vec3f vertex1 = inTriangle.vertices.get(1).pos;
-        Vec3f vertex2 = inTriangle.vertices.get(2).pos;
         Vec3f edge1 = vertex1.sub_(vertex0);
         Vec3f edge2 = vertex2.sub_(vertex0);
         Vec3f h = rayVector.cross_(edge2);
@@ -62,19 +60,45 @@ public class Raytracer {
         }
         // At this stage we can compute t to find out where the intersection point is on the line.
         float t = f * edge2.dot(q);
-        if (t > EPSILON) // ray intersection
-        {
+        if (t > EPSILON) { // ray intersection
             outIntersectionPoint.set(rayVector).scale(t).add(rayOrigin);
             return true;
-        } else // This means that there is a line intersection but not a ray intersection.
-        {
+        } else { // This means that there is a line intersection but not a ray intersection.
             return false;
         }
     }
 
-    public Vec3f rayIntersectsTriangle_(Vec3f rayOrigin, Vec3f rayVector, Tri inTriangle) {
-        Vec3f intersectionPoint = new Vec3f();
-        rayIntersectsTriangle(rayOrigin, rayVector, inTriangle, intersectionPoint);
-        return intersectionPoint;
+    public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
+            Vec3f rayVector,
+            float[] vCoords, int offset,
+            Vec3f outIntersectionPoint) {
+        return rayIntersectsTriangle(rayOrigin, rayVector,
+                new Vec3f(vCoords, offset),
+                new Vec3f(vCoords, offset + 3),
+                new Vec3f(vCoords, offset + 6),
+                outIntersectionPoint);
     }
+    
+    public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
+            Vec3f rayVector,
+            FloatBuffer vCoords, int offset,
+            Vec3f outIntersectionPoint) {
+        return rayIntersectsTriangle(rayOrigin, rayVector,
+                new Vec3f(vCoords, offset),
+                new Vec3f(vCoords, offset + 3),
+                new Vec3f(vCoords, offset + 6),
+                outIntersectionPoint);
+    }
+
+    public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
+            Vec3f rayVector,
+            Tri inTriangle,
+            Vec3f outIntersectionPoint) {
+        return rayIntersectsTriangle(rayOrigin, rayVector,
+                inTriangle.vertices.get(0).pos,
+                inTriangle.vertices.get(1).pos,
+                inTriangle.vertices.get(2).pos,
+                outIntersectionPoint);
+    }
+
 }

@@ -78,6 +78,32 @@ public class Vec3f {
         this.y = data[1];
         this.z = data[2];
     }
+    
+    /**
+     * Constructs a Vec3f using a float array containing the x, y, z coordinates
+     * at a certain offset
+     *
+     * @param data the array containing the x, y, z coordinates
+     * @param offset position of the x coordinates in the array
+     */
+    public Vec3f(float[] data, int offset) {
+        this.x = data[offset];
+        this.y = data[offset + 1];
+        this.z = data[offset + 2];
+    }
+    
+    /**
+     * Constructs a Vec3f using a float buffer containing the x, y, z coordinates
+     * at a certain offset
+     *
+     * @param data the array containing the x, y, z coordinates
+     * @param offset position of the x coordinates in the array
+     */
+    public Vec3f(FloatBuffer data, int offset) {
+        this.x = data.get(offset);
+        this.y = data.get(offset + 1);
+        this.z = data.get(offset + 2);
+    }
 
     @Override
     public Vec3f clone() {

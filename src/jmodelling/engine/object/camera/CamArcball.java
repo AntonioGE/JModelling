@@ -75,7 +75,7 @@ public class CamArcball extends Cam {
     public void orbit(Vec3f dRot) {
         //Get target position before rotation
         Vec3f tar = getTar();
-
+        
         //Rotate angles
         rot.add(dRot);
 

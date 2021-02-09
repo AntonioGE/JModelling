@@ -21,21 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh.loop;
+package jmodelling.engine.object.newmesh;
 
-import jmodelling.engine.object.newmesh.edge.Edge;
-import jmodelling.engine.object.newmesh.vertex.Vertex;
-import jmodelling.math.vec.Vec2f;
-import jmodelling.math.vec.Vec3f;
+import java.util.Objects;
 
 /**
  *
  * @author ANTONIO
  */
-public class Loop {
-    public Vertex vtx;
-    public Edge edge;
-    public Vec3f nrm;
-    public Vec3f clr;
-    public Vec2f uv;
+public class Edge {
+
+    public final Vertex v0;
+    public final Vertex v1;
+
+    public Edge(Vertex v0, Vertex v1) {
+        if (v0 == v1) {
+            throw new IllegalArgumentException();
+        }
+        this.v0 = v0;
+        this.v1 = v1;
+    }
+    
+    public boolean contains(Vertex vtx){
+        return vtx == v0 || vtx == v1;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Edge other = (Edge) obj;
+
+        return ((this.v0 == other.v0) && (this.v1 == other.v1))
+                || ((this.v0 == other.v1) && (this.v1 == other.v0));
+    }
+
 }

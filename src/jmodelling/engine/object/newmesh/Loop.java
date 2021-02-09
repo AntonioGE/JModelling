@@ -21,31 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh.edge;
+package jmodelling.engine.object.newmesh;
 
 import java.util.Objects;
-import jmodelling.engine.object.newmesh.vertex.Vertex;
+import jmodelling.math.vec.Vec2f;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class Edge {
+public class Loop {
 
-    public Vertex v0;
-    public Vertex v1;
+    public Vertex vtx;
+    public Edge edge;
+    public Polygon poly;
 
-    public Edge(Vertex v0, Vertex v1) {
-        if (v0 == v1) {
+    public Vec3f nrm;
+    public Vec3f clr;
+    public Vec2f uv;
+
+    public Loop(Vertex vtx, Edge edge, Vec3f nrm, Vec3f clr, Vec2f uv) {
+        if (!edge.contains(vtx)) {
             throw new IllegalArgumentException();
         }
-        this.v0 = v0;
-        this.v1 = v1;
+        this.vtx = vtx;
+        this.edge = edge;
+        this.nrm = nrm;
+        this.clr = clr;
+        this.uv = uv;
+    }
+
+    public Loop(Vertex vtx, Edge edge) {
+        this(vtx, edge,
+                new Vec3f(0.0f, 0.0f, 1.0f),
+                new Vec3f(1.0f, 1.0f, 1.0f),
+                new Vec2f(0.0f, 0.0f));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.vtx);
+        hash = 67 * hash + Objects.hashCode(this.edge);
+        hash = 67 * hash + Objects.hashCode(this.nrm);
+        hash = 67 * hash + Objects.hashCode(this.clr);
+        hash = 67 * hash + Objects.hashCode(this.uv);
+        return hash;
     }
 
     @Override
@@ -59,10 +81,23 @@ public class Edge {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Edge other = (Edge) obj;
-
-        return ((this.v0 == other.v0) && (this.v1 == other.v1))
-                || ((this.v0 == other.v1) && (this.v1 == other.v0));
+        final Loop other = (Loop) obj;
+        if (!Objects.equals(this.vtx, other.vtx)) {
+            return false;
+        }
+        if (!Objects.equals(this.edge, other.edge)) {
+            return false;
+        }
+        if (!Objects.equals(this.nrm, other.nrm)) {
+            return false;
+        }
+        if (!Objects.equals(this.clr, other.clr)) {
+            return false;
+        }
+        if (!Objects.equals(this.uv, other.uv)) {
+            return false;
+        }
+        return true;
     }
 
 }

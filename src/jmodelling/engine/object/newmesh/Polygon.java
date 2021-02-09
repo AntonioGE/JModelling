@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh.polygon;
+package jmodelling.engine.object.newmesh;
 
 import java.util.List;
-import jmodelling.engine.object.newmesh.loop.Loop;
 
 /**
  *

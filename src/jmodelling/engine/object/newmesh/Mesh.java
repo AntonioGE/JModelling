@@ -23,13 +23,8 @@
  */
 package jmodelling.engine.object.newmesh;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import jmodelling.engine.object.newmesh.edge.Edge;
-import jmodelling.engine.object.newmesh.loop.Loop;
-import jmodelling.engine.object.newmesh.polygon.Polygon;
-import jmodelling.engine.object.newmesh.vertex.Vertex;
 
 /**
  *

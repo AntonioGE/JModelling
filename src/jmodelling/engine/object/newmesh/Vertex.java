@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh.vertex;
+package jmodelling.engine.object.newmesh;
 
 import jmodelling.math.vec.Vec3f;
 

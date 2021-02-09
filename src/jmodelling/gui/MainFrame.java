@@ -33,7 +33,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.MeshEditable;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.edge.Edge;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
@@ -90,39 +91,18 @@ public class MainFrame extends JFrame{
         
         long before = System.nanoTime();
         
-        MeshEditable meshe = new MeshEditable();
-        meshe.addVertex(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
-        meshe.addVertex(new Vertex(new Vec3f(1.0f, 0.0f, 0.0f)));
-        meshe.addVertex(new Vertex(new Vec3f(0.0f, 1.0f, 0.0f)));
-        meshe.addVertex(new Vertex(new Vec3f(1.0f, 1.0f, 0.0f)));
-        meshe.addVertex(new Vertex(new Vec3f(0.0f, 0.0f, 0.0f)));
-
-        for(int i = 0; i < 10000; i++){
-            meshe.addVertex(new Vertex(new Vec3f()));
-        }
         
-        meshe.addFace(0, 1, 2);
-        
-        meshe.addFace(0, 0, 1);
-        
-        meshe.toMesh();
-        
-        
-        meshe.removeVertices(4);
-        meshe.removeVertices(4, 2, 1, 0);
-        meshe.removeVertices(0);
-        meshe.removeVertices(4);
-        meshe.removeVertices(4, 2, 1, 0);
-        meshe.removeVertices(0);
-        meshe.removeVertices(4);
-        meshe.removeVertices(4, 2, 1, 0);
-        meshe.removeVertices(0);
-        meshe.removeVertices(4);
-        meshe.removeVertices(4, 2, 1, 0);
-        meshe.removeVertices(0);
         
         System.out.println((System.nanoTime() - before));
         
+        System.out.println(Runtime.getRuntime().availableProcessors());
+        
+        Vertex v1 = new Vertex(0.0f, 0.0f, 0.0f);
+        Vertex v2 = new Vertex(1.0f, 1.0f, 1.0f);
+        Vertex v3 = new Vertex(1.0f, 1.0f, 1.0f);
+        Edge e1 = new Edge(v1, v2);
+        Edge e2 = new Edge(v1, v2);
+        System.out.println(e1.equals(e2));
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

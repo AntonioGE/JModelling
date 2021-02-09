@@ -24,7 +24,11 @@
 package jmodelling.engine.raytracing;
 
 import java.nio.FloatBuffer;
+import jmodelling.engine.object.mesh.Mesh;
+import jmodelling.engine.object.mesh.face.Quad;
 import jmodelling.engine.object.mesh.face.Tri;
+import jmodelling.engine.object.mesh.shape.Shape;
+import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -101,4 +105,24 @@ public class Raytracer {
                 outIntersectionPoint);
     }
 
+    
+    //TODO: remove this:
+    public static boolean rayIntersectsQuad(Vec3f rayOrigin,
+            Vec3f rayVector,
+            Quad inQuad,
+            Vec3f outIntersectionPoint) {
+        
+        return rayIntersectsTriangle(rayOrigin, rayVector,
+                inQuad.vertices.get(0).pos,
+                inQuad.vertices.get(1).pos,
+                inQuad.vertices.get(2).pos,
+                outIntersectionPoint) || 
+                
+                rayIntersectsTriangle(rayOrigin, rayVector,
+                inQuad.vertices.get(2).pos,
+                inQuad.vertices.get(3).pos,
+                inQuad.vertices.get(0).pos,
+                outIntersectionPoint);
+    }
+    
 }

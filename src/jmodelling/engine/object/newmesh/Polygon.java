@@ -24,6 +24,7 @@
 package jmodelling.engine.object.newmesh;
 
 import java.util.List;
+import jmodelling.engine.object.material.Material;
 
 /**
  *
@@ -32,5 +33,6 @@ import java.util.List;
 public class Polygon {
     
     public List<Loop> loops;
+    public Material mat;
     
 }

@@ -34,7 +34,6 @@ public class Mesh {
     
     public List<Vertex> vtxs;
     public LinkedHashSet<Edge> edges;
-    public LinkedHashSet<Loop> loops;
     public LinkedHashSet<Polygon> polys;
     
 }

@@ -28,9 +28,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.MeshEditable;
 import jmodelling.engine.object.newmesh.Vertex;
@@ -103,6 +107,12 @@ public class MainFrame extends JFrame{
         Edge e1 = new Edge(v1, v2);
         Edge e2 = new Edge(v1, v2);
         System.out.println(e1.equals(e2));
+        
+        try {
+            ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Pozo.obj");
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

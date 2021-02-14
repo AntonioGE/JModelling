@@ -194,6 +194,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         //transf.print();
         //cam.getLocalAxis3f().print();
         gl.glEnable(GL2.GL_BLEND);
+       
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
@@ -336,7 +337,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             float deltaY = (e.getY() - lastMouseY) / sensitivity;
             lastMouseX = e.getX();
             lastMouseY = e.getY();
-
+            
             cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
         }
 

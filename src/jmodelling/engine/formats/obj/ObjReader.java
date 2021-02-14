@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import jmodelling.engine.object.newmesh.Mesh;
 
 /**
@@ -51,19 +53,44 @@ public class ObjReader {
     private static class Shape {
 
         public String matName;
-        public ArrayList<Integer[]> vInds;
-        public ArrayList<Integer[]> tInds;
-        public ArrayList<Integer[]> nInds;
+        public ArrayList<Face> faces;
 
         public Shape(String matName) {
             this.matName = matName;
-            vInds = new ArrayList<>();
-            tInds = new ArrayList<>();
-            nInds = new ArrayList<>();
+            faces = new ArrayList<>();
         }
     };
+    
+    private static class Face {
+        final ArrayList<Vertex> vtxs;
+        
+        public Face(ArrayList<Vertex> vtxs){
+            this.vtxs = vtxs;
+        }
+        
+        public Face(int numFaces){
+            vtxs = new ArrayList<>(numFaces);
+        }
+    }
 
-    public static Mesh readObj(String path) throws IOException {
+    private static class Vertex {
+        public Integer vInd;
+        public Integer tInd;
+        public Integer nInd;
+        
+        public Vertex(){
+            
+        }
+        
+        public Vertex(Integer vInd, Integer tInd, Integer nInd){
+            this.vInd = vInd;
+            this.tInd = tInd;
+            this.nInd = nInd;
+        }
+        
+    }
+    
+    public static HashMap<String, Mesh> readObj(String path) throws IOException {
 
         HashMap<String, Object3D> objects = new HashMap();
 
@@ -97,14 +124,28 @@ public class ObjReader {
                         currentShape = addShape(sLine, currentObject.shapes);
                         break;
                     case "f":
+                        /*
                         readFace(sLine,
                                 currentShape.vInds,
                                 currentShape.tInds,
-                                currentShape.nInds);
+                                currentShape.nInds);*/
                         break;
                 }
             }
         }
+        
+        
+        HashMap<String, Mesh> meshes = new HashMap<>(objects.size());
+        for(Object3D o : objects.values()){
+            Mesh m = new Mesh();
+            for(String mat : o.shapes.keySet()){
+                
+            }
+            for(Shape s : o.shapes.values()){
+                
+            }
+        }
+        
 
         /*
         float[] mesh = new float[fInds.size() * 3 * 3];
@@ -170,6 +211,7 @@ public class ObjReader {
         }
     }
 
+    
     private static void readFace(String[] sLine, ArrayList<Integer[]> vInds,
             ArrayList<Integer[]> tInds, ArrayList<Integer[]> nInds) {
         if (sLine.length < 4) {

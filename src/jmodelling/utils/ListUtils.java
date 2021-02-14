@@ -25,9 +25,12 @@ package jmodelling.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -43,15 +46,25 @@ public class ListUtils {
         return areIndicesInRange(list, Arrays.asList(indices));
     }
 
-    public static boolean hasDuplicates(List<?> list) {
+    public static boolean hasDuplicatedValues(List<?> list) {
         HashSet<?> set = new HashSet<>(list);
         return set.size() != list.size();
     }
 
-    public static <T> boolean hasDuplicates(T... list) {
-        return hasDuplicates(Arrays.asList(list));
+    public static <T> boolean hasDuplicatedValues(T... list) {
+        return hasDuplicatedValues(Arrays.asList(list));
     }
 
+    public static <T> boolean hasDuplicates(List<T> list){
+        Set<T> set = Collections.newSetFromMap(new IdentityHashMap<>());
+        set.addAll(list);
+        return list.size() != set.size();
+    }
+    
+    public static <T> boolean hasDuplicates(T... list){
+        return hasDuplicates(Arrays.asList(list));
+    }
+    
     public static <T> List<T> getSubList(List<T> list, List<Integer> indices) {
         List<T> subList = new ArrayList<>(indices.size());
         indices.forEach((index) -> {
@@ -74,4 +87,15 @@ public class ListUtils {
         removeAll(list, Arrays.asList(indices));
     }
 
+    public static boolean areSameSize(List<?>... lists){
+        int size = lists[0].size();
+        for(List list : lists){
+            if(list.size() != size){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
 }

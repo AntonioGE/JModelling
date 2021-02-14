@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.object.newmesh;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
 
@@ -32,7 +33,12 @@ import jmodelling.engine.object.material.Material;
  */
 public class Polygon {
     
-    public List<Loop> loops;
+    public LinkedHashSet<Loop> loops;
     public Material mat;
+    
+    public Polygon(LinkedHashSet<Loop> loops, Material mat){
+        this.loops = loops;
+        this.mat = mat;
+    }
     
 }

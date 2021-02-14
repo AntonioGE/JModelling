@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,48 +43,49 @@ import jmodelling.engine.object.newmesh.Edge;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.ListUtils;
 
 /**
  *
  * @author ANTONIO
  */
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame {
 
     private JPanel container;
     private DisplayGL displayGL;
-    
-    public MainFrame(String title){
+
+    public MainFrame(String title) {
         super(title);
-        
+
         initComponents();
     }
-    
-    public void initComponents(){
+
+    public void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(500, 400));
-        
+
         container = new JPanel();
         //container.setBorder(new LineBorder(Color.black, 1));
         add(container);
-        
+
         GridBagLayout containerLayout = new GridBagLayout();
         container.setLayout(containerLayout);
-        
+
         displayGL = new DisplayGL();
         displayGL.setBorder(new LineBorder(Color.GRAY, 1));
         container.add(displayGL);
-        
+
         GridBagConstraints display3DConstraints = new GridBagConstraints();
         display3DConstraints.weightx = 1.0f;
         display3DConstraints.weighty = 1.0f;
         display3DConstraints.fill = GridBagConstraints.BOTH;
         display3DConstraints.insets = new Insets(5, 5, 5, 5);
         containerLayout.setConstraints(displayGL, display3DConstraints);
-        
+
         pack();
         setLocationRelativeTo(null);
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -92,28 +94,24 @@ public class MainFrame extends JFrame{
 
         new Vec3f(0, 0, 0).anglesXZDegToVector().print();
         new Vec3f(90, 0, -90).anglesXZDegToVector().print();
-        
+
         long before = System.nanoTime();
-        
-        
-        
+
         System.out.println((System.nanoTime() - before));
-        
+
         System.out.println(Runtime.getRuntime().availableProcessors());
-        
+
         Vertex v1 = new Vertex(0.0f, 0.0f, 0.0f);
         Vertex v2 = new Vertex(1.0f, 1.0f, 1.0f);
         Vertex v3 = new Vertex(1.0f, 1.0f, 1.0f);
         Edge e1 = new Edge(v1, v2);
         Edge e2 = new Edge(v1, v2);
         System.out.println(e1.equals(e2));
-        
-        try {
-            ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Pozo.obj");
-        } catch (IOException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+
+        Point s1 = new Point(0, 0);
+        Point s2 = new Point(0, 0);
+        System.out.println("Duplicate: " + ListUtils.hasDuplicates(s1, s2));
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame("JNDS").setVisible(true);

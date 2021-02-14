@@ -23,8 +23,13 @@
  */
 package jmodelling.engine.object.newmesh;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import jmodelling.engine.object.material.Material;
+import jmodelling.math.vec.Vec2f;
+import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.ListUtils;
 
 /**
  *
@@ -32,8 +37,56 @@ import java.util.List;
  */
 public class Mesh {
     
-    public List<Vertex> vtxs;
+    public ArrayList<Vertex> vtxs;
     public LinkedHashSet<Edge> edges;
     public LinkedHashSet<Polygon> polys;
+    
+    public LinkedHashSet<Material> mats;
+    
+    public Mesh(){
+        vtxs = new ArrayList<>();
+        edges = new LinkedHashSet<>();
+        polys = new LinkedHashSet<>();
+    }
+    
+    public void addVertex(Vertex vtx){
+        vtxs.add(vtx);
+    }
+    
+    public void addEdge(int v1, int v2){
+        edges.add(new Edge(vtxs.get(v1), vtxs.get(v2)));
+    }
+    
+    public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs){
+        if(!ListUtils.areSameSize(vInds, uvs, nrms, clrs)){
+            throw new IllegalArgumentException();
+        }
+        
+        if(!ListUtils.areIndicesInRange(vtxs, vInds)){
+            throw new IllegalArgumentException();
+        }
+        
+        if(ListUtils.hasDuplicatedValues(vInds)){
+            throw new IllegalArgumentException();
+        }
+        
+        LinkedHashSet<Edge> newEdges = new LinkedHashSet<>(vInds.size());
+        LinkedHashSet<Loop> newLoops = new LinkedHashSet<>(vInds.size());
+        for(int i = 0; i < vInds.size(); i++){
+            Edge edge = new Edge(
+                    vtxs.get(vInds.get(i)), 
+                    vtxs.get(vInds.get((i + 1) % vInds.size())));
+            Loop loop = new Loop(vtxs.get(vInds.get(i)),
+                    edge, nrms.get(i), clrs.get(i), uvs.get(i));
+            
+            newEdges.add(edge);
+            newLoops.add(loop);
+        }
+        
+        Polygon poly = new Polygon(newLoops, mat);
+        edges.addAll(newEdges);
+        polys.add(poly);
+        
+    }
     
 }

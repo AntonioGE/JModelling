@@ -146,7 +146,7 @@ public class MeshEditable {
         }
 
         //Check if indices are not duplicated
-        if (ListUtils.hasDuplicates(vInds)) {
+        if (ListUtils.hasDuplicatedValues(vInds)) {
             return false;
         }
 

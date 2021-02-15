@@ -65,6 +65,10 @@ public class MeshGL {
             shape.tTris = Buffers.newDirectFloatBuffer(entry.getValue() * 3 * 2);
             shape.nTris = Buffers.newDirectFloatBuffer(entry.getValue() * 3 * 3);
             shape.cTris = Buffers.newDirectFloatBuffer(entry.getValue() * 3 * 3);
+            shape.vTris.mark();
+            shape.tTris.mark();
+            shape.nTris.mark();
+            shape.cTris.mark();
             shapes.put(shape.mat, shape);
         }
 
@@ -88,6 +92,14 @@ public class MeshGL {
             });
         });
 
+        //Set buffer positions to 0
+        for(ShapeGL shape : shapes.values()){
+            shape.vTris.reset();
+            shape.tTris.reset();
+            shape.nTris.reset();
+            shape.cTris.reset();
+        }
+        
         return shapes;
     }
 

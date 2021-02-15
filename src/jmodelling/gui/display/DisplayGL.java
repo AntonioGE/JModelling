@@ -48,6 +48,7 @@ import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.transform.Transform;
 import jmodelling.math.mat.Mat3f;
@@ -133,6 +134,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
+    private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -221,7 +224,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
         gl.glPopMatrix();
-
+        
+        for(int i = 0; i < 1; i++){
+            nObject.renderOpaque(gl);
+        }
+        
         gl.glPointSize(4.0f);
         gl.glBegin(GL2.GL_POINTS);
         for (Vec3f point : points) {
@@ -483,19 +490,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         repaint();
     }
 
-    /*
-    //TODO: Move to camera class
-    private Vec3f camDirToAngles() {
-        Vec3f angles = camTar.sub_(camPos).anglesXZDeg();
-        angles.add(new Vec3f(90.0f, 0.0f, -90.0f));
-        return angles;
-    }*/
     //TODO: This should be put into a custom OpenGL panel initialization code
     private static GLCapabilities generateCapabilities() {
         final GLProfile gp = GLProfile.get(GLProfile.GL2);
         GLCapabilities cap = new GLCapabilities(gp);
-        cap.setSampleBuffers(true);
-        cap.setNumSamples(8);
+        //cap.setSampleBuffers(true);
+        //cap.setNumSamples(8);
         return cap;
     }
 

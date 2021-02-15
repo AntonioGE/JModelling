@@ -148,11 +148,11 @@ public class ObjReader {
         HashMap<String, Mesh> meshes = new HashMap<>(objects.size());
         for (Object3D o : objects.values()) {
             Mesh m = objectToMesh(o, vCoords, tCoords, nCoords);
-            
+            meshes.put(o.name, m);
             System.out.println("Done");
         }
 
-        return null;
+        return meshes;
     }
 
     private static Mesh objectToMesh(Object3D o, ArrayList<Float[]> vCoords, 

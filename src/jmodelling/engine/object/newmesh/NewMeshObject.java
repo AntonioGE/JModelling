@@ -24,6 +24,10 @@
 package jmodelling.engine.object.newmesh;
 
 import com.jogamp.opengl.GL2;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.Object3D;
 
@@ -41,9 +45,46 @@ public class NewMeshObject extends Object3D{
         this.meshGL = new MeshGL(mesh);
     }
     
+    //TODO: Temp function
+    public NewMeshObject(String objPath){
+        try {
+            HashMap<String, Mesh> meshes = ObjReader.readObj(objPath);
+            this.mesh = meshes.get("Suzanne");
+            meshGL = new MeshGL(mesh);
+        } catch (IOException ex) {
+            Logger.getLogger(NewMeshObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public void renderOpaque(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
         
+        renderShapes(gl);
+        
+        gl.glPopMatrix();
+    }
+    
+    public void renderShapes(GL2 gl){
+        for(ShapeGL shape : meshGL.shapes.values()){
+            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+            gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+            gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, shape.tTris);
+            gl.glColorPointer(3, GL2.GL_FLOAT, 0, shape.cTris);
+            gl.glNormalPointer(GL2.GL_FLOAT, 0, shape.nTris);
+            gl.glVertexPointer(3, GL2.GL_FLOAT, 0, shape.vTris);
+
+            gl.glDrawArrays(GL2.GL_TRIANGLES, 0, shape.vTris.limit() / 3);
+
+            gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+            gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+            gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+            gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        }
     }
     
 }

@@ -98,7 +98,7 @@ public class Mesh {
             count.put(p.mat, 0);
         });
         polys.forEach((p) -> {
-            count.put(p.mat, count.get(p.mat));
+            count.put(p.mat, count.get(p.mat) + 1);
         });
         return count;
     }

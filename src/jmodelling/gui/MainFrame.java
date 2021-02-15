@@ -112,6 +112,12 @@ public class MainFrame extends JFrame {
         Point s2 = new Point(0, 0);
         System.out.println("Duplicate: " + ListUtils.hasDuplicates(s1, s2));
 
+        try {
+            ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Pozo.obj");
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame("JNDS").setVisible(true);

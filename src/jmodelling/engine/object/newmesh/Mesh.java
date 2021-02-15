@@ -24,6 +24,7 @@
 package jmodelling.engine.object.newmesh;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
@@ -47,6 +48,8 @@ public class Mesh {
         vtxs = new ArrayList<>();
         edges = new LinkedHashSet<>();
         polys = new LinkedHashSet<>();
+        
+        mats = new LinkedHashSet<>();
     }
     
     public void addVertex(Vertex vtx){
@@ -86,7 +89,18 @@ public class Mesh {
         Polygon poly = new Polygon(newLoops, mat);
         edges.addAll(newEdges);
         polys.add(poly);
-        
+        mats.add(mat);
+    }
+    
+    public HashMap<Material, Integer> getPolysPerMat(){
+        HashMap<Material, Integer> count = new HashMap<>(mats.size());
+        polys.forEach((p) -> {
+            count.put(p.mat, 0);
+        });
+        polys.forEach((p) -> {
+            count.put(p.mat, count.get(p.mat));
+        });
+        return count;
     }
     
 }

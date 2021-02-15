@@ -27,10 +27,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.newmesh.Mesh;
+import jmodelling.engine.object.newmesh.Vertex;
+import jmodelling.math.vec.Vec2f;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -60,36 +66,38 @@ public class ObjReader {
             faces = new ArrayList<>();
         }
     };
-    
+
     private static class Face {
-        final ArrayList<Vertex> vtxs;
-        
-        public Face(ArrayList<Vertex> vtxs){
+
+        final ArrayList<VertexIndx> vtxs;
+
+        public Face(ArrayList<VertexIndx> vtxs) {
             this.vtxs = vtxs;
         }
-        
-        public Face(int numFaces){
+
+        public Face(int numFaces) {
             vtxs = new ArrayList<>(numFaces);
         }
     }
 
-    private static class Vertex {
+    private static class VertexIndx {
+
         public Integer vInd;
         public Integer tInd;
         public Integer nInd;
-        
-        public Vertex(){
-            
+
+        public VertexIndx() {
+
         }
-        
-        public Vertex(Integer vInd, Integer tInd, Integer nInd){
+
+        public VertexIndx(Integer vInd, Integer tInd, Integer nInd) {
             this.vInd = vInd;
             this.tInd = tInd;
             this.nInd = nInd;
         }
-        
+
     }
-    
+
     public static HashMap<String, Mesh> readObj(String path) throws IOException {
 
         HashMap<String, Object3D> objects = new HashMap();
@@ -112,55 +120,91 @@ public class ObjReader {
                         currentShape = currentObject.shapes.get("");
                         break;
                     case "v":
-                        readCoords(sLine, vCoords);
+                        readCoords(sLine, vCoords, 3);
                         break;
                     case "vt":
-                        readCoords(sLine, tCoords);
+                        readCoords(sLine, tCoords, 2);
                         break;
                     case "vn":
-                        readCoords(sLine, nCoords);
+                        readCoords(sLine, nCoords, 3);
                         break;
                     case "usemtl":
                         currentShape = addShape(sLine, currentObject.shapes);
                         break;
                     case "f":
-                        /*
-                        readFace(sLine,
-                                currentShape.vInds,
-                                currentShape.tInds,
-                                currentShape.nInds);*/
+                        readFace(sLine, currentShape);
                         break;
                 }
             }
         }
         
-        
-        HashMap<String, Mesh> meshes = new HashMap<>(objects.size());
+        //Remove the empty default shapes
         for(Object3D o : objects.values()){
-            Mesh m = new Mesh();
-            for(String mat : o.shapes.keySet()){
-                
-            }
-            for(Shape s : o.shapes.values()){
-                
+            if(o.shapes.get("").faces.isEmpty()){
+                o.shapes.remove("");
             }
         }
         
+        HashMap<String, Mesh> meshes = new HashMap<>(objects.size());
+        for (Object3D o : objects.values()) {
+            Mesh m = objectToMesh(o, vCoords, tCoords, nCoords);
+            
+            System.out.println("Done");
+        }
 
-        /*
-        float[] mesh = new float[fInds.size() * 3 * 3];
-        int c = 0;
-        for (Integer[] vInds : fInds) {
-            for (Integer vInd : vInds) {
-                for (Float coord : vCoords.get(vInd)) {
-                    mesh[c] = coord;
-                    c++;
-                }
-            }
-        }*/
         return null;
     }
 
+    private static Mesh objectToMesh(Object3D o, ArrayList<Float[]> vCoords, 
+            ArrayList<Float[]> tCoords, ArrayList<Float[]> nCoords){
+        Mesh mesh = new Mesh();
+        
+        HashMap<Integer, Integer> vIndsAdded = new HashMap<>();
+        int nextIndex = 0;
+        for(Shape shape : o.shapes.values()){
+            Material mat = new Material(shape.matName);
+            for(Face face : shape.faces){
+                List<Integer> vInds = new ArrayList<>(face.vtxs.size());
+                List<Vec2f> uvs = new ArrayList<>(face.vtxs.size());
+                List<Vec3f> nrms = new ArrayList<>(face.vtxs.size());
+                List<Vec3f> clrs = new ArrayList<>(face.vtxs.size());
+                for(VertexIndx v : face.vtxs){
+                    //Vertex coordinates
+                    if(!vIndsAdded.keySet().contains(v.vInd)){
+                        Float[] coords = vCoords.get(v.vInd);
+                        mesh.addVertex(new Vertex(coords[0], coords[1], coords[2]));
+                        vInds.add(nextIndex);
+                        vIndsAdded.put(v.vInd, nextIndex);
+                        nextIndex++;
+                    }else{
+                        vInds.add(vIndsAdded.get(v.vInd));
+                    }
+                    
+                    //Texture coordinates
+                    if(v.tInd != null){
+                        Float[] coords = tCoords.get(v.tInd);
+                        uvs.add(new Vec2f(coords[0], coords[1]));
+                    }else{
+                        uvs.add(new Vec2f());
+                    }
+                    
+                    //Normals
+                    if(v.nInd != null){
+                        Float[] coords = nCoords.get(v.nInd);
+                        nrms.add(new Vec3f(coords[0], coords[1], coords[2]));
+                    }else{
+                        nrms.add(new Vec3f());
+                    }
+                    
+                    //Colors
+                    clrs.add(new Vec3f(1.0f, 1.0f, 1.0f));
+                }
+                mesh.addNewPolygon(mat, vInds, uvs, nrms, clrs);
+            }
+        }
+        return mesh;
+    }
+    
     private static Shape addShape(String[] sLine, HashMap<String, Shape> shapes) {
         String matName;
         try {
@@ -195,23 +239,73 @@ public class ObjReader {
         }
     }
 
-    private static void readCoords(String[] sLine, ArrayList<Float[]> coords) {
-        if (sLine.length != 4) {
+    private static void readCoords(String[] sLine, ArrayList<Float[]> coords, int nCoords) {
+        if (sLine.length != nCoords + 1) {
             coords.add(null);
         } else {
             try {
-                Float[] vertex = new Float[3];
+                Float[] vertex = new Float[nCoords];
                 for (int i = 0; i < vertex.length; i++) {
                     vertex[i] = Float.valueOf(sLine[1 + i]);
-                    coords.add(vertex);
                 }
+                coords.add(vertex);
             } catch (NumberFormatException | IndexOutOfBoundsException ex) {
                 coords.add(null);
             }
         }
     }
 
-    
+    private static void readFace(String[] sLine, Shape shape) {
+        if (sLine.length < 4) {
+            return;
+        }
+        final int indices = sLine.length - 1;
+        Face face = new Face(indices);
+
+        boolean missingTInd = false;
+        boolean missingNInd = false;
+        for (int i = 0; i < indices; i++) {
+            String[] sFace = sLine[i + 1].split("/");
+            if (sFace.length < 1 || sFace.length > 3) {
+                return;
+            }
+
+            VertexIndx v = new VertexIndx();
+            try {
+                v.vInd = Integer.valueOf(sFace[0]) - 1;
+            } catch (NumberFormatException ex) {
+                return;
+            }
+
+            try {
+                v.tInd = Integer.valueOf(sFace[1]) - 1;
+            } catch (NumberFormatException ex) {
+                missingTInd = true;
+            }
+
+            try {
+                v.nInd = Integer.valueOf(sFace[2]) - 1;
+            } catch (NumberFormatException ex) {
+                missingNInd = true;
+            }
+
+            face.vtxs.add(v);
+        }
+
+        if (missingTInd) {
+            face.vtxs.forEach((v) -> {
+                v.tInd = null;
+            });
+        }
+        if (missingNInd) {
+            face.vtxs.forEach((v) -> {
+                v.nInd = null;
+            });
+        }
+
+        shape.faces.add(face);
+    }
+
     private static void readFace(String[] sLine, ArrayList<Integer[]> vInds,
             ArrayList<Integer[]> tInds, ArrayList<Integer[]> nInds) {
         if (sLine.length < 4) {

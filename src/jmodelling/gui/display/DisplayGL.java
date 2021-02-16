@@ -135,7 +135,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
     private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-    
+
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -149,7 +149,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
 
         cube = new EmptyMesh(new Cube().toMesh());
-        
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -171,6 +171,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         //gl.glEnable(GL2.GL_LINE_SMOOTH);
 
+        nObject.meshGL.init(gl);
+
     }
 
     @Override
@@ -186,6 +188,20 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
 
+        gl.glLoadIdentity();
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT1);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+
         Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
@@ -197,7 +213,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         //transf.print();
         //cam.getLocalAxis3f().print();
         gl.glEnable(GL2.GL_BLEND);
-       
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
@@ -209,6 +224,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glLoadMatrixf(transf.toArray(), 0);
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+
+        for (int i = 0; i < 1; i++) {
+            nObject.renderOpaque(gl);
+        }
+        gl.glDisable(GL2.GL_LIGHTING);
 
         cube.renderOpaque(gl);
 
@@ -224,11 +244,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
         gl.glPopMatrix();
-        
-        for(int i = 0; i < 1; i++){
-            nObject.renderOpaque(gl);
-        }
-        
+
         gl.glPointSize(4.0f);
         gl.glBegin(GL2.GL_POINTS);
         for (Vec3f point : points) {
@@ -344,7 +360,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             float deltaY = (e.getY() - lastMouseY) / sensitivity;
             lastMouseX = e.getX();
             lastMouseY = e.getY();
-            
+
             cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
         }
 
@@ -363,9 +379,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
                     transf, cam, (float) getWidth() / getHeight());
-            */
-            
-            /*
+             */
+ /*
             Vec3f trans = Transform.planarTranslation(objPos,
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
@@ -373,7 +388,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             cube.loc.set(objPos.add_(trans));*/
 
-            /*
+ /*
             Mat3f rot = Transform.planarRotation_(objPos, 
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
@@ -381,9 +396,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
             cube.rot.set(angles);*/
-            
-            
-            /*
+ /*
             Mat3f rot = Transform.axisRotation_(objPos, 
                     new Vec3f(1.0f, 0.0f, 0.0f),
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
@@ -392,19 +405,17 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             
             Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
             cube.rot.set(angles);
-            */
-            
-            Vec3f sca = Transform.scale_(objPos, 
+             */
+            Vec3f sca = Transform.scale_(objPos,
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
-                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()), 
+                    Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
                     transf, (float) getWidth() / getHeight());
-            
+
             cube.sca.set(objSca.had_(sca));
-            
+
             repaint();
         }
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -430,19 +441,19 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_X:
-                if(grab) {
+                if (grab) {
                     moveAxis = new Vec3f(1.0f, 0.0f, 0.0f);
                     repaint();
                 }
                 break;
             case KeyEvent.VK_Y:
-                if(grab) {
+                if (grab) {
                     moveAxis = new Vec3f(0.0f, 1.0f, 0.0f);
                     repaint();
                 }
                 break;
             case KeyEvent.VK_Z:
-                if(grab) {
+                if (grab) {
                     moveAxis = new Vec3f(0.0f, 0.0f, 1.0f);
                     repaint();
                 }

@@ -38,4 +38,6 @@ public class ShapeGL {
     public FloatBuffer nTris;
     public FloatBuffer cTris;
     
+    public int[] vbo;
+    
 }

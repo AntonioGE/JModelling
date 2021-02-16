@@ -61,11 +61,14 @@ public class NewMeshObject extends Object3D{
         gl.glPushMatrix();
         gl.glMultMatrixf(getLocalAxis().toArray(), 0);
         
-        renderShapes(gl);
+        meshGL.render(gl);
         
         gl.glPopMatrix();
     }
     
+    
+    
+    /*
     public void renderShapes(GL2 gl){
         for(ShapeGL shape : meshGL.shapes.values()){
             gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
@@ -85,6 +88,6 @@ public class NewMeshObject extends Object3D{
             gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
             gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         }
-    }
+    }*/
     
-}
+}   

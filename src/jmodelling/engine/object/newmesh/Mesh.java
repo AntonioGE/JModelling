@@ -103,4 +103,14 @@ public class Mesh {
         return count;
     }
     
+    public void applyFlatShading(){
+        polys.forEach((poly) -> {
+            Vec3f normal = poly.getNormal();
+            poly.loops.forEach((loop) -> {
+                loop.nrm = normal;
+            });
+        });
+    }
+    
+    
 }

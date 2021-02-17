@@ -50,7 +50,12 @@ public class NewMeshObject extends Object3D{
         try {
             HashMap<String, Mesh> meshes = ObjReader.readObj(objPath);
             this.mesh = meshes.get("Suzanne");
+            
+            //mesh.applyFlatShading();
+            
             meshGL = new MeshGL(mesh);
+            
+            
         } catch (IOException ex) {
             Logger.getLogger(NewMeshObject.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -23,9 +23,11 @@
  */
 package jmodelling.engine.object.newmesh;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -39,6 +41,15 @@ public class Polygon {
     public Polygon(LinkedHashSet<Loop> loops, Material mat){
         this.loops = loops;
         this.mat = mat;
+    }
+    
+    public Vec3f getNormal(){
+        Iterator<Loop> ite = loops.iterator();
+        Loop l0 = ite.next();
+        Loop l1 = ite.next();
+        Loop l2 = ite.next();
+        
+        return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
     }
     
 }

@@ -71,7 +71,8 @@ public class MeshGL {
     }
 
     public void update(GL2 gl, MeshGL mesh){
-        
+        delete(gl);
+        init(gl);
     }
     
     public void delete(GL2 gl){

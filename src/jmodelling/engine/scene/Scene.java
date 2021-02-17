@@ -24,8 +24,10 @@
 package jmodelling.engine.scene;
 
 import com.jogamp.opengl.GL2;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Map;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.utils.collections.IdentitySet;
@@ -37,6 +39,7 @@ import jmodelling.utils.collections.IdentitySet;
 public class Scene {
 
     private final HashMap<String, Object3D> objects;
+    private final Map<String, Object3D> objectsReadOnly;
 
     private final IdentitySet<Object3D> objectsToInit;
     private final IdentitySet<Object3D> objectsToDelete;
@@ -44,13 +47,13 @@ public class Scene {
 
     public Scene() {
         objects = new HashMap<>();
+        objectsReadOnly = Collections.unmodifiableMap(objects);
 
         objectsToInit = new IdentitySet();
         objectsToDelete = new IdentitySet();
         objectsToUpdate = new IdentitySet();
-
     }
-
+    
     public void updateGL(GL2 gl) {
         removeObjects(gl);
         updateObjects(gl);
@@ -102,4 +105,8 @@ public class Scene {
         return true;
     }
 
+    public Map<String, Object3D> getObjects(){
+        return objectsReadOnly;
+    }
+    
 }

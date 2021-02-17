@@ -41,6 +41,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import javax.swing.SwingUtilities;
+import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditable;
@@ -50,6 +51,7 @@ import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
+import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transform;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
@@ -134,6 +136,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
+    private Scene scene = new Scene();
+    
     private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
 
     public DisplayGL() {
@@ -150,6 +154,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         cube = new EmptyMesh(new Cube().toMesh());
 
+        scene.add(nObject);
+        
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -172,8 +178,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         //gl.glEnable(GL2.GL_LINE_SMOOTH);
 
-        nObject.meshGL.init(gl);
-
+        //nObject.meshGL.init(gl);
+        scene.updateGL(gl);
     }
 
     @Override
@@ -226,11 +232,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
-        for (int i = 0; i < 1; i++) {
-            nObject.renderOpaque(gl);
-        }
+        scene.updateGL(gl);
+        scene.getObjects().values().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+        
         gl.glDisable(GL2.GL_LIGHTING);
 
+        
         cube.renderOpaque(gl);
 
         gl.glPushMatrix();
@@ -298,7 +307,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPopMatrix();
 
         gl.glLineStipple(1, (short) 0xFFFF);
-
+        
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
     }
@@ -426,6 +435,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_A:
+                scene.add(nObject);
+                repaint();
+                break;
+            case KeyEvent.VK_D:
+                scene.remove(nObject);
+                repaint();
+                break;
             case KeyEvent.VK_G:
                 if (grab) {
                     grab = false;

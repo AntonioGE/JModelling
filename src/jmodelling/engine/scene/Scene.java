@@ -70,6 +70,7 @@ public class Scene {
     private void initObjects(GL2 gl) {
         objectsToInit.forEach((obj) -> {
             obj.init(gl);
+            System.out.println("Init: " + obj.name);
         });
         objectsToInit.clear();
     }

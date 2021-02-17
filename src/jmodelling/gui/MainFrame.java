@@ -124,7 +124,7 @@ public class MainFrame extends JFrame {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame("JNDS").setVisible(true);
+                new MainFrame("JModelling").setVisible(true);
             }
         });
     }

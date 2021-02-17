@@ -40,7 +40,7 @@ public class NewMeshObject extends Object3D{
     public Mesh mesh;
     public MeshGL meshGL;
     
-    public NewMeshObject(Mesh mesh){
+    public NewMeshObject(String name, Mesh mesh){
         this.mesh = mesh;
         this.meshGL = new MeshGL(mesh);
     }
@@ -61,6 +61,7 @@ public class NewMeshObject extends Object3D{
         }
     }
     
+    //TODO: Move to renderer class
     @Override
     public void renderOpaque(GL2 gl) {
         gl.glPushMatrix();

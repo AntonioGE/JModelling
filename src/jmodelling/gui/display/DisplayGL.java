@@ -51,6 +51,7 @@ import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
+import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transform;
 import jmodelling.math.mat.Mat3f;
@@ -457,6 +458,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     moveAxis = Vec3f.rand_().normalize();
                 }
                 repaint();
+                break;
+            case KeyEvent.VK_R:
+                if(Raytracer.rayIntersectsMesh(cam.loc, 
+                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()), 
+                        nObject.meshGL, 
+                        new Vec3f())){
+                    System.out.println("INTERSECTION!! " + System.currentTimeMillis());
+                }
                 break;
             case KeyEvent.VK_X:
                 if (grab) {

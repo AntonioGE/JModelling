@@ -24,11 +24,12 @@
 package jmodelling.engine.raytracing;
 
 import java.nio.FloatBuffer;
-import jmodelling.engine.object.mesh.Mesh;
+import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.mesh.face.Quad;
 import jmodelling.engine.object.mesh.face.Tri;
-import jmodelling.engine.object.mesh.shape.Shape;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.MeshGL;
+import jmodelling.engine.object.newmesh.NewMeshObject;
+import jmodelling.engine.object.newmesh.ShapeGL;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -82,7 +83,7 @@ public class Raytracer {
                 new Vec3f(vCoords, offset + 6),
                 outIntersectionPoint);
     }
-    
+
     public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
             Vec3f rayVector,
             FloatBuffer vCoords, int offset,
@@ -105,24 +106,50 @@ public class Raytracer {
                 outIntersectionPoint);
     }
 
-    
-    //TODO: remove this:
-    public static boolean rayIntersectsQuad(Vec3f rayOrigin,
+    public static boolean rayIntersectsMesh(Vec3f rayOrigin,
             Vec3f rayVector,
-            Quad inQuad,
+            MeshGL mesh,
             Vec3f outIntersectionPoint) {
-        
-        return rayIntersectsTriangle(rayOrigin, rayVector,
-                inQuad.vertices.get(0).pos,
-                inQuad.vertices.get(1).pos,
-                inQuad.vertices.get(2).pos,
-                outIntersectionPoint) || 
-                
-                rayIntersectsTriangle(rayOrigin, rayVector,
-                inQuad.vertices.get(2).pos,
-                inQuad.vertices.get(3).pos,
-                inQuad.vertices.get(0).pos,
-                outIntersectionPoint);
+        for (ShapeGL shape : mesh.shapes.values()) {
+            for (int i = 0; i < shape.vTris.limit(); i += 9) {
+                if (rayIntersectsTriangle(rayOrigin, rayVector, shape.vTris, i, outIntersectionPoint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-    
+    // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
+// returns t value of intersection and intersection point q 
+/*
+    public static boolean rayIntersectsSphere(Vec3f rayPos, Vec3f rayDir,
+            Vec3f sphPos, Vec3f sphDir, float t, Vec3f q) {
+
+        Vec3f m = p - s.c;
+        float b = Dot(m, d);
+        float c = Dot(m, m) - s.r * s.r;
+
+        // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
+        if (c > 0.0f && b > 0.0f) {
+            return 0;
+        }
+        float discr = b * b - c;
+
+// A negative discriminant corresponds to ray missing sphere 
+        if (discr < 0.0f) {
+            return 0;
+        }
+
+// Ray now found to intersect sphere, compute smallest t value of intersection
+        t = -b - Sqrt(discr);
+
+// If t is negative, ray started inside sphere so clamp t to zero 
+        if (t < 0.0f) {
+            t = 0.0f;
+        }
+        q = p + t * d;
+
+        return 1;
+    }
+    */
 }

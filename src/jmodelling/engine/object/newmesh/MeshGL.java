@@ -81,6 +81,7 @@ public class MeshGL {
         });
     }
     
+    //TODO: Move to renderer class
     public void render(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
 

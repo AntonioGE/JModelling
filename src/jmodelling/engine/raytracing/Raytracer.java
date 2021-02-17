@@ -25,6 +25,7 @@ package jmodelling.engine.raytracing;
 
 import java.nio.FloatBuffer;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.mesh.face.Quad;
 import jmodelling.engine.object.mesh.face.Tri;
 import jmodelling.engine.object.newmesh.MeshGL;
@@ -120,36 +121,48 @@ public class Raytracer {
         return false;
     }
     // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
-// returns t value of intersection and intersection point q 
-/*
+    // returns t value of intersection and intersection point q 
     public static boolean rayIntersectsSphere(Vec3f rayPos, Vec3f rayDir,
-            Vec3f sphPos, Vec3f sphDir, float t, Vec3f q) {
+            Vec3f sphPos, float sphRadius, float t, Vec3f q) {
 
-        Vec3f m = p - s.c;
-        float b = Dot(m, d);
-        float c = Dot(m, m) - s.r * s.r;
+        Vec3f m = rayPos.sub_(sphPos);
+        float b = m.dot(rayDir);
+        float c = m.dot(m) - sphRadius * sphRadius;
 
         // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
         if (c > 0.0f && b > 0.0f) {
-            return 0;
+            return false;
         }
         float discr = b * b - c;
 
-// A negative discriminant corresponds to ray missing sphere 
+        // A negative discriminant corresponds to ray missing sphere 
         if (discr < 0.0f) {
-            return 0;
+            return false;
         }
 
-// Ray now found to intersect sphere, compute smallest t value of intersection
-        t = -b - Sqrt(discr);
+        return true;
+        /*
+        // Ray now found to intersect sphere, compute smallest t value of intersection
+        t = -b - (float)Math.sqrt(discr);
 
-// If t is negative, ray started inside sphere so clamp t to zero 
+        // If t is negative, ray started inside sphere so clamp t to zero 
         if (t < 0.0f) {
             t = 0.0f;
         }
         q = p + t * d;
 
-        return 1;
+        return 1;*/
     }
-    */
+    
+    public static boolean rayIntersectsBoundingSphere(Vec3f rayPos, Vec3f rayDir,
+            Object3D obj){
+        BoundingSphere sphere = obj.getBoundingSphere();
+        if(sphere != null){
+            return rayIntersectsSphere(rayPos, rayDir, sphere.center.add_(obj.loc), sphere.radius, 0, new Vec3f());
+        }else{
+            return false;
+        }
+        
+    }
+    
 }

@@ -30,6 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingBox;
+import jmodelling.engine.object.bounds.BoundingSphere;
 
 /**
  *
@@ -40,9 +42,13 @@ public class NewMeshObject extends Object3D{
     public Mesh mesh;
     public MeshGL meshGL;
     
+    private BoundingSphere boundingSphere;
+    
     public NewMeshObject(String name, Mesh mesh){
         this.mesh = mesh;
         this.meshGL = new MeshGL(mesh);
+        
+        calculateBounds();
     }
     
     //TODO: Temp function
@@ -54,12 +60,25 @@ public class NewMeshObject extends Object3D{
             //mesh.applyFlatShading();
             
             meshGL = new MeshGL(mesh);
-            
+            calculateBounds();
             
         } catch (IOException ex) {
             Logger.getLogger(NewMeshObject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public NewMeshObject(NewMeshObject other){
+        
+    }
+    
+    //TODO: Finish the mesh clone method
+    @Override
+    public NewMeshObject clone() throws CloneNotSupportedException{
+        super.clone();
+        
+        return null;
+    }
+    
     
     //TODO: Move to renderer class
     @Override
@@ -79,14 +98,27 @@ public class NewMeshObject extends Object3D{
 
     @Override
     public void update(GL2 gl) {
-    
+        meshGL.update(gl, meshGL);
     }
 
     @Override
     public void delete(GL2 gl) {
-        
+        meshGL.delete(gl);
+    }
+
+    @Override
+    public BoundingSphere getBoundingSphere() {
+        return boundingSphere;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return true;
     }
     
-    
+    public final void calculateBounds(){
+        BoundingBox boundingBox = new BoundingBox(mesh);
+        this.boundingSphere = new BoundingSphere(boundingBox);
+    }
     
 }   

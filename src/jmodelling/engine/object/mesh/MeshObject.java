@@ -26,6 +26,7 @@ package jmodelling.engine.object.mesh;
 import com.jogamp.opengl.GL2;
 import java.util.HashMap;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.shape.Shape;
 import jmodelling.engine.object.mesh.vertex.Vertex;
@@ -87,4 +88,17 @@ public abstract class MeshObject extends Object3D {
     public void delete(GL2 gl) {
     }
 
+    @Override
+    public BoundingSphere getBoundingSphere() {
+        return null;
+    }
+
+    @Override
+    public boolean isSelectable(){
+        return false;
+    }
+
+    
+    
+    
 }

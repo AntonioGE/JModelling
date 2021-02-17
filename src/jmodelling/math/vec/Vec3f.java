@@ -681,7 +681,7 @@ public class Vec3f {
     public Vec3f negate_() {
         return negate_(this);
     }
-
+    
     /**
      * Converts a vector of angles from radians to degrees
      *

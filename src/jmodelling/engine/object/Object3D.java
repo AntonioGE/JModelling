@@ -24,6 +24,8 @@
 package jmodelling.engine.object;
 
 import com.jogamp.opengl.GL2;
+import java.util.Objects;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
@@ -73,11 +75,42 @@ public abstract class Object3D {
         this(loc, new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(1.0f, 1.0f, 1.0f));
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Object3D other = (Object3D) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return true;
+    }
+
     public abstract void renderOpaque(GL2 gl);
 
     public abstract void init(GL2 gl);
+
     public abstract void update(GL2 gl);
+
     public abstract void delete(GL2 gl);
+
+    public abstract BoundingSphere getBoundingSphere();
+    
+    public abstract boolean isSelectable();
     
     public Mat4f getLocalAxis() {
         Mat4f t = TransfMat.translation_(loc);
@@ -88,10 +121,11 @@ public abstract class Object3D {
 
         return t.mul(rz.mul(ry.mul(rx.mul(s))));
     }
-    
 
     public Mat3f getLocalAxis3f() {
         return TransfMat.eulerDegToMat_(rot);
     }
 
+    
+    
 }

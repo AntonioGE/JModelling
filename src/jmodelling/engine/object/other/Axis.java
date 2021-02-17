@@ -27,6 +27,7 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec3f;
 
@@ -82,6 +83,16 @@ public class Axis extends Object3D {
 
     @Override
     public void delete(GL2 gl) {
+    }
+
+    @Override
+    public BoundingSphere getBoundingSphere() {
+        return null;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return false;
     }
 
 }

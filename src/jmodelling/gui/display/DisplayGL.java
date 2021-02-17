@@ -138,7 +138,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private ArrayList<Vec3f> lines = new ArrayList<Vec3f>();
 
     private Scene scene = new Scene();
-    
+
     private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
 
     public DisplayGL() {
@@ -156,6 +156,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         cube = new EmptyMesh(new Cube().toMesh());
 
         scene.add(nObject);
+        nObject.loc.set(5.0f, 2.0f, 1.0f);
+
+        for(int i = 0; i < 100; i++){
+            //scene.add(new )
+        }
         
         addGLEventListener(this);
         addMouseListener(this);
@@ -165,7 +170,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         setFocusable(true);
 
-        
     }
 
     @Override
@@ -199,12 +203,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glLoadIdentity();
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-        
+
         gl.glEnable(GL2.GL_LIGHT0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
 
         gl.glEnable(GL2.GL_LIGHT1);
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
@@ -234,13 +238,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
         scene.updateGL(gl);
-        scene.getObjects().values().forEach((obj) -> {
+        scene.getObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
-        
+
         gl.glDisable(GL2.GL_LIGHTING);
 
-        
         cube.renderOpaque(gl);
 
         gl.glPushMatrix();
@@ -308,7 +311,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPopMatrix();
 
         gl.glLineStipple(1, (short) 0xFFFF);
-        
+
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
     }
@@ -460,11 +463,22 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_R:
-                if(Raytracer.rayIntersectsMesh(cam.loc, 
-                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()), 
-                        nObject.meshGL, 
-                        new Vec3f())){
-                    System.out.println("INTERSECTION!! " + System.currentTimeMillis());
+                System.out.println("Num objects: " + scene.getObjects().size());
+                for (Object3D obj : scene.getObjects()) {
+                    if (obj.isSelectable()) {
+                        if(Raytracer.rayIntersectsBoundingSphere(cam.loc,
+                                cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                                obj)){
+                            System.out.println("INTERSECT SPHERE " + obj.name + " "+ System.currentTimeMillis());
+                        }
+                        /*
+                        if (Raytracer.rayIntersectsMesh(cam.loc,
+                                cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                                nObject.meshGL,
+                                new Vec3f())) {
+                            System.out.println("INTERSECTION!! " + System.currentTimeMillis());
+                        }*/
+                    }
                 }
                 break;
             case KeyEvent.VK_X:

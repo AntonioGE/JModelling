@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.bounds;
 
 import jmodelling.math.vec.Vec3f;
 
@@ -29,15 +29,19 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class Vertex extends Vec3f{
+public class BoundingSphere {
     
-    public Vertex(float x, float y, float z){
-        super(x, y, z);
+    public Vec3f center;
+    public float radius;
+    
+    public BoundingSphere(Vec3f center, float radius){
+        this.center = center;
+        this.radius = radius;
     }
     
-    @Override
-    public Vertex clone(){
-        return (Vertex) super.clone();
+    public BoundingSphere(BoundingBox box){
+        this.center = box.max.add_(box.min).scale(0.5f);
+        this.radius = center.dist(box.max);
     }
     
 }

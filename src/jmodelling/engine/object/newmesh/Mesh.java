@@ -37,62 +37,71 @@ import jmodelling.utils.ListUtils;
  * @author ANTONIO
  */
 public class Mesh {
-    
+
     public ArrayList<Vertex> vtxs;
     public LinkedHashSet<Edge> edges;
     public LinkedHashSet<Polygon> polys;
-    
+
     public LinkedHashSet<Material> mats;
-    
-    public Mesh(){
+
+    public Mesh() {
         vtxs = new ArrayList<>();
         edges = new LinkedHashSet<>();
         polys = new LinkedHashSet<>();
-        
+
         mats = new LinkedHashSet<>();
     }
-    
-    public void addVertex(Vertex vtx){
+
+    public Mesh(Mesh other) {
+        this();
+
+        other.vtxs.forEach((v) -> {
+            vtxs.add(v.clone());
+        });
+
+    }
+
+    public void addVertex(Vertex vtx) {
         vtxs.add(vtx);
     }
-    
-    public void addEdge(int v1, int v2){
+
+    public void addEdge(int v1, int v2) {
         edges.add(new Edge(vtxs.get(v1), vtxs.get(v2)));
     }
-    
-    public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs){
-        if(!ListUtils.areSameSize(vInds, uvs, nrms, clrs)){
+
+    public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
+        if (!ListUtils.areSameSize(vInds, uvs, nrms, clrs)) {
             throw new IllegalArgumentException();
         }
-        
-        if(!ListUtils.areIndicesInRange(vtxs, vInds)){
+
+        if (!ListUtils.areIndicesInRange(vtxs, vInds)) {
             throw new IllegalArgumentException();
         }
-        
-        if(ListUtils.hasDuplicatedValues(vInds)){
+
+        if (ListUtils.hasDuplicatedValues(vInds)) {
             throw new IllegalArgumentException();
         }
-        
+
         LinkedHashSet<Edge> newEdges = new LinkedHashSet<>(vInds.size());
         LinkedHashSet<Loop> newLoops = new LinkedHashSet<>(vInds.size());
-        for(int i = 0; i < vInds.size(); i++){
+        for (int i = 0; i < vInds.size(); i++) {
             Edge edge = new Edge(
-                    vtxs.get(vInds.get(i)), 
+                    vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
                     edge, nrms.get(i), clrs.get(i), uvs.get(i));
-            
+
             newEdges.add(edge);
             newLoops.add(loop);
         }
-        
+
         Polygon poly = new Polygon(newLoops, mat);
         edges.addAll(newEdges);
         polys.add(poly);
         mats.add(mat);
     }
-    
-    public HashMap<Material, Integer> getPolysPerMat(){
+
+    public HashMap<Material, Integer> getPolysPerMat() {
         HashMap<Material, Integer> count = new HashMap<>(mats.size());
         polys.forEach((p) -> {
             count.put(p.mat, 0);
@@ -102,8 +111,8 @@ public class Mesh {
         });
         return count;
     }
-    
-    public void applyFlatShading(){
+
+    public void applyFlatShading() {
         polys.forEach((poly) -> {
             Vec3f normal = poly.getNormal();
             poly.loops.forEach((loop) -> {
@@ -111,6 +120,5 @@ public class Mesh {
             });
         });
     }
-    
-    
+
 }

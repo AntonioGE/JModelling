@@ -24,6 +24,7 @@
 package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -127,5 +128,13 @@ public class CamArcball extends Cam {
         return viewPosToRay(pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
     }
 
+    @Override
+    public BoundingSphere getBoundingSphere() {
+        return null;
+    }
 
+    @Override
+    public boolean isSelectable() {
+        return false;
+    }
 }

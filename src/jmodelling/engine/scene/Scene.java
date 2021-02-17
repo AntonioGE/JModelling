@@ -26,8 +26,10 @@ package jmodelling.engine.scene;
 import com.jogamp.opengl.GL2;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.utils.collections.IdentitySet;
@@ -38,16 +40,16 @@ import jmodelling.utils.collections.IdentitySet;
  */
 public class Scene {
 
-    private final HashMap<String, Object3D> objects;
-    private final Map<String, Object3D> objectsReadOnly;
+    private final HashSet<Object3D> objects;
+    private final Set<Object3D> objectsReadOnly;
 
     private final IdentitySet<Object3D> objectsToInit;
     private final IdentitySet<Object3D> objectsToDelete;
     private final IdentitySet<Object3D> objectsToUpdate;
 
     public Scene() {
-        objects = new HashMap<>();
-        objectsReadOnly = Collections.unmodifiableMap(objects);
+        objects = new HashSet<>();
+        objectsReadOnly = Collections.unmodifiableSet(objects);
 
         objectsToInit = new IdentitySet();
         objectsToDelete = new IdentitySet();
@@ -83,20 +85,20 @@ public class Scene {
     }
 
     public boolean add(Object3D object) {
-        if (objects.containsKey(object.name)) {
+        if (objects.contains(object)) {
             return false;
         }
-        objects.put(object.name, object);
+        objects.add(object);
         objectsToInit.add(object);
         return true;
     }
 
     public boolean remove(Object3D object) {
-        if (!objects.containsKey(object.name)) {
+        if (!objects.contains(object)) {
             return false;
         }
 
-        objects.remove(object.name);
+        objects.remove(object);
         objectsToDelete.add(object);
         return true;
     }
@@ -106,7 +108,7 @@ public class Scene {
         return true;
     }
 
-    public Map<String, Object3D> getObjects(){
+    public Set<Object3D> getObjects(){
         return objectsReadOnly;
     }
     

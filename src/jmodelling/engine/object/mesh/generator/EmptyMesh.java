@@ -24,6 +24,7 @@
 package jmodelling.engine.object.mesh.generator;
 
 import com.jogamp.opengl.GL2;
+import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.mesh.Mesh;
 import jmodelling.engine.object.mesh.MeshObject;
 
@@ -47,6 +48,16 @@ public class EmptyMesh extends MeshObject{
 
     @Override
     public void delete(GL2 gl) {
+    }
+
+    @Override
+    public BoundingSphere getBoundingSphere() {
+        return null;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return false;
     }
     
     

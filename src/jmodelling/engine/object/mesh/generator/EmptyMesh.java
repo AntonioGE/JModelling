@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.object.mesh.generator;
 
+import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.mesh.Mesh;
 import jmodelling.engine.object.mesh.MeshObject;
 
@@ -34,6 +35,18 @@ public class EmptyMesh extends MeshObject{
     
     public EmptyMesh(Mesh mesh) {
         super(mesh);
+    }
+
+    @Override
+    public void init(GL2 gl) {
+    }
+
+    @Override
+    public void update(GL2 gl) {
+    }
+
+    @Override
+    public void delete(GL2 gl) {
     }
     
     

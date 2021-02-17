@@ -44,6 +44,7 @@ import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.ListUtils;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
@@ -112,12 +113,14 @@ public class MainFrame extends JFrame {
         Point s2 = new Point(0, 0);
         System.out.println("Duplicate: " + ListUtils.hasDuplicates(s1, s2));
 
-        /*
-        try {
-            ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Pozo.obj");
-        } catch (IOException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        IdentitySet set = new IdentitySet();
+        Point p = new Point(0, 0);
+        set.add(new Point(0, 0));
+        set.add(new Point(0, 0));
+        set.add(p);
+        set.add(p);
+        System.out.println();
+        
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

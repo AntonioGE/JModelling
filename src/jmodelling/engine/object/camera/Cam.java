@@ -25,7 +25,6 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
-import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -125,4 +124,19 @@ public abstract class Cam extends Object3D {
     
     @Override
     public abstract void renderOpaque(GL2 gl);
+    
+    @Override
+    public void init(GL2 gl){
+    
+    };
+    
+    @Override
+    public void update(GL2 gl){
+    
+    };
+    
+    @Override
+    public void delete(GL2 gl){
+    
+    };
 }

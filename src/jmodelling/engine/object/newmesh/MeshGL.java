@@ -25,12 +25,10 @@ package jmodelling.engine.object.newmesh;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLArrayData;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;
-import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -38,8 +36,6 @@ import jmodelling.math.vec.Vec3f;
  */
 public class MeshGL {
 
-    //int[] vao;
-    //int[] vbo;
     public FloatBuffer vVtxs;
     public FloatBuffer cVtxs;
 
@@ -49,38 +45,41 @@ public class MeshGL {
     public HashMap<Material, ShapeGL> shapes;
 
     public MeshGL(Mesh mesh) {
-        vVtxs = genVVtxs(mesh);
-        cVtxs = genCVtxs(mesh);
-
-        vEdges = genVEdges(mesh);
-        cEdges = genCEdges(mesh);
-
-        //TODO: Triangulate polygons here!!!
-        shapes = genShapes(mesh);
+        genData(mesh);
     }
 
     //TODO: Temp code. Move to renderer
     public void init(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
-            shape.vbo = new int[4];
-            gl.glGenBuffers(shape.vbo.length, shape.vbo, 0);
+            shape.vbos = new int[4];
+            gl.glGenBuffers(shape.vbos.length, shape.vbos, 0);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[0]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.vTris.limit() * Float.BYTES, shape.vTris, GL2.GL_STATIC_DRAW);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[1]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.tTris.limit() * Float.BYTES, shape.tTris, GL2.GL_STATIC_DRAW);
             
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[2]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.nTris.limit() * Float.BYTES, shape.nTris, GL2.GL_STATIC_DRAW);
             
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[3]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.cTris.limit() * Float.BYTES, shape.cTris, GL2.GL_STATIC_DRAW);
 
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
         }
     }
 
+    public void update(GL2 gl, MeshGL mesh){
+        
+    }
+    
+    public void delete(GL2 gl){
+        shapes.values().forEach((shape) -> {
+            gl.glDeleteBuffers(shape.vbos.length, shape.vbos, 0);
+        });
+    }
+    
     public void render(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
 
@@ -89,16 +88,16 @@ public class MeshGL {
             gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
             gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[1]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
             gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, 0);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[3]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
             gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[2]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
             gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
 
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbo[0]);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
             gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
 
             gl.glDrawArrays(GL2.GL_TRIANGLES, 0, shape.vTris.limit() / 3);
@@ -112,6 +111,17 @@ public class MeshGL {
         }
     }
 
+    public final void genData(Mesh mesh){
+        vVtxs = genVVtxs(mesh);
+        cVtxs = genCVtxs(mesh);
+
+        vEdges = genVEdges(mesh);
+        cEdges = genCEdges(mesh);
+
+        //TODO: Triangulate polygons here!!!
+        shapes = genShapes(mesh);
+    }
+    
     private static HashMap<Material, ShapeGL> genShapes(Mesh mesh) {
         HashMap<Material, Integer> polysPerMat = mesh.getPolysPerMat();
         HashMap<Material, ShapeGL> shapes = new HashMap<>(polysPerMat.size());

@@ -70,29 +70,22 @@ public class NewMeshObject extends Object3D{
         
         gl.glPopMatrix();
     }
+
+    @Override
+    public void init(GL2 gl) {
+        meshGL.init(gl);
+    }
+
+    @Override
+    public void update(GL2 gl) {
+    
+    }
+
+    @Override
+    public void delete(GL2 gl) {
+        
+    }
     
     
-    
-    /*
-    public void renderShapes(GL2 gl){
-        for(ShapeGL shape : meshGL.shapes.values()){
-            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-            gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-            gl.glTexCoordPointer(2, GL2.GL_FLOAT, 0, shape.tTris);
-            gl.glColorPointer(3, GL2.GL_FLOAT, 0, shape.cTris);
-            gl.glNormalPointer(GL2.GL_FLOAT, 0, shape.nTris);
-            gl.glVertexPointer(3, GL2.GL_FLOAT, 0, shape.vTris);
-
-            gl.glDrawArrays(GL2.GL_TRIANGLES, 0, shape.vTris.limit() / 3);
-
-            gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-            gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-            gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-            gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        }
-    }*/
     
 }   

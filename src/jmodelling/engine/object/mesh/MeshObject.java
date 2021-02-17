@@ -38,15 +38,15 @@ public abstract class MeshObject extends Object3D {
 
     public Mesh mesh;
 
-    public MeshObject(Mesh mesh){
+    public MeshObject(Mesh mesh) {
         this.mesh = mesh;
     }
-    
+
     @Override
     public void renderOpaque(GL2 gl) {
         gl.glPushMatrix();
         gl.glMultMatrixf(getLocalAxis().toArray(), 0);
-        
+
         renderShapes(gl, mesh.tris, GL2.GL_TRIANGLES);
         renderShapes(gl, mesh.quads, GL2.GL_QUADS);
         gl.glPopMatrix();
@@ -54,7 +54,7 @@ public abstract class MeshObject extends Object3D {
 
     //TODO: Remove this temporary method
     public static void renderShapes(GL2 gl, HashMap<Material, Shape> shapes, int shapeType) {
-        
+
         shapes.entrySet().forEach((shape) -> {
             gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
             gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
@@ -74,5 +74,17 @@ public abstract class MeshObject extends Object3D {
             gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         });
     }
-    
+
+    @Override
+    public void init(GL2 gl) {
+    }
+
+    @Override
+    public void update(GL2 gl) {
+    }
+
+    @Override
+    public void delete(GL2 gl) {
+    }
+
 }

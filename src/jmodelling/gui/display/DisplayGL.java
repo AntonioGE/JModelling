@@ -158,6 +158,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         setFocusable(true);
 
+        
     }
 
     @Override

@@ -75,6 +75,10 @@ public abstract class Object3D {
 
     public abstract void renderOpaque(GL2 gl);
 
+    public abstract void init(GL2 gl);
+    public abstract void update(GL2 gl);
+    public abstract void delete(GL2 gl);
+    
     public Mat4f getLocalAxis() {
         Mat4f t = TransfMat.translation_(loc);
         Mat4f rx = TransfMat.rotationDeg_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));

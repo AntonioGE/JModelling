@@ -23,20 +23,83 @@
  */
 package jmodelling.engine.scene;
 
+import com.jogamp.opengl.GL2;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
  * @author ANTONIO
  */
 public class Scene {
-    
-    public HashMap<String, Object3D> objects;
-    
-    public Scene(){
+
+    private final HashMap<String, Object3D> objects;
+
+    private final IdentitySet<Object3D> objectsToInit;
+    private final IdentitySet<Object3D> objectsToDelete;
+    private final IdentitySet<Object3D> objectsToUpdate;
+
+    public Scene() {
         objects = new HashMap<>();
+
+        objectsToInit = new IdentitySet();
+        objectsToDelete = new IdentitySet();
+        objectsToUpdate = new IdentitySet();
+
     }
-    
+
+    public void updateGL(GL2 gl) {
+        removeObjects(gl);
+        updateObjects(gl);
+        initObjects(gl);
+    }
+
+    private void removeObjects(GL2 gl) {
+        objectsToDelete.forEach((obj) -> {
+            obj.delete(gl);
+        });
+        objectsToDelete.clear();
+    }
+
+    private void initObjects(GL2 gl) {
+        objectsToInit.forEach((obj) -> {
+            obj.init(gl);
+        });
+        objectsToInit.clear();
+    }
+
+    private void updateObjects(GL2 gl) {
+        objectsToUpdate.forEach((obj) -> {
+            obj.update(gl);
+        });
+        objectsToUpdate.clear();
+    }
+
+    public boolean add(Object3D object) {
+        if (objects.containsKey(object.name)) {
+            return false;
+        }
+        objects.put(object.name, object);
+        objectsToInit.add(object);
+        return true;
+    }
+
+    public boolean remove(Object3D object) {
+        if (!objects.containsKey(object.name)) {
+            return false;
+        }
+
+        objects.remove(object.name);
+        objectsToDelete.add(object);
+        return true;
+    }
+
+    public boolean update(Object3D object) {
+        objectsToUpdate.add(object);
+        return true;
+    }
+
 }

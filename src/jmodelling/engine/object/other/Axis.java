@@ -72,4 +72,16 @@ public class Axis extends Object3D {
         gl.glPopMatrix();
     }
 
+    @Override
+    public void init(GL2 gl) {
+    }
+
+    @Override
+    public void update(GL2 gl) {
+    }
+
+    @Override
+    public void delete(GL2 gl) {
+    }
+
 }

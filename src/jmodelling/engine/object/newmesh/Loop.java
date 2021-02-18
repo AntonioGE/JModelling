@@ -35,7 +35,7 @@ public class Loop {
 
     public Vertex vtx;
     public Edge edge;
-    public Polygon poly;
+    //public Polygon poly;
 
     public Vec3f nrm;
     public Vec3f clr;

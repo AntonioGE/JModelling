@@ -139,7 +139,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     private Scene scene = new Scene();
 
-    private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -159,7 +160,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         nObject.loc.set(5.0f, 2.0f, 1.0f);
 
         for(int i = 0; i < 100; i++){
-            //scene.add(new )
+            Object3D newObject = nObject.clone();
+            newObject.loc.x = i * 6.0f;
+            scene.add(newObject);
         }
         
         addGLEventListener(this);

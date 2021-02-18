@@ -35,9 +35,25 @@ public class Vertex extends Vec3f{
         super(x, y, z);
     }
     
+    public Vertex(Vertex other){
+        set(other);
+    }
+    
     @Override
     public Vertex clone(){
-        return (Vertex) super.clone();
+        return new Vertex(this);
     }
+    
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+    
+    
     
 }

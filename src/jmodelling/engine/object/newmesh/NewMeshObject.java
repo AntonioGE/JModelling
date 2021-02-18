@@ -55,7 +55,7 @@ public class NewMeshObject extends Object3D{
     public NewMeshObject(String objPath){
         try {
             HashMap<String, Mesh> meshes = ObjReader.readObj(objPath);
-            this.mesh = meshes.get("Suzanne");
+            this.mesh = meshes.get("Suzanne_Cube");
             
             //mesh.applyFlatShading();
             
@@ -68,15 +68,15 @@ public class NewMeshObject extends Object3D{
     }
     
     public NewMeshObject(NewMeshObject other){
+        this.mesh = other.mesh.clone();
+        meshGL = new MeshGL(mesh);
         
+        calculateBounds();
     }
     
-    //TODO: Finish the mesh clone method
     @Override
-    public NewMeshObject clone() throws CloneNotSupportedException{
-        super.clone();
-        
-        return null;
+    public NewMeshObject clone() {
+        return new NewMeshObject(this);
     }
     
     

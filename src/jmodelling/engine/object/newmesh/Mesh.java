@@ -25,6 +25,7 @@ package jmodelling.engine.object.newmesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
@@ -54,13 +55,43 @@ public class Mesh {
 
     public Mesh(Mesh other) {
         this();
-
-        other.vtxs.forEach((v) -> {
-            vtxs.add(v.clone());
-        });
-
+        
+        IdentityHashMap<Vertex, Vertex> vToCopy = new IdentityHashMap<>(other.vtxs.size()); 
+        for(Vertex vtx : other.vtxs){
+            Vertex vCopy = vtx.clone();
+            vtxs.add(vCopy);
+            vToCopy.put(vtx, vCopy);
+        }
+        
+        IdentityHashMap<Edge, Edge> eToCopy = new IdentityHashMap<>(other.edges.size());
+        for(Edge edge : other.edges){
+            Vertex v0Copy = vToCopy.get(edge.v0);
+            Vertex v1Copy = vToCopy.get(edge.v1);
+            Edge edgeCopy = new Edge(v0Copy, v1Copy);
+            edges.add(edgeCopy);
+            eToCopy.put(edge, edgeCopy);
+        }
+        
+        for(Polygon poly : other.polys){
+            LinkedHashSet<Loop> loopsCopy = new LinkedHashSet<>(poly.loops.size());
+            for(Loop loop : poly.loops){
+                Vertex vCopy = vToCopy.get(loop.vtx);
+                Edge eCopy = eToCopy.get(loop.edge);
+                if(!eToCopy.containsKey(loop.edge)){//TODO: remove this
+                    System.out.println("NULL");
+                }
+                Loop loopCopy = new Loop(vCopy, eCopy, loop.nrm.clone(), loop.clr.clone(), loop.uv.clone());
+                loopsCopy.add(loopCopy);
+            }
+            polys.add(new Polygon(loopsCopy, poly.mat));
+        }
     }
 
+    @Override
+    public Mesh clone(){
+        return new Mesh(this);
+    }
+    
     public void addVertex(Vertex vtx) {
         vtxs.add(vtx);
     }
@@ -88,6 +119,9 @@ public class Mesh {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
+            if(edges.contains(edge)){//TODO: Remove this
+                //edge = edges.
+            }
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
                     edge, nrms.get(i), clrs.get(i), uvs.get(i));
 

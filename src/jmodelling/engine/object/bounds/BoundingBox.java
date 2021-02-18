@@ -24,7 +24,6 @@
 package jmodelling.engine.object.bounds;
 
 import jmodelling.engine.object.newmesh.Mesh;
-import jmodelling.engine.object.newmesh.Vertex;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -45,7 +44,7 @@ public class BoundingBox {
         
         min = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         max = new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
-        for (Vertex v : mesh.vtxs) {
+        for (Vec3f v : mesh.vtxs) {
             if(v.x < min.x){
                 min.x = v.x;
             }else if(v.x > max.x){

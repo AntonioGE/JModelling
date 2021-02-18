@@ -38,7 +38,6 @@ import javax.swing.border.LineBorder;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.MeshEditable;
-import jmodelling.engine.object.newmesh.Vertex;
 import jmodelling.engine.object.newmesh.Edge;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.mat.Mat3f;
@@ -102,13 +101,7 @@ public class MainFrame extends JFrame {
 
         System.out.println(Runtime.getRuntime().availableProcessors());
 
-        Vertex v1 = new Vertex(0.0f, 0.0f, 0.0f);
-        Vertex v2 = new Vertex(1.0f, 1.0f, 1.0f);
-        Vertex v3 = new Vertex(1.0f, 1.0f, 1.0f);
-        Edge e1 = new Edge(v1, v2);
-        Edge e2 = new Edge(v1, v2);
-        System.out.println(e1.equals(e2));
-
+        
         Point s1 = new Point(0, 0);
         Point s2 = new Point(0, 0);
         System.out.println("Duplicate: " + ListUtils.hasDuplicates(s1, s2));

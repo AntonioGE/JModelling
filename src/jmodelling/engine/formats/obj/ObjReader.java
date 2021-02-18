@@ -34,7 +34,6 @@ import java.util.Scanner;
 import java.util.Set;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.newmesh.Mesh;
-import jmodelling.engine.object.newmesh.Vertex;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
@@ -172,7 +171,7 @@ public class ObjReader {
                     //Vertex coordinates
                     if(!vIndsAdded.keySet().contains(v.vInd)){
                         Float[] coords = vCoords.get(v.vInd);
-                        mesh.addVertex(new Vertex(coords[0], coords[1], coords[2]));
+                        mesh.addVertex(new Vec3f(coords[0], coords[1], coords[2]));
                         vInds.add(nextIndex);
                         vIndsAdded.put(v.vInd, nextIndex);
                         nextIndex++;

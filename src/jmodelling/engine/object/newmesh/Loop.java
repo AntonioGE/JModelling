@@ -33,7 +33,7 @@ import jmodelling.math.vec.Vec3f;
  */
 public class Loop {
 
-    public Vertex vtx;
+    public Vec3f vtx;
     public Edge edge;
     //public Polygon poly;
 
@@ -41,7 +41,7 @@ public class Loop {
     public Vec3f clr;
     public Vec2f uv;
 
-    public Loop(Vertex vtx, Edge edge, Vec3f nrm, Vec3f clr, Vec2f uv) {
+    public Loop(Vec3f vtx, Edge edge, Vec3f nrm, Vec3f clr, Vec2f uv) {
         if (!edge.contains(vtx)) {
             throw new IllegalArgumentException();
         }
@@ -52,7 +52,7 @@ public class Loop {
         this.uv = uv;
     }
 
-    public Loop(Vertex vtx, Edge edge) {
+    public Loop(Vec3f vtx, Edge edge) {
         this(vtx, edge,
                 new Vec3f(0.0f, 0.0f, 1.0f),
                 new Vec3f(1.0f, 1.0f, 1.0f),

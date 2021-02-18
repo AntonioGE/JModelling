@@ -24,6 +24,7 @@
 package jmodelling.engine.object.newmesh;
 
 import java.util.Objects;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -31,10 +32,10 @@ import java.util.Objects;
  */
 public class Edge {
 
-    public final Vertex v0;
-    public final Vertex v1;
+    public final Vec3f v0;
+    public final Vec3f v1;
 
-    public Edge(Vertex v0, Vertex v1) {
+    public Edge(Vec3f v0, Vec3f v1) {
         if (v0 == v1) {
             throw new IllegalArgumentException();
         }
@@ -42,7 +43,7 @@ public class Edge {
         this.v1 = v1;
     }
     
-    public boolean contains(Vertex vtx){
+    public boolean contains(Vec3f vtx){
         return vtx == v0 || vtx == v1;
     }
 

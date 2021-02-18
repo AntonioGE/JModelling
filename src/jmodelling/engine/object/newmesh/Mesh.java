@@ -41,7 +41,7 @@ import jmodelling.utils.collections.IdentitySet;
  */
 public class Mesh {
 
-    public ArrayList<Vertex> vtxs;
+    public ArrayList<Vec3f> vtxs;
     public HashMap<Edge, Edge> edges;
     public LinkedHashSet<Polygon> polys;
 
@@ -54,21 +54,30 @@ public class Mesh {
 
         mats = new LinkedHashSet<>();
     }
+    
+    public Mesh(MeshGL meshGL){
+        this();
+        
+        final int nVertices = meshGL.vVtxs.limit() / (3 * 3);
+        for(int i = 0; i < nVertices; i++){
+            //vtxs.add(new Vertex)
+        }
+    }
 
     public Mesh(Mesh other) {
         this();
         
-        IdentityHashMap<Vertex, Vertex> vToCopy = new IdentityHashMap<>(other.vtxs.size()); 
-        for(Vertex vtx : other.vtxs){
-            Vertex vCopy = vtx.clone();
+        IdentityHashMap<Vec3f, Vec3f> vToCopy = new IdentityHashMap<>(other.vtxs.size()); 
+        for(Vec3f vtx : other.vtxs){
+            Vec3f vCopy = vtx.clone();
             vtxs.add(vCopy);
             vToCopy.put(vtx, vCopy);
         }
         
         IdentityHashMap<Edge, Edge> eToCopy = new IdentityHashMap<>(other.edges.size());
         for(Edge edge : other.edges.keySet()){
-            Vertex v0Copy = vToCopy.get(edge.v0);
-            Vertex v1Copy = vToCopy.get(edge.v1);
+            Vec3f v0Copy = vToCopy.get(edge.v0);
+            Vec3f v1Copy = vToCopy.get(edge.v1);
             Edge edgeCopy = new Edge(v0Copy, v1Copy);
             edges.put(edgeCopy, edgeCopy);
             eToCopy.put(edge, edgeCopy);
@@ -77,7 +86,7 @@ public class Mesh {
         for(Polygon poly : other.polys){
             LinkedHashSet<Loop> loopsCopy = new LinkedHashSet<>(poly.loops.size());
             for(Loop loop : poly.loops){
-                Vertex vCopy = vToCopy.get(loop.vtx);
+                Vec3f vCopy = vToCopy.get(loop.vtx);
                 Edge eCopy = eToCopy.get(loop.edge);
                 Loop loopCopy = new Loop(vCopy, eCopy, loop.nrm.clone(), loop.clr.clone(), loop.uv.clone());
                 loopsCopy.add(loopCopy);
@@ -91,7 +100,7 @@ public class Mesh {
         return new Mesh(this);
     }
     
-    public void addVertex(Vertex vtx) {
+    public void addVertex(Vec3f vtx) {
         vtxs.add(vtx);
     }
 

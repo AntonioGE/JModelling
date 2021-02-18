@@ -194,7 +194,7 @@ public class MeshGL {
 
     private static FloatBuffer genVEdges(Mesh mesh) {
         FloatBuffer buff = Buffers.newDirectFloatBuffer(mesh.edges.size() * 2 * 3);
-        mesh.edges.forEach((e) -> {
+        mesh.edges.keySet().forEach((e) -> {
             buff.put(e.v0.x);
             buff.put(e.v0.y);
             buff.put(e.v0.z);
@@ -208,7 +208,7 @@ public class MeshGL {
 
     private static FloatBuffer genCEdges(Mesh mesh) {
         FloatBuffer buff = Buffers.newDirectFloatBuffer(mesh.edges.size() * 2 * 3);
-        mesh.edges.forEach((e) -> {
+        mesh.edges.keySet().forEach((e) -> {
             buff.put(0.0f);
             buff.put(0.0f);
             buff.put(0.0f);

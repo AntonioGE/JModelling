@@ -26,12 +26,14 @@ package jmodelling.engine.object.newmesh;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.ListUtils;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
@@ -40,14 +42,14 @@ import jmodelling.utils.ListUtils;
 public class Mesh {
 
     public ArrayList<Vertex> vtxs;
-    public LinkedHashSet<Edge> edges;
+    public HashMap<Edge, Edge> edges;
     public LinkedHashSet<Polygon> polys;
 
     public LinkedHashSet<Material> mats;
 
     public Mesh() {
         vtxs = new ArrayList<>();
-        edges = new LinkedHashSet<>();
+        edges = new LinkedHashMap<>();
         polys = new LinkedHashSet<>();
 
         mats = new LinkedHashSet<>();
@@ -64,11 +66,11 @@ public class Mesh {
         }
         
         IdentityHashMap<Edge, Edge> eToCopy = new IdentityHashMap<>(other.edges.size());
-        for(Edge edge : other.edges){
+        for(Edge edge : other.edges.keySet()){
             Vertex v0Copy = vToCopy.get(edge.v0);
             Vertex v1Copy = vToCopy.get(edge.v1);
             Edge edgeCopy = new Edge(v0Copy, v1Copy);
-            edges.add(edgeCopy);
+            edges.put(edgeCopy, edgeCopy);
             eToCopy.put(edge, edgeCopy);
         }
         
@@ -77,9 +79,6 @@ public class Mesh {
             for(Loop loop : poly.loops){
                 Vertex vCopy = vToCopy.get(loop.vtx);
                 Edge eCopy = eToCopy.get(loop.edge);
-                if(!eToCopy.containsKey(loop.edge)){//TODO: remove this
-                    System.out.println("NULL");
-                }
                 Loop loopCopy = new Loop(vCopy, eCopy, loop.nrm.clone(), loop.clr.clone(), loop.uv.clone());
                 loopsCopy.add(loopCopy);
             }
@@ -97,7 +96,8 @@ public class Mesh {
     }
 
     public void addEdge(int v1, int v2) {
-        edges.add(new Edge(vtxs.get(v1), vtxs.get(v2)));
+        Edge edge = new Edge(vtxs.get(v1), vtxs.get(v2));
+        edges.put(edge, edge);
     }
 
     public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
@@ -119,8 +119,8 @@ public class Mesh {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
-            if(edges.contains(edge)){//TODO: Remove this
-                //edge = edges.
+            if(edges.containsKey(edge)){
+                edge = edges.get(edges.get(edge));
             }
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
                     edge, nrms.get(i), clrs.get(i), uvs.get(i));
@@ -130,7 +130,9 @@ public class Mesh {
         }
 
         Polygon poly = new Polygon(newLoops, mat);
-        edges.addAll(newEdges);
+        for(Edge edge : newEdges){
+            edges.put(edge, edge);
+        }
         polys.add(poly);
         mats.add(mat);
     }

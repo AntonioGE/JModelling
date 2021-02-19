@@ -122,6 +122,28 @@ public class Vec2f {
         buffer.put(offset + 1, y);
     }
 
+    /**
+     * Writes the vector data into a array at the offset location
+     *
+     * @param array array to write in
+     * @param offset the position
+     * @param src the vector to write
+     */
+    public static void writeInArray(float[] array, int offset, Vec2f src) {
+        array[offset] = src.x;
+        array[offset + 1] = src.y;
+    }
+
+    /**
+     * Writes the vector data into a array at the offset location
+     *
+     * @param array array to write in
+     * @param offset the position
+     */
+    public void writeInArray(float[] array, int offset) {
+        writeInArray(array, offset, this);
+    }
+    
     public float norm() {
         return (float) Math.sqrt(x * x + y * y);
     }

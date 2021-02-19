@@ -28,6 +28,8 @@ import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import jmodelling.engine.object.cmesh.CMesh;
+import jmodelling.engine.object.cmesh.CShape;
 import jmodelling.engine.object.material.Material;
 
 /**
@@ -47,7 +49,7 @@ public class MeshGL {
     public MeshGL(Mesh mesh) {
         genData(mesh);
     }
-
+    
     //TODO: Temp code. Move to renderer
     public void init(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
@@ -113,6 +115,49 @@ public class MeshGL {
         }
     }
 
+    public final void genData(CMesh cmesh){
+        
+    }
+    
+    private static FloatBuffer genVVtxs(CMesh mesh) {
+        return Buffers.newDirectFloatBuffer(mesh.vtxs);
+    }
+    
+    private static FloatBuffer genCVtxs(CMesh cmesh) {
+        return Buffers.newDirectFloatBuffer(new float[cmesh.vtxs.length]);
+    }
+    
+    private static FloatBuffer genVEdges(CMesh cmesh) {
+        FloatBuffer buff = Buffers.newDirectFloatBuffer(cmesh.edges.length * 3);
+        for(int i = 0; i < cmesh.edges.length; i++){
+            int vInd = cmesh.edges[i] * 3;
+            buff.put(cmesh.vtxs[vInd]);
+            buff.put(cmesh.vtxs[vInd + 1]);
+            buff.put(cmesh.vtxs[vInd + 2]);
+        }
+        return buff;
+    }
+    
+    private static FloatBuffer genCEdges(CMesh cmesh) {
+        FloatBuffer buff = Buffers.newDirectFloatBuffer(cmesh.edges.length * 3);
+        for(int i = 0; i < cmesh.edges.length; i++){
+            buff.put(0.0f);
+            buff.put(0.0f);
+            buff.put(0.0f);
+        }
+        return buff;
+    }
+    
+    private static HashMap<Material, ShapeGL> genShapes(CMesh cmesh) {
+        HashMap<Material, ShapeGL> shapes = new HashMap<>(cmesh.shapes.size());
+        for(CShape cshape : cmesh.shapes.values()){
+            ShapeGL shapeGL = new ShapeGL();
+            shapeGL.mat = cshape.mat;
+            //shapeGL.vTris = cshape.
+        }
+        return null;
+    }
+    
     public final void genData(Mesh mesh){
         vVtxs = genVVtxs(mesh);
         cVtxs = genCVtxs(mesh);

@@ -56,12 +56,12 @@ public class Mesh {
     }
     
     public Mesh(MeshGL meshGL){
-        this();
+        vtxs = new ArrayList<>(meshGL.vVtxs.limit() / (3 * 3));
         
-        final int nVertices = meshGL.vVtxs.limit() / (3 * 3);
-        for(int i = 0; i < nVertices; i++){
-            //vtxs.add(new Vertex)
+        for(int i = 0; i < meshGL.vVtxs.limit(); i += 9){
+            vtxs.add(new Vec3f(meshGL.vVtxs, i));
         }
+        
     }
 
     public Mesh(Mesh other) {

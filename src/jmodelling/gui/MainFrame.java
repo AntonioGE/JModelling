@@ -92,29 +92,8 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        new Vec3f(0, 0, 0).anglesXZDegToVector().print();
-        new Vec3f(90, 0, -90).anglesXZDegToVector().print();
-
-        long before = System.nanoTime();
-
-        System.out.println((System.nanoTime() - before));
-
         System.out.println(Runtime.getRuntime().availableProcessors());
 
-        
-        Point s1 = new Point(0, 0);
-        Point s2 = new Point(0, 0);
-        System.out.println("Duplicate: " + ListUtils.hasDuplicates(s1, s2));
-
-        IdentitySet set = new IdentitySet();
-        Point p = new Point(0, 0);
-        set.add(new Point(0, 0));
-        set.add(new Point(0, 0));
-        set.add(p);
-        set.add(p);
-        System.out.println();
-        
-        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame("JModelling").setVisible(true);

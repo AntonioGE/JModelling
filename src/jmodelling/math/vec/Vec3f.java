@@ -78,7 +78,7 @@ public class Vec3f {
         this.y = data[1];
         this.z = data[2];
     }
-    
+
     /**
      * Constructs a Vec3f using a float array containing the x, y, z coordinates
      * at a certain offset
@@ -91,10 +91,10 @@ public class Vec3f {
         this.y = data[offset + 1];
         this.z = data[offset + 2];
     }
-    
+
     /**
-     * Constructs a Vec3f using a float buffer containing the x, y, z coordinates
-     * at a certain offset
+     * Constructs a Vec3f using a float buffer containing the x, y, z
+     * coordinates at a certain offset
      *
      * @param data the array containing the x, y, z coordinates
      * @param offset position of the x coordinates in the array
@@ -211,6 +211,65 @@ public class Vec3f {
         buffer.put(offset, x);
         buffer.put(offset + 1, y);
         buffer.put(offset + 2, z);
+    }
+
+    /**
+     * Writes the vector data into a array at the offset location
+     *
+     * @param array array to write in
+     * @param offset the position
+     * @param src the vector to write
+     */
+    public static void writeInArray(float[] array, int offset, Vec3f src) {
+        array[offset] = src.x;
+        array[offset + 1] = src.y;
+        array[offset + 2] = src.z;
+    }
+
+    /**
+     * Writes the vector data into a array at the offset location
+     *
+     * @param array array to write in
+     * @param offset the position
+     */
+    public void writeInArray(float[] array, int offset) {
+        writeInArray(array, offset, this);
+    }
+
+    /**
+     * Writes a vector array data into a float array at the offset location
+     *
+     * @param array array to write in
+     * @param offset the position
+     * @param vtxs vector array
+     */
+    public static void writeInArray(float[] array, int offset, Vec3f... vtxs) {
+        for (Vec3f vtx : vtxs) {
+            writeInArray(array, offset, vtx);
+            offset += 3;
+        }
+    }
+
+    /**
+     * Writes a vector array data into a float array
+     *
+     * @param array array to write in
+     * @param vtxs vector array
+     */
+    public static void writeInArray(float[] array, Vec3f... vtxs) {
+        writeInArray(array, 0, vtxs);
+    }
+
+    /**
+     * Creates a new float array containing all the vertex coordinates
+     *
+     * @param vtxs vector array to write
+     * @return new array with all the vector data
+     */
+    public static float[] toArray(Vec3f... vtxs) {
+        float[] array = new float[vtxs.length * 3];
+        writeInArray(array, vtxs);
+        return array;
     }
 
     /**
@@ -544,8 +603,8 @@ public class Vec3f {
     }
 
     /**
-     * Performs element-wise (Hadamard product) multiplication of two vectors 
-     * 
+     * Performs element-wise (Hadamard product) multiplication of two vectors
+     *
      * @param src1 vector to be multiplied
      * @param src2 vector to be multiplied
      * @param dst output vector containing the result
@@ -555,43 +614,43 @@ public class Vec3f {
         dst.y = src1.y * src2.y;
         dst.z = src1.z * src2.z;
     }
-    
+
     /**
-     * Performs element-wise multiplication (Hadamard product) of two vectors 
-     * 
+     * Performs element-wise multiplication (Hadamard product) of two vectors
+     *
      * @param src1 vector to be multiplied
      * @param src2 vector to be multiplied
      * @return new vector containing the result
      */
-    public static Vec3f had_(Vec3f src1, Vec3f src2){
+    public static Vec3f had_(Vec3f src1, Vec3f src2) {
         Vec3f dst = new Vec3f();
         had(src1, src2, dst);
         return dst;
     }
-    
+
     /**
-     * Performs element-wise multiplication (Hadamard product) of this vector 
-     * with another and stores the result in this vector 
-     * 
+     * Performs element-wise multiplication (Hadamard product) of this vector
+     * with another and stores the result in this vector
+     *
      * @param other vector to be multiplied
      * @return this vector containing the result
      */
-    public Vec3f had(Vec3f other){
+    public Vec3f had(Vec3f other) {
         had(this, other, this);
         return this;
     }
-    
+
     /**
-     * Performs element-wise multiplication (Hadamard product) of this vector 
+     * Performs element-wise multiplication (Hadamard product) of this vector
      * with another and stores the result in a new vector
-     * 
+     *
      * @param other vector to be multiplied
      * @return new vector containing the result
      */
-    public Vec3f had_(Vec3f other){
+    public Vec3f had_(Vec3f other) {
         return had_(this, other);
     }
-    
+
     /**
      * Scales a vector by a scalar value
      *
@@ -681,7 +740,7 @@ public class Vec3f {
     public Vec3f negate_() {
         return negate_(this);
     }
-    
+
     /**
      * Converts a vector of angles from radians to degrees
      *

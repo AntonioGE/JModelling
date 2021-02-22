@@ -23,66 +23,41 @@
  */
 package jmodelling.engine.object.newmesh;
 
-import com.jogamp.opengl.GL2;
-import jmodelling.engine.object.Object3D;
-import jmodelling.engine.object.bounds.BoundingSphere;
-import jmodelling.engine.object.cmesh.CMesh;
-import jmodelling.math.vec.Vec3f;
+import com.jogamp.common.nio.Buffers;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import jmodelling.engine.object.material.Material;
 
 /**
  *
  * @author ANTONIO
  */
-public class MeshObject2 extends Object3D{
-
-    public CMesh cmesh;
-    public MeshGL2 meshGL;
+public class ShapeGL2 {
     
-    public MeshObject2(String name, CMesh cmesh){
-        super(name, new Vec3f(0, 0 ,0));
-        this.cmesh = cmesh;
-        this.meshGL = new MeshGL2(cmesh);
-        
-        //calculateBounds();
-    }
+    public Material mat;
+  
+    public int[] ebo;
+    public int[] vbos;
     
-    public MeshObject2(String name, Mesh mesh){
-        this(name, new CMesh(mesh));
-    }
+    public int nElements;
     
-    @Override
-    public void renderOpaque(GL2 gl) {
-        gl.glPushMatrix();
-        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+    public FloatBuffer vtxs;
+    public FloatBuffer nrms;
+    public FloatBuffer clrs;
+    public FloatBuffer uvs;
+    
+    public IntBuffer elems;
+
+    public ShapeGL2(Material mat, int nNonRepeated, int nElements){
+        this.mat = mat;
+        this.nElements = nElements;
         
-        meshGL.render(gl);
+        vtxs = Buffers.newDirectFloatBuffer(nNonRepeated * 3);
+        nrms = Buffers.newDirectFloatBuffer(nNonRepeated * 3);
+        clrs = Buffers.newDirectFloatBuffer(nNonRepeated * 3);
+        uvs = Buffers.newDirectFloatBuffer(nNonRepeated * 2);
         
-        gl.glPopMatrix();
-    }
-
-    @Override
-    public void init(GL2 gl) {
-        meshGL.init(gl);
-    }
-
-    @Override
-    public void update(GL2 gl) {
-        meshGL.update(gl, meshGL);
-    }
-
-    @Override
-    public void delete(GL2 gl) {
-        meshGL.delete(gl);
-    }
-
-    @Override
-    public BoundingSphere getBoundingSphere() {
-        return null;
-    }
-
-    @Override
-    public boolean isSelectable() {
-        return true;
+        elems = Buffers.newDirectIntBuffer(nElements);
     }
     
 }

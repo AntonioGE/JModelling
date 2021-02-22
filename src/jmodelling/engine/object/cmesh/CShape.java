@@ -24,6 +24,7 @@
 package jmodelling.engine.object.cmesh;
 
 import jmodelling.engine.object.material.Material;
+import jmodelling.engine.object.newmesh.Vertex;
 
 /**
  *
@@ -46,5 +47,18 @@ public class CShape {
         nrmInds = new int[nLoops];
         clrInds = new int[nLoops];
         uvInds = new int[nLoops];
+    }
+    
+    public Vertex getVertex(CMesh cmesh, int vIndex){
+        float[] vtx = new float[3];
+        float[] nrm = new float[3];
+        float[] clr = new float[3];
+        float[] uv = new float[2];
+        
+        System.arraycopy(cmesh.vtxs, vtxInds[vIndex] * 3, vtx, 0, 3);
+        System.arraycopy(cmesh.nrms, nrmInds[vIndex] * 3, nrm, 0, 3);
+        System.arraycopy(cmesh.clrs, clrInds[vIndex] * 3, clr, 0, 3);
+        System.arraycopy(cmesh.uvs, uvInds[vIndex] * 2, uv, 0, 2);
+        return new Vertex(vtx, nrm, clr, uv);
     }
 }

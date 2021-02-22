@@ -49,6 +49,7 @@ import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.MeshObject2;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.raytracing.Raytracer;
@@ -141,6 +142,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
     private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
+    //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -159,9 +162,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         scene.add(nObject);
         nObject.loc.set(5.0f, 2.0f, 1.0f);
 
-        for(int i = 0; i < 5; i++){
-            Object3D newObject = nObject.clone();
-            newObject.name = "Nuevo " + i;
+        for(int i = 0; i < 100; i++){
+            MeshObject2 newObject = new MeshObject2("Nuevo " + i, nObject.mesh);
+            System.out.println(newObject.name);
             newObject.loc.x = i * 6.0f;
             scene.add(newObject);
         }

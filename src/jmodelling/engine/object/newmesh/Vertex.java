@@ -23,66 +23,63 @@
  */
 package jmodelling.engine.object.newmesh;
 
-import com.jogamp.opengl.GL2;
-import jmodelling.engine.object.Object3D;
-import jmodelling.engine.object.bounds.BoundingSphere;
-import jmodelling.engine.object.cmesh.CMesh;
-import jmodelling.math.vec.Vec3f;
+import java.util.Arrays;
 
 /**
  *
  * @author ANTONIO
  */
-public class MeshObject2 extends Object3D{
-
-    public CMesh cmesh;
-    public MeshGL2 meshGL;
+public class Vertex {
     
-    public MeshObject2(String name, CMesh cmesh){
-        super(name, new Vec3f(0, 0 ,0));
-        this.cmesh = cmesh;
-        this.meshGL = new MeshGL2(cmesh);
-        
-        //calculateBounds();
-    }
+    public final float[] vtx; 
+    public final float[] nrm; 
+    public final float[] clr; 
+    public final float[] uv; 
     
-    public MeshObject2(String name, Mesh mesh){
-        this(name, new CMesh(mesh));
-    }
-    
-    @Override
-    public void renderOpaque(GL2 gl) {
-        gl.glPushMatrix();
-        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
-        
-        meshGL.render(gl);
-        
-        gl.glPopMatrix();
+    public Vertex(float[] vtx, float[] nrm, float[] clr, float[] uv){
+        this.vtx = vtx;
+        this.clr = clr;
+        this.nrm = nrm;
+        this.uv = uv;
     }
 
     @Override
-    public void init(GL2 gl) {
-        meshGL.init(gl);
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Arrays.hashCode(this.vtx);
+        hash = 79 * hash + Arrays.hashCode(this.nrm);
+        hash = 79 * hash + Arrays.hashCode(this.clr);
+        hash = 79 * hash + Arrays.hashCode(this.uv);
+        return hash;
     }
 
     @Override
-    public void update(GL2 gl) {
-        meshGL.update(gl, meshGL);
-    }
-
-    @Override
-    public void delete(GL2 gl) {
-        meshGL.delete(gl);
-    }
-
-    @Override
-    public BoundingSphere getBoundingSphere() {
-        return null;
-    }
-
-    @Override
-    public boolean isSelectable() {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vertex other = (Vertex) obj;
+        if (!Arrays.equals(this.vtx, other.vtx)) {
+            return false;
+        }
+        if (!Arrays.equals(this.nrm, other.nrm)) {
+            return false;
+        }
+        if (!Arrays.equals(this.clr, other.clr)) {
+            return false;
+        }
+        if (!Arrays.equals(this.uv, other.uv)) {
+            return false;
+        }
         return true;
     }
+    
+    
     
 }

@@ -56,6 +56,8 @@ public class NewMeshObject extends Object3D{
         try {
             HashMap<String, Mesh> meshes = ObjReader.readObj(objPath);
             this.mesh = meshes.get("Suzanne");
+            //this.mesh = meshes.get("Suzanne_Cube");
+            //this.mesh = meshes.get("Plane");
             
             //mesh.applyFlatShading();
             

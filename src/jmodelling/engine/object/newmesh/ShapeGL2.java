@@ -38,6 +38,7 @@ public class ShapeGL2 {
   
     public int[] ebo;
     public int[] vbos;
+    public int[] vao;
     
     public int nElements;
     

@@ -144,4 +144,22 @@ public class CMesh {
         });
 
     }
+
+    public CMesh(CMesh other){
+        this.vtxs = other.vtxs.clone();
+        this.clrs = other.clrs.clone();
+        this.nrms = other.nrms.clone();
+        this.uvs = other.uvs.clone();
+        this.edges = other.edges.clone();
+        
+        this.shapes = new HashMap<>(other.shapes.size());
+        other.shapes.values().forEach((shape) -> {
+            shapes.put(shape.mat, shape.clone());
+        });
+    }
+    
+    @Override
+    public CMesh clone(){
+        return new CMesh(this);
+    }
 }

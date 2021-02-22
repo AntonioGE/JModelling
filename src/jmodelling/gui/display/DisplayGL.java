@@ -162,8 +162,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         scene.add(nObject);
         nObject.loc.set(5.0f, 2.0f, 1.0f);
 
-        for(int i = 0; i < 100; i++){
-            MeshObject2 newObject = new MeshObject2("Nuevo " + i, nObject.mesh);
+        MeshObject2 temp = new MeshObject2("Temp", nObject.mesh);
+        for(int i = 0; i < 500; i++){
+            MeshObject2 newObject = new MeshObject2("Nuevo " + i, temp.cmesh.clone());
             System.out.println(newObject.name);
             newObject.loc.x = i * 6.0f;
             scene.add(newObject);

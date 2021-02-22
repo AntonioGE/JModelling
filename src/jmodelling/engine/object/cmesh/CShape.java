@@ -49,6 +49,20 @@ public class CShape {
         uvInds = new int[nLoops];
     }
     
+    public CShape(CShape other){
+        other.mat = mat;
+        this.edgeInds = other.edgeInds.clone();
+        this.vtxInds = other.vtxInds.clone();
+        this.nrmInds = other.nrmInds.clone();
+        this.clrInds = other.clrInds.clone();
+        this.uvInds = other.uvInds.clone();
+    }
+    
+    @Override
+    public CShape clone(){
+        return new CShape(this);
+    }
+    
     public Vertex getVertex(CMesh cmesh, int vIndex){
         float[] vtx = new float[3];
         float[] nrm = new float[3];

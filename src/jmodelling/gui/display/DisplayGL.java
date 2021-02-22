@@ -32,6 +32,8 @@ import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -145,6 +147,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
+    private TextRenderer textRenderer;
+
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -163,13 +167,16 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         nObject.loc.set(5.0f, 2.0f, 1.0f);
 
         MeshObject2 temp = new MeshObject2("Temp", nObject.mesh);
-        for(int i = 0; i < 500; i++){
-            MeshObject2 newObject = new MeshObject2("Nuevo " + i, temp.cmesh.clone());
-            System.out.println(newObject.name);
-            newObject.loc.x = i * 6.0f;
-            scene.add(newObject);
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                MeshObject2 newObject = new MeshObject2("Nuevo " + i + " " + j, temp.cmesh);
+                System.out.println(newObject.name);
+                newObject.loc.x = i * 6.0f;
+                newObject.loc.y = j * 6.0f;
+                scene.add(newObject);
+            }
         }
-        
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -191,13 +198,16 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         //gl.glEnable(GL2.GL_LINE_SMOOTH);
 
+        textRenderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12), true, false);
+
         //nObject.meshGL.init(gl);
         scene.updateGL(gl);
+
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
-
+        System.out.println("Dispose");
     }
 
     @Override
@@ -322,6 +332,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
+        textRenderer.beginRendering(getWidth(), getHeight());
+        // optionally set the color
+        textRenderer.setColor(0.0f, 0.0f, 0.0f, 0.9f);
+        textRenderer.draw(System.getProperty("java.version"), 5, 5);
+        // ... more draw commands, color changes, etc.
+        textRenderer.endRendering();
+
     }
 
     @Override
@@ -474,10 +491,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 System.out.println("Num objects: " + scene.getObjects().size());
                 for (Object3D obj : scene.getObjects()) {
                     if (obj.isSelectable()) {
-                        if(Raytracer.rayIntersectsBoundingSphere(cam.loc,
+                        if (Raytracer.rayIntersectsBoundingSphere(cam.loc,
                                 cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
-                                obj)){
-                            System.out.println("INTERSECT SPHERE " + obj.name + " "+ System.currentTimeMillis());
+                                obj)) {
+                            System.out.println("INTERSECT SPHERE " + obj.name + " " + System.currentTimeMillis());
                         }
                         /*
                         if (Raytracer.rayIntersectsMesh(cam.loc,

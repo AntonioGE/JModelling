@@ -157,6 +157,7 @@ public class MeshGL2 {
 
     public void delete(GL2 gl) {
         shapes.values().forEach((shape) -> {
+            gl.glDeleteVertexArrays(shape.vao.length, shape.vao, 0);
             gl.glDeleteBuffers(shape.vbos.length, shape.vbos, 0);
             gl.glDeleteBuffers(shape.ebo.length, shape.ebo, 0);
         });

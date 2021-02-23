@@ -213,7 +213,7 @@ public class Raytracer {
 
     }
 
-    public static Object3D getSelectedMeshObject(Vec3f rayPos, Vec3f rayDir,
+    public static MeshObject2 getSelectedMeshObject(Vec3f rayPos, Vec3f rayDir,
             Set<MeshObject2> objects) {
 
         HashSet<MeshObject2> intersectedMeshes = new HashSet<>();

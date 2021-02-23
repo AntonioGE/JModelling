@@ -152,6 +152,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
     private TextRenderer textRenderer;
+    private MeshObject2 objectSelected = null;
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -204,6 +205,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_POINT_SMOOTH);
         //gl.glEnable(GL2.GL_LINE_SMOOTH);
 
+        gl.glEnable(GL2.GL_STENCIL_TEST);
+        gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
+        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+
         textRenderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12), true, false);
 
         //nObject.meshGL.init(gl);
@@ -220,9 +225,24 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
 
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
 
+        /*
+        gl.glDisable(GL2.GL_DEPTH_TEST);
+        gl.glLoadIdentity();
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glVertex2f(-1.0f, -1.0f);
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glVertex2f(1.0f, -1.0f);
+        gl.glColor3f(0.2f, 0.2f, 0.2f);
+        gl.glVertex2f(1.0f, 1.0f);
+        gl.glColor3f(0.2f, 0.2f, 0.2f);
+        gl.glVertex2f(-1.0f, 1.0f);
+        gl.glEnd();*/
+        
         gl.glEnable(GL2.GL_DEPTH_TEST);
+        gl.glEnable(GL2.GL_BLEND);
 
         gl.glLoadIdentity();
         gl.glEnable(GL2.GL_LIGHTING);
@@ -248,7 +268,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //transf.print();
         //cam.getLocalAxis3f().print();
-        gl.glEnable(GL2.GL_BLEND);
+        
 
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
@@ -261,11 +281,47 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
+        //Stencil
+        /*
+        gl.glClearStencil(0);
+        gl.glClear(GL2.GL_STENCIL_BUFFER_BIT);
+        gl.glEnable(GL2.GL_STENCIL_TEST);
+        gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
+        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+        */
+        gl.glDisable(GL2.GL_STENCIL_TEST);
+        
         scene.updateGL(gl);
         scene.getObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
+            if(obj != objectSelected){
+                obj.renderOpaque(gl);
+            }
         });
 
+        
+        if (objectSelected != null) {
+            //Stencil
+            gl.glClearStencil(0);
+            gl.glClear(GL2.GL_STENCIL_BUFFER_BIT);
+            gl.glEnable(GL2.GL_STENCIL_TEST);
+            gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
+            gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+
+            objectSelected.renderOpaque(gl);
+
+            gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, -1);
+            gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+            gl.glLineWidth(2);
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+
+            gl.glDisable(GL2.GL_LIGHTING);
+            
+            objectSelected.renderOpaque(gl);
+
+            gl.glLineWidth(1);
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        }
+        
         gl.glDisable(GL2.GL_LIGHTING);
 
         cube.renderOpaque(gl);
@@ -335,6 +391,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPopMatrix();
 
         gl.glLineStipple(1, (short) 0xFFFF);
+
+        
 
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
@@ -494,11 +552,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_R:
-                Object3D objSelected = Raytracer.getSelectedMeshObject(cam.loc,
+                MeshObject2 objSelected = Raytracer.getSelectedMeshObject(cam.loc,
                         cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
                         scene.getMeshObjects());
                 if (objSelected != null) {
                     System.out.println(objSelected.name);
+                    this.objectSelected = objSelected;
                 }
 
                 Vec3f point = Raytracer.getClosestIntersectionPoint(cam.loc,
@@ -534,7 +593,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     }
                 }
                 System.out.println((System.nanoTime() - before0) + " ns elapsed");
-                
+
                 long before1 = System.nanoTime();
                 Collection<Vec3f> newPoints = Collections.synchronizedList(new ArrayList<Vec3f>());
                 Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
@@ -577,7 +636,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 }
                 points.addAll(newPoints);
                 System.out.println((System.nanoTime() - before1) + " ns elapsed");
-                
+
                 repaint();
                 break;
             case KeyEvent.VK_X:
@@ -647,6 +706,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         GLCapabilities cap = new GLCapabilities(gp);
         //cap.setSampleBuffers(true);
         //cap.setNumSamples(8);
+        cap.setStencilBits(8);
         return cap;
     }
 

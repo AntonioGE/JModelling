@@ -25,6 +25,7 @@ package jmodelling.engine.object.cmesh;
 
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.newmesh.Vertex;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -75,4 +76,14 @@ public class CShape {
         System.arraycopy(cmesh.uvs, uvInds[vIndex] * 2, uv, 0, 2);
         return new Vertex(vtx, nrm, clr, uv);
     }
+    
+    public Vec3f getVCoords(CMesh cmesh, int vIndex){
+        final int offset = vtxInds[vIndex] * 3;
+        return new Vec3f(
+                cmesh.vtxs[offset],
+                cmesh.vtxs[offset + 1],
+                cmesh.vtxs[offset + 2]
+        );
+    }
+    
 }

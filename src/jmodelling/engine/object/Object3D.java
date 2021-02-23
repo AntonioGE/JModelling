@@ -112,6 +112,8 @@ public abstract class Object3D {
     
     public abstract boolean isSelectable();
     
+    public abstract String getType();
+    
     public Mat4f getLocalAxis() {
         Mat4f t = TransfMat.translation_(loc);
         Mat4f rx = TransfMat.rotationDeg_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));

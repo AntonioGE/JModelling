@@ -122,5 +122,12 @@ public class NewMeshObject extends Object3D{
         BoundingBox boundingBox = new BoundingBox(mesh);
         this.boundingSphere = new BoundingSphere(boundingBox);
     }
+
+    @Override
+    public String getType() {
+        return "MESH_OLD";
+    }
+    
+    
     
 }   

@@ -24,13 +24,24 @@
 package jmodelling.engine.raytracing;
 
 import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.bounds.BoundingSphere;
+import jmodelling.engine.object.cmesh.CMesh;
+import jmodelling.engine.object.cmesh.CShape;
+import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.face.Quad;
 import jmodelling.engine.object.mesh.face.Tri;
 import jmodelling.engine.object.newmesh.MeshGL;
+import jmodelling.engine.object.newmesh.MeshGL2;
+import jmodelling.engine.object.newmesh.MeshObject2;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.newmesh.ShapeGL;
+import jmodelling.math.mat.Mat3f;
+import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -120,6 +131,28 @@ public class Raytracer {
         }
         return false;
     }
+
+    public static boolean rayIntersectsCMesh(Vec3f rayOrigin, Vec3f rayVector,
+            MeshObject2 meshObject,
+            Vec3f outIntersectionPoint) {
+        Mat3f transfInv = meshObject.getLocalAxis3f().transp();
+        //Vec3f rayOriginTransf = rayOrigin.add_(meshObject.loc).mul(transf);
+        Vec3f rayOriginTransf = rayOrigin.sub_(meshObject.loc).mul(transfInv);
+        Vec3f rayVectorTransf = rayVector.mul_(transfInv);
+
+        for (CShape shape : meshObject.cmesh.shapes.values()) {
+            for (int i = 0; i < shape.vtxInds.length; i += 3) {
+                Vec3f v0 = shape.getVCoords(meshObject.cmesh, i);
+                Vec3f v1 = shape.getVCoords(meshObject.cmesh, i + 1);
+                Vec3f v2 = shape.getVCoords(meshObject.cmesh, i + 2);
+                if (rayIntersectsTriangle(rayOriginTransf, rayVectorTransf, v0, v1, v2, outIntersectionPoint)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
     // returns t value of intersection and intersection point q 
     public static boolean rayIntersectsSphere(Vec3f rayPos, Vec3f rayDir,
@@ -153,16 +186,48 @@ public class Raytracer {
 
         return 1;*/
     }
-    
+
     public static boolean rayIntersectsBoundingSphere(Vec3f rayPos, Vec3f rayDir,
-            Object3D obj){
+            Object3D obj) {
         BoundingSphere sphere = obj.getBoundingSphere();
-        if(sphere != null){
+        if (sphere != null) {
             return rayIntersectsSphere(rayPos, rayDir, sphere.center.add_(obj.loc), sphere.radius, 0, new Vec3f());
-        }else{
+        } else {
             return false;
         }
-        
+
     }
-    
+
+    public static Object3D getSelectedMeshObject(Vec3f rayPos, Vec3f rayDir,
+            Set<MeshObject2> objects) {
+
+        HashSet<MeshObject2> intersectedMeshes = new HashSet<>();
+        for (MeshObject2 obj : objects) {
+            if (obj.isSelectable()) {
+                if (rayIntersectsBoundingSphere(rayPos, rayDir, obj)) {
+                    intersectedMeshes.add(obj);
+                }
+            }
+        }
+
+        HashMap<MeshObject2, Vec3f> meshIntersections = new HashMap<>();
+        intersectedMeshes.forEach((obj) -> {
+            Vec3f intersection = new Vec3f();
+            if (rayIntersectsCMesh(rayPos, rayDir, obj, intersection)) {
+                meshIntersections.put(obj, intersection);
+            }
+        });
+
+        float minDist = Float.MAX_VALUE;
+        MeshObject2 closestObject = null;
+        for (Map.Entry<MeshObject2, Vec3f> entry : meshIntersections.entrySet()) {
+            float dist = entry.getValue().dist(rayPos);
+            if (dist < minDist) {
+                minDist = dist;
+                closestObject = entry.getKey();
+            }
+        }
+
+        return closestObject;
+    }
 }

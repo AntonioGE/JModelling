@@ -59,6 +59,11 @@ public class EmptyMesh extends MeshObject{
     public boolean isSelectable() {
         return false;
     }
+
+    @Override
+    public String getType() {
+        return "MESH_EMPTY";
+    }
     
     
 }

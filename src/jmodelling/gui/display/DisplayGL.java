@@ -167,12 +167,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         nObject.loc.set(5.0f, 2.0f, 1.0f);
 
         MeshObject2 temp = new MeshObject2("Temp", nObject.mesh);
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 1; j++) {
                 MeshObject2 newObject = new MeshObject2("Nuevo " + i + " " + j, temp.cmesh);
                 System.out.println(newObject.name);
                 newObject.loc.x = i * 6.0f;
                 newObject.loc.y = j * 6.0f;
+                newObject.rot.x = (float) (Math.random() * 360.0f);
+                newObject.rot.y = (float) (Math.random() * 360.0f);
+                newObject.rot.z = (float) (Math.random() * 360.0f);
                 scene.add(newObject);
             }
         }
@@ -202,7 +205,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //nObject.meshGL.init(gl);
         scene.updateGL(gl);
-
+        
     }
 
     @Override
@@ -488,6 +491,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_R:
+                Object3D objSelected = Raytracer.getSelectedMeshObject(cam.loc,
+                                cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                                scene.getMeshObjects());
+                if(objSelected != null){
+                    System.out.println(objSelected.name);
+                }
+                /*
                 System.out.println("Num objects: " + scene.getObjects().size());
                 for (Object3D obj : scene.getObjects()) {
                     if (obj.isSelectable()) {
@@ -496,15 +506,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                                 obj)) {
                             System.out.println("INTERSECT SPHERE " + obj.name + " " + System.currentTimeMillis());
                         }
-                        /*
-                        if (Raytracer.rayIntersectsMesh(cam.loc,
-                                cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
-                                nObject.meshGL,
-                                new Vec3f())) {
-                            System.out.println("INTERSECTION!! " + System.currentTimeMillis());
-                        }*/
                     }
-                }
+                }*/
                 break;
             case KeyEvent.VK_X:
                 if (grab) {

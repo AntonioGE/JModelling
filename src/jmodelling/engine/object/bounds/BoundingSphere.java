@@ -42,6 +42,8 @@ public class BoundingSphere {
     public BoundingSphere(BoundingBox box){
         this.center = box.max.add_(box.min).scale(0.5f);
         this.radius = center.dist(box.max);
+        
+        System.out.println(center.toString() + " :::: " + radius);
     }
     
 }

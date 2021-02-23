@@ -95,4 +95,9 @@ public class Axis extends Object3D {
         return false;
     }
 
+    @Override
+    public String getType() {
+        return "AXIS";
+    }
+
 }

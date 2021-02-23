@@ -23,6 +23,8 @@
  */
 package jmodelling.engine.object.bounds;
 
+import jmodelling.engine.object.cmesh.CMesh;
+import jmodelling.engine.object.cmesh.CShape;
 import jmodelling.engine.object.newmesh.Mesh;
 import jmodelling.math.vec.Vec3f;
 
@@ -35,31 +37,64 @@ public class BoundingBox {
     public Vec3f min;
     public Vec3f max;
 
-    public BoundingBox(Mesh mesh) {
-        if(mesh.vtxs.size() < 2){
+    public BoundingBox(CMesh cmesh) {
+        if (cmesh.vtxs.length < 6) {
             min = new Vec3f();
             max = new Vec3f();
             return;
         }
-        
+
+        min = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+        max = new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
+        for (int i = 0; i < cmesh.vtxs.length; i += 9) {
+            Vec3f v = new Vec3f(cmesh.vtxs, i);
+            if (v.x < min.x) {
+                min.x = v.x;
+            } else if (v.x > max.x) {
+                max.x = v.x;
+            }
+
+            if (v.y < min.y) {
+                min.y = v.y;
+            } else if (v.y > max.y) {
+                max.y = v.y;
+            }
+
+            if (v.z < min.z) {
+                min.z = v.z;
+            } else if (v.y > max.z) {
+                max.z = v.z;
+            }
+        }
+
+        //System.out.println(min.toString() + " " + max.toString());
+    }
+
+    public BoundingBox(Mesh mesh) {
+        if (mesh.vtxs.size() < 2) {
+            min = new Vec3f();
+            max = new Vec3f();
+            return;
+        }
+
         min = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         max = new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
         for (Vec3f v : mesh.vtxs) {
-            if(v.x < min.x){
+            if (v.x < min.x) {
                 min.x = v.x;
-            }else if(v.x > max.x){
+            } else if (v.x > max.x) {
                 max.x = v.x;
             }
-            
-            if(v.y < min.y){
+
+            if (v.y < min.y) {
                 min.y = v.y;
-            }else if(v.y > max.y){
+            } else if (v.y > max.y) {
                 max.y = v.y;
             }
-            
-            if(v.z < min.z){
+
+            if (v.z < min.z) {
                 min.z = v.z;
-            }else if(v.y > max.z){
+            } else if (v.y > max.z) {
                 max.z = v.z;
             }
         }

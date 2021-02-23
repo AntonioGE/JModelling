@@ -137,4 +137,9 @@ public class CamArcball extends Cam {
     public boolean isSelectable() {
         return false;
     }
+
+    @Override
+    public String getType() {
+        return "ARCBALL_CAM";
+    }
 }

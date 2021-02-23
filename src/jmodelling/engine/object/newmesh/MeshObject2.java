@@ -25,6 +25,7 @@ package jmodelling.engine.object.newmesh;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingBox;
 import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.cmesh.CMesh;
 import jmodelling.math.vec.Vec3f;
@@ -38,12 +39,14 @@ public class MeshObject2 extends Object3D{
     public CMesh cmesh;
     public MeshGL2 meshGL;
     
+    public BoundingSphere boundingSphere;
+    
     public MeshObject2(String name, CMesh cmesh){
         super(name, new Vec3f(0, 0 ,0));
         this.cmesh = cmesh;
         this.meshGL = new MeshGL2(cmesh);
         
-        //calculateBounds();
+        calculateBounds();
     }
     
     public MeshObject2(String name, Mesh mesh){
@@ -77,12 +80,22 @@ public class MeshObject2 extends Object3D{
 
     @Override
     public BoundingSphere getBoundingSphere() {
-        return null;
+        return boundingSphere;
     }
 
     @Override
     public boolean isSelectable() {
         return true;
+    }
+    
+    public final void calculateBounds(){
+        BoundingBox boundingBox = new BoundingBox(cmesh);
+        this.boundingSphere = new BoundingSphere(boundingBox);
+    }
+
+    @Override
+    public String getType() {
+        return "MESH";
     }
     
 }

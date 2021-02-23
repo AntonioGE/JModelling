@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
+import jmodelling.engine.object.newmesh.MeshObject2;
 import jmodelling.utils.collections.IdentitySet;
 
 /**
@@ -42,7 +43,7 @@ public class Scene {
 
     private final HashSet<Object3D> objects;
     private final Set<Object3D> objectsReadOnly;
-
+    
     private final IdentitySet<Object3D> objectsToInit;
     private final IdentitySet<Object3D> objectsToDelete;
     private final IdentitySet<Object3D> objectsToUpdate;
@@ -50,7 +51,7 @@ public class Scene {
     public Scene() {
         objects = new HashSet<>();
         objectsReadOnly = Collections.unmodifiableSet(objects);
-
+        
         objectsToInit = new IdentitySet();
         objectsToDelete = new IdentitySet();
         objectsToUpdate = new IdentitySet();
@@ -110,6 +111,18 @@ public class Scene {
 
     public Set<Object3D> getObjects(){
         return objectsReadOnly;
+    }
+    
+    public Set<MeshObject2> getMeshObjects(){
+        HashSet<MeshObject2> meshObjects = new HashSet<>();
+        objects.stream().filter((obj) -> (obj.getType().equals("MESH"))).forEachOrdered((obj) -> {
+            try{
+                meshObjects.add((MeshObject2)obj);
+            }catch(ClassCastException ex){
+                
+            }
+        });
+        return meshObjects;
     }
     
 }

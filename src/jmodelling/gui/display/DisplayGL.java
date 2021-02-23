@@ -42,6 +42,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.Cam;
@@ -163,12 +167,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         cube = new EmptyMesh(new Cube().toMesh());
 
-        scene.add(nObject);
-        nObject.loc.set(5.0f, 2.0f, 1.0f);
-
+        //scene.add(nObject);
+        //nObject.loc.set(5.0f, 2.0f, 1.0f);
         MeshObject2 temp = new MeshObject2("Temp", nObject.mesh);
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 1; j++) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
                 MeshObject2 newObject = new MeshObject2("Nuevo " + i + " " + j, temp.cmesh);
                 System.out.println(newObject.name);
                 newObject.loc.x = i * 6.0f;
@@ -205,7 +208,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //nObject.meshGL.init(gl);
         scene.updateGL(gl);
-        
+
     }
 
     @Override
@@ -492,10 +495,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 break;
             case KeyEvent.VK_R:
                 Object3D objSelected = Raytracer.getSelectedMeshObject(cam.loc,
-                                cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
-                                scene.getMeshObjects());
-                if(objSelected != null){
+                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                        scene.getMeshObjects());
+                if (objSelected != null) {
                     System.out.println(objSelected.name);
+                }
+
+                Vec3f point = Raytracer.getClosestIntersectionPoint(cam.loc,
+                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                        scene.getMeshObjects());
+                if (point != null) {
+                    points.add(point);
+                    repaint();
                 }
                 /*
                 System.out.println("Num objects: " + scene.getObjects().size());
@@ -508,6 +519,66 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                         }
                     }
                 }*/
+                break;
+            case KeyEvent.VK_T:
+                long before0 = System.nanoTime();
+                int delta = 10;
+                for (int i = 0; i < getWidth(); i += delta) {
+                    for (int j = 0; j < getHeight(); j += delta) {
+                        Vec3f p = Raytracer.getClosestIntersectionPoint(cam.loc,
+                                cam.viewPosToRay(i, j, getWidth(), getHeight()),
+                                scene.getMeshObjects());
+                        if (p != null) {
+                            //points.add(p);
+                        }
+                    }
+                }
+                System.out.println((System.nanoTime() - before0) + " ns elapsed");
+                
+                long before1 = System.nanoTime();
+                Collection<Vec3f> newPoints = Collections.synchronizedList(new ArrayList<Vec3f>());
+                Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
+                for (int t = 0; t < threads.length; t++) {
+                    Thread thread = new Thread() {
+                        Collection<Vec3f> newPoints;
+                        int id;
+
+                        public Thread init(int id, Collection<Vec3f> newPoints) {
+                            this.id = id;
+                            this.newPoints = newPoints;
+                            return this;
+                        }
+
+                        @Override
+                        public void run() {
+                            final int delta = 10;
+                            final int size = getWidth() / threads.length;
+                            for (int i = 0; i < getWidth() / threads.length; i += delta) {
+                                for (int j = 0; j < getHeight(); j += delta) {
+                                    Vec3f p = Raytracer.getClosestIntersectionPoint(cam.loc,
+                                            cam.viewPosToRay(i + id * size, j, getWidth(), getHeight()),
+                                            scene.getMeshObjects());
+                                    if (p != null) {
+                                        newPoints.add(p);
+                                    }
+                                }
+                            }
+                        }
+                    }.init(t, newPoints);
+                    threads[t] = thread;
+                    thread.start();
+                }
+                for (Thread thread : threads) {
+                    try {
+                        thread.join();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(DisplayGL.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                points.addAll(newPoints);
+                System.out.println((System.nanoTime() - before1) + " ns elapsed");
+                
+                repaint();
                 break;
             case KeyEvent.VK_X:
                 if (grab) {

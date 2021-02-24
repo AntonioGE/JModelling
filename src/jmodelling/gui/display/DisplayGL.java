@@ -29,9 +29,6 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.Animator;
-import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -41,32 +38,31 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import jmodelling.engine.object.Object3D;
+import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
-import jmodelling.engine.object.mesh.MeshEditable;
+import jmodelling.engine.object.cmesh2.CMesh2;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.newmesh.Mesh;
 import jmodelling.engine.object.newmesh.MeshObject2;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transform;
-import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
-import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
-import jmodelling.math.vec.Vec4f;
 
 /**
  *
@@ -184,6 +180,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         }
 
+        try {
+            HashMap<String, Mesh> meshes = ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+            new CMesh2(meshes.get("Suzanne"));
+        } catch (IOException ex) {
+        }
+        
+        
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);

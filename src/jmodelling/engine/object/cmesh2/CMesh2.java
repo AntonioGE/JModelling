@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.cmesh;
+package jmodelling.engine.object.cmesh2;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import jmodelling.engine.object.cmesh.CShape;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.newmesh.Edge;
 import jmodelling.engine.object.newmesh.Loop;
@@ -39,7 +40,7 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class CMesh {
+public class CMesh2 {
 
     public float[] vtxs;
     public float[] nrms;
@@ -48,9 +49,15 @@ public class CMesh {
 
     public int[] edges;
 
-    public HashMap<Material, CShape> shapes;
+    public HashMap<Material, CShape2> shapes;
 
-    public CMesh(Mesh mesh) {
+    public CMesh2(Mesh mesh) {
+        /**
+         * STEP 1: Create HashMaps
+         * Create hashmaps for all the vertex data in order to index all the
+         * data fast
+         */
+        
         //Create a identity hash map for storing the vertices and their indices
         IdentityHashMap<Vec3f, Integer> vtxInds = new IdentityHashMap<>(mesh.vtxs.size());
         vtxs = new float[mesh.vtxs.size() * 3];
@@ -114,52 +121,36 @@ public class CMesh {
             entry.getKey().writeInArray(uvs, entry.getValue() * 2);
         });
 
-        //Count number of polygons per material
-        HashMap<Material, Integer> polysPerMat = mesh.getNumPolysPerMat();
-        shapes = new HashMap<>(polysPerMat.size());
-        polysPerMat.entrySet().forEach((entry) -> {
-            shapes.put(entry.getKey(), new CShape(entry.getKey(), entry.getValue() * 3));
-        });
+        /**
+         * STEP 2: Generate the shapes
+         * Convert the mesh polygons into shapes grouped by materials Each shape
+         * is made of polygon arrays grouped by the number of loops
+         */
+        HashMap<Material, LinkedHashSet<Polygon>> matPolys = mesh.getPolysGroupedByMat();
+        shapes = new HashMap<>(matPolys.size());
+        matPolys.entrySet().forEach((mpEntry) -> {
+            HashMap<Integer, LinkedHashSet<Polygon>> sizePolys = Mesh.groupPolysBySize(mpEntry.getValue());
+            HashMap<Integer, PolygonArray> polyArrays = new HashMap<>(sizePolys.size());
+            for (Map.Entry<Integer, LinkedHashSet<Polygon>> spEntry : sizePolys.entrySet()) {
+                PolygonArray pArray = new PolygonArray(spEntry.getKey(), spEntry.getValue().size());
+                int vertexIndex = 0;
+                for(Polygon poly : spEntry.getValue()){
+                    for (Loop loop : poly.loops) {
+                        pArray.vtxInds[vertexIndex] = vtxInds.get(loop.vtx);
 
-        //Store the attribute indices in the arrays
-        HashMap<Material, Integer> loopsAddedPerMat = new HashMap<>(shapes.size());
-        shapes.values().forEach((shape) -> {
-            loopsAddedPerMat.put(shape.mat, 0);
-        });
-        mesh.polys.forEach((poly) -> {
-            CShape shape = shapes.get(poly.mat);
-            int vertexIndex = loopsAddedPerMat.get(poly.mat);
-            for (Loop loop : poly.loops) {
-                shape.vtxInds[vertexIndex] = vtxInds.get(loop.vtx);
+                        pArray.edgeInds[vertexIndex] = edgeInds.get(loop.edge);
 
-                shape.edgeInds[vertexIndex] = edgeInds.get(loop.edge);
+                        pArray.nrmInds[vertexIndex] = nrmInds.get(loop.nrm);
+                        pArray.clrInds[vertexIndex] = clrInds.get(loop.clr);
+                        pArray.uvInds[vertexIndex] = uvInds.get(loop.uv);
 
-                shape.nrmInds[vertexIndex] = nrmInds.get(loop.nrm);
-                shape.clrInds[vertexIndex] = clrInds.get(loop.clr);
-                shape.uvInds[vertexIndex] = uvInds.get(loop.uv);
-
-                vertexIndex++;
+                        vertexIndex++;
+                    }
+                }
+                polyArrays.put(pArray.nLoops, pArray);
             }
-            loopsAddedPerMat.put(poly.mat, vertexIndex);
-        });
-
-    }
-
-    public CMesh(CMesh other){
-        this.vtxs = other.vtxs.clone();
-        this.clrs = other.clrs.clone();
-        this.nrms = other.nrms.clone();
-        this.uvs = other.uvs.clone();
-        this.edges = other.edges.clone();
-        
-        this.shapes = new HashMap<>(other.shapes.size());
-        other.shapes.values().forEach((shape) -> {
-            shapes.put(shape.mat, shape.clone());
+            shapes.put(mpEntry.getKey(), new CShape2(mpEntry.getKey(), polyArrays));
         });
     }
-    
-    @Override
-    public CMesh clone(){
-        return new CMesh(this);
-    }
+
 }

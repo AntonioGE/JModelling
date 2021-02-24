@@ -173,7 +173,7 @@ public class MeshGL {
     }
     
     private static HashMap<Material, ShapeGL> genShapes(Mesh mesh) {
-        HashMap<Material, Integer> polysPerMat = mesh.getPolysPerMat();
+        HashMap<Material, Integer> polysPerMat = mesh.getNumPolysPerMat();
         HashMap<Material, ShapeGL> shapes = new HashMap<>(polysPerMat.size());
         for (Map.Entry<Material, Integer> entry : polysPerMat.entrySet()) {
             ShapeGL shape = new ShapeGL();

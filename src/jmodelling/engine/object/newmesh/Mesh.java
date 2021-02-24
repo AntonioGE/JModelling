@@ -29,6 +29,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import jmodelling.engine.object.material.Material;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -146,7 +147,7 @@ public class Mesh {
         mats.add(mat);
     }
 
-    public HashMap<Material, Integer> getPolysPerMat() {
+    public HashMap<Material, Integer> getNumPolysPerMat() {
         HashMap<Material, Integer> count = new HashMap<>(mats.size());
         polys.forEach((p) -> {
             count.put(p.mat, 0);
@@ -156,7 +157,56 @@ public class Mesh {
         });
         return count;
     }
-
+    
+    public HashMap<Material, LinkedHashSet<Polygon>> getPolysGroupedByMat(){
+        HashMap<Material, Integer> nPolysPerMat = getNumPolysPerMat();
+        HashMap<Material, LinkedHashSet<Polygon>> polysGrouped = new HashMap<>(nPolysPerMat.size());
+        
+        nPolysPerMat.entrySet().forEach((entry) -> {
+            polysGrouped.put(entry.getKey(), new LinkedHashSet<>(entry.getValue()));
+        });
+     
+        polys.forEach((poly) -> {
+            polysGrouped.get(poly.mat).add(poly);
+        });
+        return polysGrouped;
+    }
+    
+    private static HashMap<Integer, Integer> countPolysBySize(LinkedHashSet<Polygon> polys){
+        //Key is the number of sides of the polygon, value is the number of occurences
+        HashMap<Integer, Integer> counts = new HashMap<>();
+        for(Polygon poly : polys){
+            int nSides = poly.loops.size();
+            if(counts.containsKey(nSides)){
+                counts.put(nSides, counts.get(nSides) + 1);
+            }else{
+                counts.put(nSides, 0);
+            }
+        }
+        return counts;
+    }
+    
+    /**
+     * Groups the polygons by the number of sides
+     * The result is stored in a HashMap in which the key is the number of sides
+     * of the polygons, and the values are the polygons that have that number of
+     * sides
+     * 
+     * @param polys polygons
+     * @return polygons grouped by number of sides
+     */
+    public static HashMap<Integer, LinkedHashSet<Polygon>> groupPolysBySize(LinkedHashSet<Polygon> polys){
+        HashMap<Integer, Integer> nPolysBySize = countPolysBySize(polys);
+        HashMap<Integer, LinkedHashSet<Polygon>> groupedPolys = new HashMap<>(nPolysBySize.size());
+        nPolysBySize.entrySet().forEach((entry) -> {
+            groupedPolys.put(entry.getKey(), new LinkedHashSet<>(entry.getValue()));
+        });
+        polys.forEach((poly) -> {
+            groupedPolys.get(poly.loops.size()).add(poly);
+        });
+        return groupedPolys;
+    }
+    
     public void applyFlatShading() {
         polys.forEach((poly) -> {
             Vec3f normal = poly.getNormal();

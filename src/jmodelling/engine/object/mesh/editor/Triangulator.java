@@ -23,11 +23,13 @@
  */
 package jmodelling.engine.object.mesh.editor;
 
+import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -36,15 +38,107 @@ import jmodelling.math.vec.Vec3f;
  */
 public class Triangulator {
 
+    public static void earClipping(List<Vec3f> poly) {
+        Vec3f normal = getPolygonNormal(poly);
+
+        normal.print();
+
+        LinkedList<Integer> vtxs = new LinkedList<>();
+        LinkedList<Integer> convx = new LinkedList<>();
+        LinkedList<Integer> reflx = new LinkedList<>();
+        LinkedList<Integer> ears = new LinkedList<>();
+
+        for (int i = 0; i < poly.size(); i++) {
+            Vec3f vPrev = poly.get(i);
+            Vec3f vCurr = poly.get((i + 1) % poly.size());
+            Vec3f vNext = poly.get((i + 2) % poly.size());
+
+            Vec3f triNormal = vCurr.sub_(vPrev).cross(vNext.sub_(vCurr)).normalize();
+            if (triNormal.dot(normal) > 0.0f) {
+                convx.add((i + 1) % poly.size());
+            } else {
+                reflx.add((i + 1) % poly.size());
+            }
+
+            vtxs.add(i);
+        }
+
+        
+        ListIterator<Integer> iteConvx = convx.listIterator();
+        while (iteConvx.hasNext()) {
+
+            int idxCurr = iteConvx.next();
+            Vec3f vCurr = poly.get(idxCurr);
+
+            //Vec3f u = poly.get(idxCurr + 1).sub_(poly.get(idxCurr + 1))
+            ListIterator<Integer> iteReflx = reflx.listIterator();
+            while (iteReflx.hasNext()) {
+
+            }
+
+        }
+
+        System.out.println("Done");
+    }
+
+    /*
+    public static void earClipping(List<Vec3f> poly) {
+        Vec3f normal = getPolygonNormal(poly);
+
+        normal.print();
+
+        LinkedList<Vec3f> vtxs = new LinkedList<>();
+        LinkedList<Vec3f> convx = new LinkedList<>();
+        LinkedList<Vec3f> reflx = new LinkedList<>();
+        LinkedList<Vec3f> ears = new LinkedList<>();
+
+        poly.forEach((vtx) -> {
+            vtxs.add(vtx);
+        });
+
+        ListIterator<Vec3f> vtxsIte = vtxs.listIterator();
+        while (vtxsIte.hasNext()) {
+            Vec3f vPrev = vtxsIte.previous();
+            Vec3f vCurr = vtxsIte.next();
+            Vec3f vNext = vtxsIte.next();
+            vtxsIte.previous();
+
+            vtxs.Vec3f triNormal = vCurr.sub_(vPrev).cross(vNext.sub_(vCurr)).normalize();
+            if (triNormal.dot(normal) > 0.0f) {
+                convx.add(vCurr);
+            } else {
+                reflx.add(vCurr);
+            }
+        }
+
+        ListIterator<Vec3f> iteConvx = convx.listIterator();
+        while (iteConvx.hasNext()) {
+
+            Vec3f vCurr = poly.get(idxCurr);
+
+            //Vec3f u = poly.get(idxCurr + 1).sub_(poly.get(idxCurr + 1))
+            ListIterator<Integer> iteReflx = reflx.listIterator();
+            while (iteReflx.hasNext()) {
+
+            }
+
+        }
+
+        System.out.println("Done");
+    }*/
+
     public static void earClipping(float[] vtxArray, int[] vInds) {
-        List<Integer> convx = new LinkedList<>();
-        List<Integer> reflx = new LinkedList<>();
-        List<Integer> ears = new LinkedList<>();
 
         List<Vec3f> vtxs = new ArrayList<>();
         for (Integer vInd : vInds) {
             vtxs.add(new Vec3f(vtxArray, vInd * 3));
         }
+
+        Vec3f normal = getPolygonNormal(vtxs);
+
+        List<Integer> convx = new LinkedList<>();
+        List<Integer> reflx = new LinkedList<>();
+        List<Integer> ears = new LinkedList<>();
 
         for (int i = 0; i < vtxs.size(); i++) {
             Vec3f vPrev = vtxs.get(i);
@@ -58,4 +152,19 @@ public class Triangulator {
         }
 
     }
+
+    //Newell's method
+    private static Vec3f getPolygonNormal(List<Vec3f> vtxs) {
+        Vec3f normal = new Vec3f();
+
+        for (int i = 0; i < vtxs.size(); i++) {
+            Vec3f c = vtxs.get(i);
+            Vec3f n = vtxs.get((i + 1) % vtxs.size());
+            normal.x += (c.y - n.y) * (c.z + n.z);
+            normal.y += (c.z - n.z) * (c.x + n.x);
+            normal.z += (c.x - n.x) * (c.y + n.y);
+        }
+        return normal.normalize();
+    }
+
 }

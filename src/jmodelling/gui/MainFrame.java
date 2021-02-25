@@ -30,6 +30,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -38,12 +39,14 @@ import javax.swing.border.LineBorder;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.MeshEditable;
+import jmodelling.engine.object.mesh.editor.Triangulator;
 import jmodelling.engine.object.newmesh.Edge;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.ListUtils;
 import jmodelling.utils.collections.IdentitySet;
+import jmodelling.utils.collections.SCircularLinkedList;
 
 /**
  *
@@ -90,8 +93,19 @@ public class MainFrame extends JFrame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
 
+        ArrayList<Vec3f> vtxs = new ArrayList<>();
+        vtxs.add(new Vec3f(-1.0f, -1.0f, 0.0f));
+        vtxs.add(new Vec3f(+1.0f, -1.0f, 0.0f));
+        vtxs.add(new Vec3f(+1.0f, +1.0f, 0.0f));
+        vtxs.add(new Vec3f(+0.4f, -0.4f, 0.0f));
+        Triangulator.earClipping(vtxs);
+
+        SCircularLinkedList<Integer> list = new SCircularLinkedList<>();
+        list.add(5);
+        list.add(7);
+        list.add(11);
+        
         System.out.println(Runtime.getRuntime().availableProcessors());
 
         java.awt.EventQueue.invokeLater(new Runnable() {

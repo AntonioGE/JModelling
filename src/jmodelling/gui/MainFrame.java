@@ -46,7 +46,9 @@ import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.ListUtils;
 import jmodelling.utils.collections.IdentitySet;
-import jmodelling.utils.collections.SCircularLinkedList;
+import jmodelling.utils.collections.CircularLinkedListOld;
+import jmodelling.utils.collections.CircularLinkedListOld.CircularIterator;
+import jmodelling.utils.collections.CircularLinkedList;
 
 /**
  *
@@ -99,13 +101,23 @@ public class MainFrame extends JFrame {
         vtxs.add(new Vec3f(+1.0f, -1.0f, 0.0f));
         vtxs.add(new Vec3f(+1.0f, +1.0f, 0.0f));
         vtxs.add(new Vec3f(+0.4f, -0.4f, 0.0f));
-        Triangulator.earClipping(vtxs);
+        Triangulator.earClipping2(vtxs);
 
-        SCircularLinkedList<Integer> list = new SCircularLinkedList<>();
-        list.add(5);
-        list.add(7);
-        list.add(11);
-        
+        CircularLinkedList<String> list = new CircularLinkedList<>();
+        list.add("FIRST");
+        list.add("SECOND");
+        list.add("THIRD");
+        list.add("FOURTH");
+
+        for(CircularLinkedList<String>.CircularIterator<String> ite = list.getIterator(); ite.hasNext(); ite.move()){
+            String value = ite.getCurrent();
+            
+            if(value.equals("SECOND")){
+                ite.remove();
+            }
+            System.out.println(value);
+        }
+
         System.out.println(Runtime.getRuntime().availableProcessors());
 
         java.awt.EventQueue.invokeLater(new Runnable() {

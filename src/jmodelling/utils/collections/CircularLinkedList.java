@@ -23,47 +23,43 @@
  */
 package jmodelling.utils.collections;
 
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 /**
  *
  * @author ANTONIO
  */
-public class SCircularLinkedList<E> {
+public class CircularLinkedList<E> {
 
     private int size = 0;
 
     private Node<E> first;
-    private Node<E> last;
 
     public boolean add(E e) {
         final Node<E> newNode;
         if (first == null) {
             newNode = new Node<>(null, e, null);
             first = newNode;
-            last = newNode;
             newNode.prev = newNode;
             newNode.next = newNode;
         } else {
-            newNode = new Node<>(last, e, first);
+            newNode = new Node<>(first.prev, e, first);
+            first.prev.next = newNode;
             first.prev = newNode;
-            last.next = newNode;
-            last = newNode;
         }
         size++;
         return true;
     }
-    
-    private void unlink(Node n){
-        if(n == n.prev){
+
+    private void unlink(Node n) {
+        if (first == null) {
+            return;
+        }
+
+        if (n == n.prev) {
             first = null;
-            last = null;
-        }else{
+        } else {
             n.prev.next = n.next;
             n.next.prev = n.prev;
-            if(n == first){
+            if (n == first) {
                 first = n.prev;
             }
         }
@@ -71,63 +67,67 @@ public class SCircularLinkedList<E> {
         size--;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
-    
-    public class CircularIterator {
 
-        private final Node<E> start;
+    public CircularLinkedList<E>.CircularIterator<E> getIterator() {
+        return new CircularIterator(first);
+    }
+
+    public class CircularIterator<E> {
+
         private Node<E> current;
+        private int currentNode;
 
-        public CircularIterator() {
-            start = first;
+        private CircularIterator(Node<E> first) {
             current = first;
+            currentNode = 0;
         }
 
-        public E get() {
-            return current.item;
-        }
-
-        public E getRel(int posRel){
+        public E getRel(int posRel) {
             Node<E> node = current;
-            if(posRel > 0){
-                for(int i = 0; i < posRel; i++){
+            if (posRel > 0) {
+                for (int i = 0; i < posRel; i++) {
                     node = node.next;
                 }
-            }else if(posRel < 0){
-                for(int i = 0; i < posRel; i++){
+            } else if (posRel < 0) {
+                for (int i = 0; i < posRel; i++) {
                     node = node.prev;
                 }
             }
             return node.item;
         }
+
+        public E getCurrent(){
+            return current.item;
+        }
         
-        public void move() {
-            current = current.next;
+        public E getNext() {
+            return current.next.item;
         }
 
-        public E next() {
-            E item = current.item;
+        public E getPrev() {
+            return current.prev.item;
+        }
+
+        public void move() {
             current = current.next;
-            return item;
+            currentNode++;
         }
 
         public boolean hasNext() {
-            return current.next != start;
+            return currentNode < size;
         }
-        
-        public void remove(){
-            current.prev.next = current.next;
-            current.next.prev = current.prev;
-            current.item = null; 
-            current = current.prev;
-            size--;
+
+        public void remove() {
+            unlink(current);
+            currentNode--;
         }
 
     };
 
-    private static class Node<E> {
+    private class Node<E> {
 
         E item;
         Node<E> next;
@@ -139,5 +139,4 @@ public class SCircularLinkedList<E> {
             this.prev = prev;
         }
     };
-
 }

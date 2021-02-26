@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.collections.CircularLinkedList;
+import jmodelling.utils.collections.CircularLinkedListOld;
 
 /**
  *
@@ -63,7 +65,7 @@ public class Triangulator {
             vtxs.add(i);
         }
 
-        
+        /*
         ListIterator<Integer> iteConvx = convx.listIterator();
         while (iteConvx.hasNext()) {
 
@@ -77,8 +79,37 @@ public class Triangulator {
             }
 
         }
-
+         */
         System.out.println("Done");
+    }
+
+    public static void earClipping2(List<Vec3f> poly) {
+        Vec3f normal = getPolygonNormal(poly);
+
+        normal.print();
+
+        CircularLinkedList<Vec3f> vtxs = new CircularLinkedList<>();
+        LinkedList<Vec3f> convx = new LinkedList<>();
+        LinkedList<Vec3f> reflx = new LinkedList<>();
+        LinkedList<Vec3f> ears = new LinkedList<>();
+        
+        poly.forEach((vtx) -> {
+            vtxs.add(vtx);
+        });
+        
+        for(CircularLinkedList<Vec3f>.CircularIterator<Vec3f> iteVtxs = vtxs.getIterator(); 
+                iteVtxs.hasNext(); iteVtxs.move()){
+            Vec3f vPrev = iteVtxs.getPrev();
+            Vec3f vCurr = iteVtxs.getCurrent();
+            Vec3f vNext = iteVtxs.getNext();
+            
+            Vec3f triNormal = vCurr.sub_(vPrev).cross(vNext.sub_(vCurr)).normalize();
+            if (triNormal.dot(normal) > 0.0f) {
+                convx.add(vCurr);
+            } else {
+                reflx.add(vCurr);
+            }
+        }
     }
 
     /*
@@ -126,7 +157,6 @@ public class Triangulator {
 
         System.out.println("Done");
     }*/
-
     public static void earClipping(float[] vtxArray, int[] vInds) {
 
         List<Vec3f> vtxs = new ArrayList<>();

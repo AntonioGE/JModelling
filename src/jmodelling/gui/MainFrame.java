@@ -28,26 +28,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import jmodelling.engine.formats.obj.ObjReader;
-import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.MeshEditable;
-import jmodelling.engine.object.mesh.editor.Triangulator;
-import jmodelling.engine.object.newmesh.Edge;
+import jmodelling.engine.object.mesh.editor.triangulator.Triangulator;
 import jmodelling.gui.display.DisplayGL;
-import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec3f;
-import jmodelling.utils.ListUtils;
-import jmodelling.utils.collections.IdentitySet;
-import jmodelling.utils.collections.CircularLinkedListOld;
-import jmodelling.utils.collections.CircularLinkedListOld.CircularIterator;
 import jmodelling.utils.collections.CircularLinkedList;
 
 /**
@@ -65,7 +52,7 @@ public class MainFrame extends JFrame {
         initComponents();
     }
 
-    public void initComponents() {
+    public final void initComponents() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(500, 400));
 
@@ -97,11 +84,21 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
 
         ArrayList<Vec3f> vtxs = new ArrayList<>();
+//        vtxs.add(new Vec3f(-1.0f, -1.0f, 0.0f));
+//        vtxs.add(new Vec3f(+1.0f, -1.0f, 0.0f));
+//        vtxs.add(new Vec3f(+1.0f, +1.0f, 0.0f));
+//        vtxs.add(new Vec3f(+0.4f, -0.4f, 0.0f));
         vtxs.add(new Vec3f(-1.0f, -1.0f, 0.0f));
-        vtxs.add(new Vec3f(+1.0f, -1.0f, 0.0f));
-        vtxs.add(new Vec3f(+1.0f, +1.0f, 0.0f));
-        vtxs.add(new Vec3f(+0.4f, -0.4f, 0.0f));
-        Triangulator.earClipping2(vtxs);
+        vtxs.add(new Vec3f(+1.0f, -3.0f, 0.0f));
+        vtxs.add(new Vec3f(+3.0f, -1.0f, 0.0f));
+        vtxs.add(new Vec3f(+4.0f, -2.0f, 0.0f));
+        vtxs.add(new Vec3f(+6.0f, +1.0f, 0.0f));
+        vtxs.add(new Vec3f(+4.0f, +0.5f, 0.0f));
+        vtxs.add(new Vec3f(+3.0f, +3.0f, 0.0f));
+        vtxs.add(new Vec3f(+2.0f, -1.2f, 0.0f));
+        vtxs.add(new Vec3f(+0.0f, -0.6f, 0.0f));
+        vtxs.add(new Vec3f(+0.0f, +2.0f, 0.0f));
+        Triangulator.earClipping(vtxs);
 
         CircularLinkedList<String> list = new CircularLinkedList<>();
         list.add("FIRST");

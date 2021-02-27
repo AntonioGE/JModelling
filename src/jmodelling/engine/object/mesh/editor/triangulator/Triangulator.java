@@ -35,17 +35,17 @@ import jmodelling.utils.collections.nodes.NodeIterator;
  *
  * @author ANTONIO
  */
-public class Triangulator5 {
+public class Triangulator {
 
-    public static void earClipping(List<Vec3f> poly) {
+    public static List<Integer> earClipping(List<Vec3f> poly) {
         //Calculate the normal of the polygon
-        Vec3f normal = getPolygonNormal(poly);
+        final Vec3f normal = getPolygonNormal(poly);
 
         //4 vertex lists of indices that point to the poly list
-        CircularLinkList<VInd> vtxs = new CircularLinkList();
-        CircularLinkList<Node<VInd>> convxs = new CircularLinkList();
-        CircularLinkList<Node<VInd>> reflxs = new CircularLinkList();
-        CircularLinkList<Node<VInd>> ears = new CircularLinkList();
+        final CircularLinkList<VInd> vtxs = new CircularLinkList();
+        final CircularLinkList<Node<VInd>> convxs = new CircularLinkList();
+        final CircularLinkList<Node<VInd>> reflxs = new CircularLinkList();
+        final CircularLinkList<Node<VInd>> ears = new CircularLinkList();
 
         //Init the vertex indices
         for (int i = 0; i < poly.size(); i++) {
@@ -54,55 +54,115 @@ public class Triangulator5 {
 
         //Clasify the vertices into convex or reflex
         for (NodeIterator<VInd> iteVtxs = vtxs.iterator(); iteVtxs.hasNext(); iteVtxs.move()) {
-            if (isVertexConvex(poly, iteVtxs.getCurrentNode(), normal)) {
-                convxs.add(iteVtxs.getCurrentNode());
-                iteVtxs.getCurrentNode().item.list = convxs;
+            final Node<VInd> node = iteVtxs.getCurrentNode();
+            if (isVertexConvex(poly, node, normal)) {
+                convxs.add(node);
+                node.item.list = convxs;
+                node.item.node = convxs.getLastNode();
             } else {
-                reflxs.add(iteVtxs.getCurrentNode());
-                iteVtxs.getCurrentNode().item.list = reflxs;
+                reflxs.add(node);
+                node.item.list = reflxs;
+                node.item.node = reflxs.getLastNode();
             }
         }
-        
+
+        print("CONVX", convxs);
+        print("RFLXS", reflxs);
+        print("EARS", ears);
+
         //Extract the ear vertices from the convex vertices
         for (NodeIterator<Node<VInd>> iteConvx = convxs.iterator(); iteConvx.hasNext(); iteConvx.move()) {
-            Node<VInd> convx = iteConvx.getCurrent();
-            if (isVertexEar(poly, convx, reflxs)) {
-                ears.add(convx);
-                convx.item.list = ears;
-                //iteConvx.remove();
+            final Node<Node<VInd>> convx = iteConvx.getCurrentNode();
+            if (isVertexEar(poly, convx.item, reflxs)) {
+                ears.add(convx.item);
+                convx.item.item.list = ears;
+                convx.item.item.node = ears.getLastNode();
+                iteConvx.remove();
             }
         }
 
+        print("CONVX", convxs);
+        print("RFLXS", reflxs);
+        print("EARS", ears);
+        
         //Create a triangle list for storing the triangulated polygon as vertex 
         //indices that point to the original list
-        List<Integer> tris = new ArrayList<>((poly.size() - 2) * 3);
+        final List<Integer> tris = new ArrayList<>((poly.size() - 2) * 3);
 
         //Extract all the ears and add them to the triangle list
-        for (NodeIterator<Node<VInd>> iteEars = ears.iterator(); iteEars.hasNext(); iteEars.move()) {
-            Node<VInd> ear = iteEars.getCurrent();
-
-            Node<VInd> prev = ear.prev;
-            Node<VInd> next = ear.next;
+        //for (NodeIterator<Node<VInd>> iteEars = ears.iterator(); iteEars.hasNext(); iteEars.move()) {
+        while (ears.size() > 0 && vtxs.size() > 3) {
+            //final Node<Node<VInd>> node = ears.getFirstNode();
+            final Node<VInd> ear = ears.getFirstNode().item;
+            final Node<VInd> prev = ear.prev;
+            final Node<VInd> next = ear.next;
 
             tris.add(prev.item.index);
             tris.add(ear.item.index);
             tris.add(next.item.index);
 
+            //print("CONVX", convxs);
+            //print("RFLXS", reflxs);
+            //print("EARS", ears);
+            System.out.println("Tri: " + prev.item.index + " " + ear.item.index + " " + next.item.index);
+            //System.out.println();
+            
             vtxs.remove(ear);
 
-            if (prev.item.list == reflxs) {
-                if (isVertexConvex(poly, prev, normal)) {
-                    reflxs.remove(prev);
-                }
-            }
-            if (isVertexConvex(poly, prev, normal)) {
-                convxs.add(prev);
-            } else {
-                reflxs.add(prev);
-            }
+            updateReflxs(prev.item.node, poly, normal, convxs, reflxs);
+            updateReflxs(next.item.node, poly, normal, convxs, reflxs);
 
+            updateConvxsAndEars(prev.item.node, poly, convxs, reflxs, ears);
+            updateConvxsAndEars(next.item.node, poly, convxs, reflxs, ears);
+
+            ears.remove(ear.item.node);
         }
 
+        for (NodeIterator<VInd> iteVtxs = vtxs.iterator(); iteVtxs.hasNext(); iteVtxs.move()) {
+            final Node<VInd> node = iteVtxs.getCurrentNode();
+            tris.add(node.item.index);
+        }
+        return tris;
+    }
+
+    private static void print(String name, CircularLinkList<Node<VInd>> list) {
+        System.out.print(name);
+        for (NodeIterator<Node<VInd>> ite = list.iterator(); ite.hasNext(); ite.move()) {
+            final Node<VInd> node = ite.getCurrent();
+            System.out.print(" " + node.item.index);
+        }
+        System.out.println();
+    }
+
+    private static void updateReflxs(Node<Node<VInd>> node, List<Vec3f> poly, Vec3f normal,
+            CircularLinkList<Node<VInd>> convxs,
+            CircularLinkList<Node<VInd>> reflxs) {
+        if (node.item.item.list == reflxs && isVertexConvex(poly, node.item, normal)) {
+            moveNode(node, convxs);
+        }
+    }
+
+    private static void updateConvxsAndEars(Node<Node<VInd>> node, List<Vec3f> poly,
+            CircularLinkList<Node<VInd>> convxs,
+            CircularLinkList<Node<VInd>> reflxs,
+            CircularLinkList<Node<VInd>> ears) {
+        if (node.item.item.list != reflxs) {
+            if (isVertexEar(poly, node.item, reflxs)){
+                if(node.item.item.list != ears){
+                    moveNode(node, ears);
+                }
+            }else if (node.item.item.list == ears) {
+                moveNode(node, convxs);
+            }
+        }
+    }
+
+    private static void moveNode(Node<Node<VInd>> node, CircularLinkList<Node<VInd>> dst) {
+        node.item.item.list.remove(node);
+        
+        dst.add(node.item);
+        node.item.item.list = dst;
+        node.item.item.node = dst.getLastNode();
     }
 
     private static Vec3f getPolygonNormal(List<Vec3f> vtxs) {
@@ -149,11 +209,11 @@ public class Triangulator5 {
             if ((vtx != t1) && (vtx != t3)) {
                 Vec3f w = vtx.sub_(t1);
                 if (isInsideTriangle(u, v, w, n, n2)) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private static boolean isInsideTriangle(Vec3f u, Vec3f v, Vec3f w, Vec3f n, float n2) {
@@ -169,6 +229,5 @@ public class Triangulator5 {
         }
         return false;
     }
-    
 
 }

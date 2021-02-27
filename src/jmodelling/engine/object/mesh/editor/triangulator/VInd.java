@@ -24,6 +24,7 @@
 package jmodelling.engine.object.mesh.editor.triangulator;
 
 import jmodelling.utils.collections.nodes.CircularLinkList;
+import jmodelling.utils.collections.nodes.Node;
 
 /**
  *
@@ -31,12 +32,14 @@ import jmodelling.utils.collections.nodes.CircularLinkList;
  */
 public class VInd {
 
-    public int index;
+    public final int index;
     public CircularLinkList list;
+    public Node<Node<VInd>> node;
 
     public VInd(int index) {
         this.index = index;
         this.list = null;
+        this.node = null;
     }
 
 }

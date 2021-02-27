@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -51,6 +52,7 @@ import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.cmesh2.CMesh2;
 import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.object.mesh.editor.triangulator.Triangulator;
 import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.newmesh.Mesh;
@@ -150,6 +152,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private TextRenderer textRenderer;
     private MeshObject2 objectSelected = null;
 
+    private List<Vec3f> vtxs = new ArrayList<>();
+    private List<Vec3f> tris = new ArrayList<>();
+    private float firstDist = 0.0f;
+    
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -185,8 +191,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             new CMesh2(meshes.get("Suzanne"));
         } catch (IOException ex) {
         }
-        
-        
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -243,10 +248,44 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glColor3f(0.2f, 0.2f, 0.2f);
         gl.glVertex2f(-1.0f, 1.0f);
         gl.glEnd();*/
-        
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
 
+        ///////////////////
+        gl.glLoadIdentity();
+        gl.glDepthFunc(GL2.GL_LESS);
+        gl.glLineWidth(3);
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glBegin(GL2.GL_LINES);
+        for(int i = 0; i < vtxs.size(); i++){
+            Vec3f v1 = vtxs.get(i);
+            Vec3f v2 = vtxs.get((i + 1) % vtxs.size());
+            gl.glVertex3f(v1.x, v1.y, v1.z);
+            gl.glVertex3f(v2.x, v2.y, v2.z);
+        }
+        gl.glEnd();
+        
+        gl.glDepthFunc(GL2.GL_LESS);
+        gl.glLineWidth(1);
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        tris.forEach((v)->{
+            gl.glVertex3f(v.x, v.y, v.z);
+        });
+        gl.glEnd();
+        
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glLineWidth(1);
+        gl.glDepthFunc(GL2.GL_ALWAYS);
+        gl.glColor3f(0.0f, 0.0f, 1.0f);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        tris.forEach((v)->{
+            gl.glVertex3f(v.x, v.y, v.z);
+        });
+        gl.glEnd();
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        ////////////////////
+        
         gl.glLoadIdentity();
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
@@ -269,10 +308,10 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
+        
+        
         //transf.print();
         //cam.getLocalAxis3f().print();
-        
-
         gl.glLoadIdentity();
         gl.glMultMatrixf(p.toArray(), 0);
         gl.glMultMatrixf(rx.toArray(), 0);
@@ -291,17 +330,16 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnable(GL2.GL_STENCIL_TEST);
         gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
         gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
-        */
+         */
         gl.glDisable(GL2.GL_STENCIL_TEST);
-        
+
         scene.updateGL(gl);
         scene.getObjects().forEach((obj) -> {
-            if(obj != objectSelected){
+            if (obj != objectSelected) {
                 obj.renderOpaque(gl);
             }
         });
 
-        
         if (objectSelected != null) {
             //Stencil
             gl.glClearStencil(0);
@@ -318,15 +356,20 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 
             gl.glDisable(GL2.GL_LIGHTING);
-            
+
             objectSelected.renderOpaque(gl);
 
             gl.glLineWidth(1);
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         }
-        
+
         gl.glDisable(GL2.GL_LIGHTING);
 
+        
+        
+        
+        gl.glDepthFunc(GL2.GL_LESS);
+        
         cube.renderOpaque(gl);
 
         gl.glPushMatrix();
@@ -394,8 +437,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPopMatrix();
 
         gl.glLineStipple(1, (short) 0xFFFF);
-
-        
 
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
@@ -642,6 +683,25 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
                 repaint();
                 break;
+            case KeyEvent.VK_Q: {
+                //Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
+                //Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
+                Vec3f p = new Vec3f(
+                        ((float)mouseX / getWidth()) * 2.0f - 1.0f,
+                        -(((float)mouseY / getHeight()) * 2.0f - 1.0f), 
+                        0.0f);
+                
+                vtxs.add(p);
+
+                if (vtxs.size() > 3) {
+                    List<Integer> inds = Triangulator.earClipping(vtxs);
+                    tris = new ArrayList<>();
+                    inds.forEach((i) -> {
+                        tris.add(vtxs.get(i));
+                    });
+                }
+                repaint();
+            }
             case KeyEvent.VK_X:
                 if (grab) {
                     moveAxis = new Vec3f(1.0f, 0.0f, 0.0f);
@@ -707,8 +767,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private static GLCapabilities generateCapabilities() {
         final GLProfile gp = GLProfile.get(GLProfile.GL2);
         GLCapabilities cap = new GLCapabilities(gp);
-        //cap.setSampleBuffers(true);
-        //cap.setNumSamples(8);
+        cap.setSampleBuffers(true);
+        cap.setNumSamples(8);
         cap.setStencilBits(8);
         return cap;
     }

@@ -49,11 +49,11 @@ public class CircularLinkList<E> {
         return true;
     }
 
-    public void remove(Node n) {
+    public void remove(Node<E> n) {
         unlink(n);
     }
 
-    private void unlink(Node n) {
+    private void unlink(Node<E> n) {
         if (first == null) {
             return;
         }
@@ -67,10 +67,26 @@ public class CircularLinkList<E> {
                 first = n.prev;
             }
         }
-        n.item = null; //TODO: Does this help in Garbage Collection?
+        //n.item = null; //TODO: Does this help in Garbage Collection?
         size--;
     }
 
+    public int size(){
+        return size;
+    }
+    
+    public Node<E> getFirstNode(){
+        return first;
+    }
+    
+    public Node<E> getLastNode(){
+        return first.prev;
+    }
+    
+    public E getFirst(){
+        return first.item;
+    }
+    
     public NodeIterator<E> iterator() {
         return new Iterator(first);
     }

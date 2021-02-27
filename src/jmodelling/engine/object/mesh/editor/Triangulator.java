@@ -32,6 +32,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.CircularLinkedList;
+import jmodelling.utils.collections.CircularLinkedList.Node;
 import jmodelling.utils.collections.CircularLinkedListOld;
 
 /**
@@ -89,27 +90,79 @@ public class Triangulator {
         normal.print();
 
         CircularLinkedList<Vec3f> vtxs = new CircularLinkedList<>();
-        LinkedList<Vec3f> convx = new LinkedList<>();
-        LinkedList<Vec3f> reflx = new LinkedList<>();
-        LinkedList<Vec3f> ears = new LinkedList<>();
-        
+        LinkedList<CircularLinkedList<Vec3f>.Node<Vec3f>> convxs = new LinkedList<>();
+        LinkedList<CircularLinkedList<Vec3f>.Node<Vec3f>> reflxs = new LinkedList<>();
+        LinkedList<CircularLinkedList<Vec3f>.Node<Vec3f>> ears = new LinkedList<>();
+
         poly.forEach((vtx) -> {
             vtxs.add(vtx);
         });
-        
-        for(CircularLinkedList<Vec3f>.CircularIterator<Vec3f> iteVtxs = vtxs.getIterator(); 
-                iteVtxs.hasNext(); iteVtxs.move()){
-            Vec3f vPrev = iteVtxs.getPrev();
-            Vec3f vCurr = iteVtxs.getCurrent();
-            Vec3f vNext = iteVtxs.getNext();
-            
-            Vec3f triNormal = vCurr.sub_(vPrev).cross(vNext.sub_(vCurr)).normalize();
-            if (triNormal.dot(normal) > 0.0f) {
-                convx.add(vCurr);
-            } else {
-                reflx.add(vCurr);
+
+        for (CircularLinkedList<Vec3f>.CircularIterator<Vec3f> iteVtxs = vtxs.getIterator();
+                iteVtxs.hasNext(); iteVtxs.move()) {
+            if(isVertexConvex(iteVtxs.getCurrentNode(), normal)){
+                convxs.add(iteVtxs.getCurrentNode());
+            }else{
+                reflxs.add(iteVtxs.getCurrentNode());
             }
         }
+
+        for (ListIterator<CircularLinkedList<Vec3f>.Node<Vec3f>> iteConvx = convxs.listIterator();
+                iteConvx.hasNext();) {
+            CircularLinkedList<Vec3f>.Node<Vec3f> convx = iteConvx.next();
+            if (!anyInsideTriangle(convx.prev.item, convx.item, convx.next.item, reflxs)) {
+                ears.add(convx);
+                iteConvx.remove();
+            }
+        }
+
+        for(ListIterator<CircularLinkedList<Vec3f>.Node<Vec3f>> iteEars = ears.listIterator();
+                iteEars.hasNext();) {
+            CircularLinkedList<Vec3f>.Node<Vec3f> ear = iteEars.next();
+            
+            
+        }
+        
+    }
+    
+
+    private static boolean isVertexConvex(CircularLinkedList<Vec3f>.Node<Vec3f> node, Vec3f polyNormal){
+        return isTriangleConvex(node.prev.item, node.item, node.next.item, polyNormal);
+    }
+    
+    private static boolean isTriangleConvex(Vec3f t1, Vec3f t2, Vec3f t3, Vec3f polyNormal){
+        return t2.sub_(t1).cross(t3.sub_(t2)).normalize().dot(polyNormal) > 0.0f;
+    }
+    
+    private static boolean anyInsideTriangle(Vec3f t1, Vec3f t2, Vec3f t3,
+            LinkedList<CircularLinkedList<Vec3f>.Node<Vec3f>> vtxs) {
+        Vec3f u = t2.sub_(t1);
+        Vec3f v = t3.sub_(t1);
+        Vec3f n = u.cross_(v);
+        float n2 = n.dot(n);
+        for (CircularLinkedList<Vec3f>.Node<Vec3f> node : vtxs) {
+            if (node.item != t1 && node.item != t3) {
+                Vec3f w = node.item.sub_(t1);
+                if (isInsideTriangle(u, v, w, n, n2, node.item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean isInsideTriangle(Vec3f u, Vec3f v, Vec3f w, Vec3f n, float n2, Vec3f vtx) {
+        final float gamma = u.cross_(w).dot(n) / n2;
+        if (gamma >= 0.0f && gamma <= 1.0f) {
+            final float beta = w.cross_(v).dot(n) / n2;
+            if (beta >= 0.0f && beta <= 1.0f) {
+                final float alpha = 1.0f - gamma - beta;
+                if (alpha >= 0.0f && beta <= 1.0f) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*

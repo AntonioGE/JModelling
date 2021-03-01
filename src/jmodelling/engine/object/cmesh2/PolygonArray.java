@@ -23,8 +23,7 @@
  */
 package jmodelling.engine.object.cmesh2;
 
-import java.util.Collection;
-import jmodelling.engine.object.newmesh.Polygon;
+import jmodelling.engine.object.newmesh.Vertex;
 
 /**
  *
@@ -34,11 +33,13 @@ public class PolygonArray {
     
     public final int nLoops;
     
-    public int[] edgeInds;
-    public int[] vtxInds;
-    public int[] nrmInds;
-    public int[] clrInds;
-    public int[] uvInds;
+    public final int[] edgeInds;
+    public final int[] vtxInds;
+    public final int[] nrmInds;
+    public final int[] clrInds;
+    public final int[] uvInds;
+    
+    public final int[] tris;
     
     public PolygonArray(int nLoops, int nElements){
         this.nLoops = nLoops;
@@ -47,10 +48,33 @@ public class PolygonArray {
         nrmInds = new int[nLoops * nElements];
         clrInds = new int[nLoops * nElements];
         uvInds = new int[nLoops * nElements];
-    }
-    
-    public static void triangulate(float[] vtxs, int[] vInds){
         
+        tris = new int[((nLoops - 2) * nElements) * 3];
     }
     
+    public int getNumVertices(){
+        return vtxInds.length;
+    }
+    
+    public int getNumPolygons(){
+        return vtxInds.length / nLoops;
+    }
+    
+    public int getNumTriangles(){
+        return (nLoops - 2) * getNumPolygons();
+    }
+    
+    public Vertex getVertex(CMesh2 cmesh, int vIndex){
+        float[] vtx = new float[3];
+        float[] nrm = new float[3];
+        float[] clr = new float[3];
+        float[] uv = new float[2];
+        
+        System.arraycopy(cmesh.vtxs, vtxInds[vIndex] * 3, vtx, 0, 3);
+        System.arraycopy(cmesh.nrms, nrmInds[vIndex] * 3, nrm, 0, 3);
+        System.arraycopy(cmesh.clrs, clrInds[vIndex] * 3, clr, 0, 3);
+        System.arraycopy(cmesh.uvs, uvInds[vIndex] * 2, uv, 0, 2);
+        
+        return new Vertex(vtx, nrm, clr, uv);
+    }
 }

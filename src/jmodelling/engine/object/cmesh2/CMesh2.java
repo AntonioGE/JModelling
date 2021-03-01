@@ -26,9 +26,10 @@ package jmodelling.engine.object.cmesh2;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import jmodelling.engine.object.cmesh.CShape;
 import jmodelling.engine.object.material.Material;
+import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
 import jmodelling.engine.object.newmesh.Edge;
 import jmodelling.engine.object.newmesh.Loop;
 import jmodelling.engine.object.newmesh.Mesh;
@@ -42,22 +43,24 @@ import jmodelling.math.vec.Vec3f;
  */
 public class CMesh2 {
 
-    public float[] vtxs;
-    public float[] nrms;
-    public float[] clrs;
-    public float[] uvs;
+    public final float[] vtxs;
+    public final float[] nrms;
+    public final float[] clrs;
+    public final float[] uvs;
 
-    public int[] edges;
+    public final int[] edges;
 
-    public HashMap<Material, CShape2> shapes;
+    //public final int[] tris;
+    public final HashMap<Material, CShape2> shapes;
 
     public CMesh2(Mesh mesh) {
         /**
-         * STEP 1: Create HashMaps
-         * Create hashmaps for all the vertex data in order to index all the
-         * data fast
+         * STEP 1: Create HashMaps.
+         *
+         * Create hashmaps for storing the vertex data without repetitions and
+         * assigning a index to each of the vertices
          */
-        
+
         //Create a identity hash map for storing the vertices and their indices
         IdentityHashMap<Vec3f, Integer> vtxInds = new IdentityHashMap<>(mesh.vtxs.size());
         vtxs = new float[mesh.vtxs.size() * 3];
@@ -122,9 +125,10 @@ public class CMesh2 {
         });
 
         /**
-         * STEP 2: Generate the shapes
-         * Convert the mesh polygons into shapes grouped by materials Each shape
-         * is made of polygon arrays grouped by the number of loops
+         * STEP 2: Generate the shapes.
+         *
+         * Convert the mesh polygons into shapes grouped by materials. Each
+         * shape is made of polygon arrays grouped by the number of loops
          */
         HashMap<Material, LinkedHashSet<Polygon>> matPolys = mesh.getPolysGroupedByMat();
         shapes = new HashMap<>(matPolys.size());
@@ -134,7 +138,9 @@ public class CMesh2 {
             for (Map.Entry<Integer, LinkedHashSet<Polygon>> spEntry : sizePolys.entrySet()) {
                 PolygonArray pArray = new PolygonArray(spEntry.getKey(), spEntry.getValue().size());
                 int vertexIndex = 0;
-                for(Polygon poly : spEntry.getValue()){
+                int triIndex = 0;
+                int polyIndex = 0;
+                for (Polygon poly : spEntry.getValue()) {
                     for (Loop loop : poly.loops) {
                         pArray.vtxInds[vertexIndex] = vtxInds.get(loop.vtx);
 
@@ -146,6 +152,21 @@ public class CMesh2 {
 
                         vertexIndex++;
                     }
+
+                    /*
+                    List<Vec3f> polyVtxs = poly.getVertices();
+                    List<Integer> indices = EarClipping.triangulate(polyVtxs);
+                    for (Integer i : indices) {
+                        pArray.tris[triIndex] = vtxInds.get(polyVtxs.get(i));
+                        triIndex++;
+                    }*/
+                    List<Vec3f> polyVtxs = poly.getVertices();
+                    List<Integer> indices = EarClipping.triangulate(polyVtxs);
+                    for (Integer i : indices) {
+                        pArray.tris[triIndex] = polyIndex + i;
+                        triIndex++;
+                    }
+                    polyIndex += poly.loops.size();
                 }
                 polyArrays.put(pArray.nLoops, pArray);
             }

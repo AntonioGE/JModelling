@@ -28,15 +28,16 @@ import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import jmodelling.engine.object.cmesh.CMesh;
-import jmodelling.engine.object.cmesh.CShape;
+import jmodelling.engine.object.cmesh2.CMesh2;
+import jmodelling.engine.object.cmesh2.CShape2;
+import jmodelling.engine.object.cmesh2.PolygonArray;
 import jmodelling.engine.object.material.Material;
 
 /**
  *
  * @author ANTONIO
  */
-public class MeshGL2 {
+public class MeshGL3 {
 
     public FloatBuffer vVtxs;
     //public FloatBuffer cVtxs;
@@ -46,7 +47,7 @@ public class MeshGL2 {
 
     public HashMap<Material, ShapeGL2> shapes;
 
-    public MeshGL2(CMesh cmesh) {
+    public MeshGL3(CMesh2 cmesh) {
         genData(cmesh);
     }
 
@@ -62,32 +63,30 @@ public class MeshGL2 {
             gl.glGenBuffers(shape.ebo.length, shape.ebo, 0);
 
             gl.glBindVertexArray(shape.vao[0]);
-            
+
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.vtxs.limit() * Float.BYTES, shape.vtxs, GL2.GL_STATIC_DRAW);
             gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-            
+
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.nrms.limit() * Float.BYTES, shape.nrms, GL2.GL_STATIC_DRAW);
             gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-            
+
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.clrs.limit() * Float.BYTES, shape.clrs, GL2.GL_STATIC_DRAW);
             gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-            
+
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.uvs.limit() * Float.BYTES, shape.uvs, GL2.GL_STATIC_DRAW);
             gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
             gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-            
+
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.ebo[0]);
             gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.elems.limit() * Integer.BYTES, shape.elems, GL2.GL_STATIC_DRAW);
 
-            
-            
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 
             //Free buffers after uploading to graphics card
@@ -105,8 +104,8 @@ public class MeshGL2 {
             shape.elems = null;
         }
     }
-    
-    public void update(GL2 gl, MeshGL2 mesh) {
+
+    public void update(GL2 gl, MeshGL3 mesh) {
         //delete(gl);
         //init(gl);
     }
@@ -124,14 +123,14 @@ public class MeshGL2 {
         for (ShapeGL2 shape : shapes.values()) {
 
             gl.glBindVertexArray(shape.vao[0]);
-            
+
             gl.glDrawElements(GL2.GL_TRIANGLES, shape.nElements, GL2.GL_UNSIGNED_INT, 0);
-            
+
             gl.glBindVertexArray(0);
         }
     }
 
-    public final void genData(CMesh cmesh) {
+    public final void genData(CMesh2 cmesh) {
         vVtxs = genVVtxs(cmesh);
         //cVtxs = genCVtxs(cmesh);
 
@@ -141,15 +140,15 @@ public class MeshGL2 {
         shapes = genShapes(cmesh);
     }
 
-    private static FloatBuffer genVVtxs(CMesh cmesh) {
+    private static FloatBuffer genVVtxs(CMesh2 cmesh) {
         return Buffers.newDirectFloatBuffer(cmesh.vtxs);
     }
 
-    private static FloatBuffer genCVtxs(CMesh cmesh) {
+    private static FloatBuffer genCVtxs(CMesh2 cmesh) {
         return Buffers.newDirectFloatBuffer(new float[cmesh.vtxs.length]);
     }
 
-    private static FloatBuffer genVEdges(CMesh cmesh) {
+    private static FloatBuffer genVEdges(CMesh2 cmesh) {
         FloatBuffer buff = Buffers.newDirectFloatBuffer(cmesh.edges.length * 3);
         buff.mark();
         for (int i = 0; i < cmesh.edges.length; i++) {
@@ -162,7 +161,7 @@ public class MeshGL2 {
         return buff;
     }
 
-    private static FloatBuffer genCEdges(CMesh cmesh) {
+    private static FloatBuffer genCEdges(CMesh2 cmesh) {
         FloatBuffer buff = Buffers.newDirectFloatBuffer(cmesh.edges.length * 3);
         buff.mark();
         for (int i = 0; i < cmesh.edges.length; i++) {
@@ -174,28 +173,35 @@ public class MeshGL2 {
         return buff;
     }
 
-    private static HashMap<Material, ShapeGL2> genShapes(CMesh cmesh) {
+    private static HashMap<Material, ShapeGL2> genShapes(CMesh2 cmesh) {
         HashMap<Material, ShapeGL2> shapes = new HashMap<>(cmesh.shapes.size());
 
-        for (CShape cshape : cmesh.shapes.values()) {
-            //Create a map for generating the vertex buffers without duplicated vertices
-            HashMap<Vertex, Integer> vertices = new HashMap<>(cshape.vtxInds.length);
-            int[] vInds = new int[cshape.vtxInds.length];
+        cmesh.shapes.values().forEach((shape) -> {
+            /**
+             * Create a hash map for storing the vertices as keys and their indices
+             * as values.
+             */
+            
+            HashMap<Vertex, Integer> vertices = new HashMap<>(shape.getNumVertices());
+            int[] vInds = new int[shape.getNumTris() * 3];
             int vtxsAdded = 0;
-            for (int i = 0; i < cshape.vtxInds.length; i++) {
-                Vertex vtx = cshape.getVertex(cmesh, i);
-                Integer index = vertices.get(vtx);
-                if (index == null) {
-                    vertices.put(vtx, vtxsAdded);
-                    vInds[i] = vtxsAdded;
-                    vtxsAdded++;
-                } else {
-                    vInds[i] = index;
+            int vIndOffset = 0;
+            for (PolygonArray pArray : shape.polys.values()) {
+                for(int i = 0; i < pArray.tris.length; i++, vIndOffset++){
+                    Vertex vtx = pArray.getVertex(cmesh, pArray.tris[i]);
+                    Integer index = vertices.get(vtx);
+                    if (index == null) {
+                        vertices.put(vtx, vtxsAdded);
+                        vInds[vIndOffset] = vtxsAdded;
+                        vtxsAdded++;
+                    } else {
+                        vInds[vIndOffset] = index;
+                    }
                 }
             }
-
+            
             //Create the shape for OpenGL and initialize the buffers
-            ShapeGL2 shapeGL = new ShapeGL2(cshape.mat, vertices.size(), vInds.length);
+            ShapeGL2 shapeGL = new ShapeGL2(shape.mat, vertices.size(), vInds.length);
             shapeGL.vtxs.mark();
             shapeGL.nrms.mark();
             shapeGL.clrs.mark();
@@ -216,6 +222,7 @@ public class MeshGL2 {
                 shapeGL.clrs.put(vtx.clr);
                 shapeGL.uvs.put(vtx.uv);
             }
+            
             //Put all the elements data
             shapeGL.elems.put(vInds);
 
@@ -228,7 +235,9 @@ public class MeshGL2 {
 
             //Put the new shapeGL into the map
             shapes.put(shapeGL.mat, shapeGL);
-        }
+            
+        });
         return shapes;
     }
+
 }

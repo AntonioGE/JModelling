@@ -52,11 +52,12 @@ import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.cmesh2.CMesh2;
 import jmodelling.engine.object.mesh.MeshObject;
-import jmodelling.engine.object.mesh.editor.triangulator.Triangulator;
+import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
 import jmodelling.engine.object.mesh.generator.Cube;
 import jmodelling.engine.object.mesh.generator.EmptyMesh;
 import jmodelling.engine.object.newmesh.Mesh;
 import jmodelling.engine.object.newmesh.MeshObject2;
+import jmodelling.engine.object.newmesh.MeshObject3;
 import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.raytracing.Raytracer;
@@ -155,6 +156,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private List<Vec3f> vtxs = new ArrayList<>();
     private List<Vec3f> tris = new ArrayList<>();
     private float firstDist = 0.0f;
+
+    private MeshObject3 mesh3;
     
     public DisplayGL() {
         super(generateCapabilities());
@@ -185,12 +188,13 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 scene.add(newObject);
             }
         }
-
-        try {
-            HashMap<String, Mesh> meshes = ObjReader.readObj("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
-            new CMesh2(meshes.get("Suzanne"));
-        } catch (IOException ex) {
-        }
+        
+        mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
+        mesh3.loc.set(0.0f, 0.0f, 4.0f);
+        scene.add(mesh3);
+        
 
         addGLEventListener(this);
         addMouseListener(this);
@@ -253,6 +257,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         ///////////////////
         gl.glLoadIdentity();
+        /*
         gl.glDepthFunc(GL2.GL_LESS);
         gl.glLineWidth(3);
         gl.glColor3f(0.0f, 0.0f, 0.0f);
@@ -284,8 +289,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         });
         gl.glEnd();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+         */
         ////////////////////
-        
+
         gl.glLoadIdentity();
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
@@ -308,8 +314,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
-        
-        
         //transf.print();
         //cam.getLocalAxis3f().print();
         gl.glLoadIdentity();
@@ -365,11 +369,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glDisable(GL2.GL_LIGHTING);
 
-        
-        
-        
         gl.glDepthFunc(GL2.GL_LESS);
-        
+
         cube.renderOpaque(gl);
 
         gl.glPushMatrix();
@@ -687,14 +688,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 //Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
                 //Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
                 Vec3f p = new Vec3f(
-                        ((float)mouseX / getWidth()) * 2.0f - 1.0f,
-                        -(((float)mouseY / getHeight()) * 2.0f - 1.0f), 
+                        ((float) mouseX / getWidth()) * 2.0f - 1.0f,
+                        -(((float) mouseY / getHeight()) * 2.0f - 1.0f),
                         0.0f);
-                
+
                 vtxs.add(p);
 
                 if (vtxs.size() > 3) {
-                    List<Integer> inds = Triangulator.earClipping(vtxs);
+                    List<Integer> inds = EarClipping.triangulate(vtxs);
                     tris = new ArrayList<>();
                     inds.forEach((i) -> {
                         tris.add(vtxs.get(i));
@@ -767,8 +768,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private static GLCapabilities generateCapabilities() {
         final GLProfile gp = GLProfile.get(GLProfile.GL2);
         GLCapabilities cap = new GLCapabilities(gp);
-        cap.setSampleBuffers(true);
-        cap.setNumSamples(8);
+        //cap.setSampleBuffers(true);
+        //cap.setNumSamples(8);
         cap.setStencilBits(8);
         return cap;
     }

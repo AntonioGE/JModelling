@@ -24,7 +24,6 @@
 package jmodelling.engine.object.mesh.editor.triangulator;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.nodes.CircularLinkList;
@@ -35,9 +34,9 @@ import jmodelling.utils.collections.nodes.NodeIterator;
  *
  * @author ANTONIO
  */
-public class Triangulator {
+public class EarClipping {
 
-    public static List<Integer> earClipping(List<Vec3f> poly) {
+    public static List<Integer> triangulate(List<Vec3f> poly) {
         //Calculate the normal of the polygon
         final Vec3f normal = getPolygonNormal(poly);
 
@@ -66,10 +65,6 @@ public class Triangulator {
             }
         }
 
-        print("CONVX", convxs);
-        print("RFLXS", reflxs);
-        print("EARS", ears);
-
         //Extract the ear vertices from the convex vertices
         for (NodeIterator<Node<VInd>> iteConvx = convxs.iterator(); iteConvx.hasNext(); iteConvx.move()) {
             final Node<Node<VInd>> convx = iteConvx.getCurrentNode();
@@ -80,19 +75,13 @@ public class Triangulator {
                 iteConvx.remove();
             }
         }
-
-        print("CONVX", convxs);
-        print("RFLXS", reflxs);
-        print("EARS", ears);
         
         //Create a triangle list for storing the triangulated polygon as vertex 
         //indices that point to the original list
         final List<Integer> tris = new ArrayList<>((poly.size() - 2) * 3);
 
         //Extract all the ears and add them to the triangle list
-        //for (NodeIterator<Node<VInd>> iteEars = ears.iterator(); iteEars.hasNext(); iteEars.move()) {
         while (ears.size() > 0 && vtxs.size() > 3) {
-            //final Node<Node<VInd>> node = ears.getFirstNode();
             final Node<VInd> ear = ears.getFirstNode().item;
             final Node<VInd> prev = ear.prev;
             final Node<VInd> next = ear.next;
@@ -101,12 +90,6 @@ public class Triangulator {
             tris.add(ear.item.index);
             tris.add(next.item.index);
 
-            //print("CONVX", convxs);
-            //print("RFLXS", reflxs);
-            //print("EARS", ears);
-            System.out.println("Tri: " + prev.item.index + " " + ear.item.index + " " + next.item.index);
-            //System.out.println();
-            
             vtxs.remove(ear);
 
             updateReflxs(prev.item.node, poly, normal, convxs, reflxs);
@@ -118,6 +101,7 @@ public class Triangulator {
             ears.remove(ear.item.node);
         }
 
+        //Add remaining vertices
         for (NodeIterator<VInd> iteVtxs = vtxs.iterator(); iteVtxs.hasNext(); iteVtxs.move()) {
             final Node<VInd> node = iteVtxs.getCurrentNode();
             tris.add(node.item.index);

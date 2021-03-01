@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.object.newmesh;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,6 +51,14 @@ public class Polygon {
         Loop l2 = ite.next();
         
         return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
+    }
+    
+    public List<Vec3f> getVertices(){
+        List<Vec3f> vtxs = new ArrayList<>(loops.size());
+        loops.forEach((loop) -> {
+            vtxs.add(loop.vtx);
+        });
+        return vtxs;
     }
     
 }

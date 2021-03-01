@@ -34,13 +34,29 @@ public class CShape2 {
     
     public Material mat;
     
-    public PolygonArray tris;
     public HashMap<Integer, PolygonArray> polys;
     
     public CShape2(Material mat, HashMap<Integer, PolygonArray> polys){
         this.mat = mat;
         this.polys = polys;
     }
+    
+    public int getNumVertices(){
+        int count = 0;
+        for(PolygonArray pArray : polys.values()){
+            count += pArray.vtxInds.length;
+        }
+        return count;
+    }
+    
+    public int getNumTris(){
+        int count = 0;
+        for(PolygonArray pArray : polys.values()){
+            count += pArray.getNumTriangles();
+        }
+        return count;
+    }
+    
     
     
 }

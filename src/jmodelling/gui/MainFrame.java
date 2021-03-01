@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import jmodelling.engine.object.mesh.editor.triangulator.Triangulator;
+import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.CircularLinkedList;
@@ -98,7 +98,7 @@ public class MainFrame extends JFrame {
         vtxs.add(new Vec3f(+2.0f, -1.2f, 0.0f));
         vtxs.add(new Vec3f(+0.0f, -0.6f, 0.0f));
         vtxs.add(new Vec3f(+0.0f, +2.0f, 0.0f));
-        Triangulator.earClipping(vtxs);
+        EarClipping.triangulate(vtxs);
 
         CircularLinkedList<String> list = new CircularLinkedList<>();
         list.add("FIRST");

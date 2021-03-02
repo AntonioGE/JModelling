@@ -689,7 +689,7 @@ public class Vec3f {
     }
 
     /**
-     * Scales this vector by a scalar value
+     * Scales this vector by a scalar value.
      *
      * @param scale scalar value
      * @return new scaled vector
@@ -699,7 +699,7 @@ public class Vec3f {
     }
 
     /**
-     * Negates a vector
+     * Negates a vector.
      *
      * @param src input vector to be negated
      * @param dst output negated vector
@@ -711,7 +711,7 @@ public class Vec3f {
     }
 
     /**
-     * Negates a vector
+     * Negates a vector.
      *
      * @param src input vector to be negated
      * @return new negated vector
@@ -723,7 +723,7 @@ public class Vec3f {
     }
 
     /**
-     * Negates this vector
+     * Negates this vector.
      *
      * @return this negated vector
      */
@@ -733,7 +733,7 @@ public class Vec3f {
     }
 
     /**
-     * Negates this vector
+     * Negates this vector.
      *
      * @return new negated vector
      */
@@ -741,6 +741,49 @@ public class Vec3f {
         return negate_(this);
     }
 
+    /**
+     * Inverts a vector.
+     * 
+     * @param src input vector to be inverted
+     * @param dst inverted vector
+     */
+    public static void invert(Vec3f src, Vec3f dst){
+        dst.x = 1.0f / src.x;
+        dst.y = 1.0f / src.y;
+        dst.z = 1.0f / src.z;
+    }
+    
+    /**
+     * Inverts a vector.
+     * 
+     * @param src input vector to be inverted
+     * @return new inverted vector
+     */
+    public static Vec3f invert_(Vec3f src){
+        Vec3f dst = new Vec3f();
+        invert(src, dst);
+        return dst;
+    }
+    
+    /**
+     * Inverts this vector.
+     * 
+     * @return this vector inverted
+     */
+    public Vec3f invert(){
+        invert(this, this);
+        return this;
+    }
+    
+    /**
+     * Inverts this vector.
+     * 
+     * @return new vector inverted
+     */
+    public Vec3f invert_(){
+        return invert_(this);
+    }
+    
     /**
      * Converts a vector of angles from radians to degrees
      *

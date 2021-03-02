@@ -139,8 +139,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Scene scene = new Scene();
 
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-    private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
-    //private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    //private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+    private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
@@ -167,7 +167,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //scene.add(nObject);
         //nObject.loc.set(5.0f, 2.0f, 1.0f);
-        /*
+        
         MeshObject temp = new MeshObject("Temp", new Vec3f(), nObject.cmesh);
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -178,18 +178,19 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 newObject.rot.x = (float) (Math.random() * 360.0f);
                 newObject.rot.y = (float) (Math.random() * 360.0f);
                 newObject.rot.z = (float) (Math.random() * 360.0f);
-                //newObject.sca.x = 0.2f;
-                //newObject.sca.y = 0.2f;
-                //newObject.sca.z = 0.2f;
+                newObject.sca.x = 0.2f;
+                newObject.sca.y = 0.2f;
+                newObject.sca.z = 0.2f;
                 scene.add(newObject);
             }
-        }*/
-
-        mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
-        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+        }
+        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
+        mesh3.rot.set(45.0f, -20.0f, 14.0f);
+        mesh3.sca.set(0.2f, 0.2f, 0.2f);
         scene.add(mesh3);
 
         addGLEventListener(this);
@@ -250,9 +251,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnd();*/
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
-
+        gl.glEnable(GL2.GL_NORMALIZE);
+        //gl.glEnable(GL2.GL_RESCALE_NORMAL);
         ///////////////////
         gl.glLoadIdentity();
+
         /*
         gl.glDepthFunc(GL2.GL_LESS);
         gl.glLineWidth(3);
@@ -287,20 +290,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
          */
         ////////////////////
-
         gl.glLoadIdentity();
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
 
-        gl.glEnable(GL2.GL_LIGHT0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
-
-        gl.glEnable(GL2.GL_LIGHT1);
-        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+        //lighting2(gl);
 
         Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
@@ -323,6 +315,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
+        lighting2(gl);
+        
         //Stencil
         /*
         gl.glClearStencil(0);
@@ -343,7 +337,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
         gl.glDepthFunc(GL2.GL_LESS);
-        
+
         gl.glEnable(GL2.GL_LIGHTING);
         scene.updateGL(gl);
         scene.getObjects().forEach((obj) -> {
@@ -351,7 +345,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 obj.renderOpaque(gl);
             }
         });
-        
+
         /*
         scene.updateGL(gl);
         gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
@@ -373,8 +367,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         });
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-        */
-        
+         */
         if (objectSelected != null) {
             //Stencil
             gl.glClearStencil(0);
@@ -403,7 +396,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glDepthFunc(GL2.GL_LESS);
 
         //cube.renderOpaque(gl);
-
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);
 
@@ -416,8 +408,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
         gl.glPopMatrix();
-
-        
 
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < lines.size() / 2; i++) {
@@ -464,9 +454,6 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
-        
-        
-        
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
         textRenderer.beginRendering(getWidth(), getHeight());
@@ -800,6 +787,38 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         //cap.setNumSamples(8);
         cap.setStencilBits(8);
         return cap;
+    }
+
+    private void lighting(GL2 gl) {
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT1);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+
+    }
+
+    private void lighting2(GL2 gl) {
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT1);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+
     }
 
 }

@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.newmesh.Mesh;
+import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
@@ -97,7 +97,7 @@ public class ObjReader {
 
     }
 
-    public static HashMap<String, Mesh> readObj(String path) throws IOException {
+    public static HashMap<String, EMesh> readObj(String path) throws IOException {
 
         HashMap<String, Object3D> objects = new HashMap();
 
@@ -144,9 +144,9 @@ public class ObjReader {
             }
         }
         
-        HashMap<String, Mesh> meshes = new HashMap<>(objects.size());
+        HashMap<String, EMesh> meshes = new HashMap<>(objects.size());
         for (Object3D o : objects.values()) {
-            Mesh m = objectToMesh(o, vCoords, tCoords, nCoords);
+            EMesh m = objectToMesh(o, vCoords, tCoords, nCoords);
             meshes.put(o.name, m);
             System.out.println("Done");
         }
@@ -154,9 +154,9 @@ public class ObjReader {
         return meshes;
     }
 
-    private static Mesh objectToMesh(Object3D o, ArrayList<Float[]> vCoords, 
+    private static EMesh objectToMesh(Object3D o, ArrayList<Float[]> vCoords, 
             ArrayList<Float[]> tCoords, ArrayList<Float[]> nCoords){
-        Mesh mesh = new Mesh();
+        EMesh mesh = new EMesh();
         
         HashMap<Integer, Integer> vIndsAdded = new HashMap<>();
         int nextIndex = 0;

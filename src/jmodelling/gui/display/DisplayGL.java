@@ -50,15 +50,8 @@ import javax.swing.SwingUtilities;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
-import jmodelling.engine.object.cmesh2.CMesh2;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
-import jmodelling.engine.object.mesh.generator.Cube;
-import jmodelling.engine.object.mesh.generator.EmptyMesh;
-import jmodelling.engine.object.newmesh.Mesh;
-import jmodelling.engine.object.newmesh.MeshObject2;
-import jmodelling.engine.object.newmesh.MeshObject3;
-import jmodelling.engine.object.newmesh.NewMeshObject;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
@@ -146,18 +139,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Scene scene = new Scene();
 
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-    private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
     private TextRenderer textRenderer;
-    private MeshObject2 objectSelected = null;
+    private MeshObject objectSelected = null;
 
     private List<Vec3f> vtxs = new ArrayList<>();
     private List<Vec3f> tris = new ArrayList<>();
     private float firstDist = 0.0f;
 
-    private MeshObject3 mesh3;
+    private MeshObject mesh3;
 
     public DisplayGL() {
         super(generateCapabilities());
@@ -171,14 +164,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         }
 
-        cube = new EmptyMesh(new Cube().toMesh());
-
         //scene.add(nObject);
         //nObject.loc.set(5.0f, 2.0f, 1.0f);
-        MeshObject2 temp = new MeshObject2("Temp", nObject.mesh);
+        MeshObject temp = new MeshObject("Temp", new Vec3f(), nObject.cmesh);
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                MeshObject2 newObject = new MeshObject2("Nuevo " + i + " " + j, temp.cmesh);
+                MeshObject newObject = new MeshObject("Nuevo " + i + " " + j, new Vec3f(), temp.cmesh);
                 System.out.println(newObject.name);
                 newObject.loc.x = i * 6.0f;
                 newObject.loc.y = j * 6.0f;
@@ -189,7 +180,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         }
 
-        mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
@@ -385,7 +377,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glDepthFunc(GL2.GL_LESS);
 
-        cube.renderOpaque(gl);
+        //cube.renderOpaque(gl);
 
         gl.glPushMatrix();
         gl.glTranslatef(-0.5f, -0.5f, -0.5f);
@@ -611,7 +603,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_R:
-                MeshObject2 objSelected = Raytracer.getSelectedMeshObject(cam.loc,
+                MeshObject objSelected = Raytracer.getSelectedMeshObject(cam.loc,
                         cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
                         scene.getMeshObjects());
                 if (objSelected != null) {

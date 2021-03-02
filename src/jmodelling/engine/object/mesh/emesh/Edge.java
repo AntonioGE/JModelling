@@ -21,23 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.mesh.emesh;
 
-import java.nio.FloatBuffer;
-import jmodelling.engine.object.material.Material;
+import java.util.Objects;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class ShapeGL {
-    
-    public Material mat;
-    public FloatBuffer vTris;
-    public FloatBuffer tTris;
-    public FloatBuffer nTris;
-    public FloatBuffer cTris;
-    
-    public int[] vbos;
-    
+public class Edge {
+
+    public final Vec3f v0;
+    public final Vec3f v1;
+
+    public Edge(Vec3f v0, Vec3f v1) {
+        if (v0 == v1) {
+            throw new IllegalArgumentException();
+        }
+        this.v0 = v0;
+        this.v1 = v1;
+    }
+
+    public boolean contains(Vec3f vtx) {
+        return vtx == v0 || vtx == v1;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Edge other = (Edge) obj;
+
+        return ((this.v0 == other.v0) && (this.v1 == other.v1))
+                || ((this.v0 == other.v1) && (this.v1 == other.v0));
+    }
 }

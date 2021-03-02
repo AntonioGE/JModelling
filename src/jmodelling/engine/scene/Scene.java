@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
-import jmodelling.engine.object.newmesh.MeshObject2;
+import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.utils.collections.IdentitySet;
 
 /**
@@ -113,11 +113,11 @@ public class Scene {
         return objectsReadOnly;
     }
     
-    public Set<MeshObject2> getMeshObjects(){
-        HashSet<MeshObject2> meshObjects = new HashSet<>();
+    public Set<MeshObject> getMeshObjects(){
+        HashSet<MeshObject> meshObjects = new HashSet<>();
         objects.stream().filter((obj) -> (obj.getType().equals("MESH"))).forEachOrdered((obj) -> {
             try{
-                meshObjects.add((MeshObject2)obj);
+                meshObjects.add((MeshObject)obj);
             }catch(ClassCastException ex){
                 
             }

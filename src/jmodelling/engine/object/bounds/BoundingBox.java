@@ -23,9 +23,8 @@
  */
 package jmodelling.engine.object.bounds;
 
-import jmodelling.engine.object.cmesh.CMesh;
-import jmodelling.engine.object.cmesh.CShape;
-import jmodelling.engine.object.newmesh.Mesh;
+import jmodelling.engine.object.mesh.cmesh.CMesh;
+import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -70,7 +69,7 @@ public class BoundingBox {
         //System.out.println(min.toString() + " " + max.toString());
     }
 
-    public BoundingBox(Mesh mesh) {
+    public BoundingBox(EMesh mesh) {
         if (mesh.vtxs.size() < 2) {
             min = new Vec3f();
             max = new Vec3f();

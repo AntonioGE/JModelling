@@ -24,23 +24,50 @@
 package jmodelling.engine.object.mesh;
 
 import com.jogamp.opengl.GL2;
+import java.io.IOException;
 import java.util.HashMap;
+import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.bounds.BoundingBox;
 import jmodelling.engine.object.bounds.BoundingSphere;
-import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.shape.Shape;
-import jmodelling.engine.object.mesh.vertex.Vertex;
+import jmodelling.engine.object.mesh.cmesh.CMesh;
+import jmodelling.engine.object.mesh.cmesh.gl.CMeshGL;
+import jmodelling.engine.object.mesh.emesh.EMesh;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class MeshObject extends Object3D {
+public class MeshObject extends Object3D {
 
-    public Mesh mesh;
+    public CMesh cmesh;
+    public CMeshGL meshGL;
 
-    public MeshObject(Mesh mesh) {
-        this.mesh = mesh;
+    private BoundingSphere boundingSphere;
+
+    public MeshObject(String name, Vec3f loc, CMesh cmesh) {
+        super(name, loc);
+
+        this.cmesh = cmesh;
+        this.meshGL = new CMeshGL(cmesh);
+    }
+
+    //TODO: Temporary function, remove it later
+    public MeshObject(String objPath) {
+        HashMap<String, EMesh> meshes;
+        try {
+            meshes = ObjReader.readObj(objPath);
+            this.cmesh = new CMesh(meshes.get("Suzanne"));
+            //this.cmesh = new CMesh(meshes.get("spot"));
+            //this.cmesh = new CMesh(meshes.get("Plane"));
+            meshGL = new CMeshGL(cmesh);
+
+            calculateBounds();
+        } catch (IOException ex) {
+
+        }
+
     }
 
     @Override
@@ -48,57 +75,43 @@ public abstract class MeshObject extends Object3D {
         gl.glPushMatrix();
         gl.glMultMatrixf(getLocalAxis().toArray(), 0);
 
-        renderShapes(gl, mesh.tris, GL2.GL_TRIANGLES);
-        renderShapes(gl, mesh.quads, GL2.GL_QUADS);
+        meshGL.render(gl);
+
         gl.glPopMatrix();
-    }
-
-    //TODO: Remove this temporary method
-    public static void renderShapes(GL2 gl, HashMap<Material, Shape> shapes, int shapeType) {
-
-        shapes.entrySet().forEach((shape) -> {
-            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-            gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-            gl.glTexCoordPointer(Vertex.TEX_SIZE, GL2.GL_FLOAT, 0, shape.getValue().tCoords);
-            gl.glColorPointer(Vertex.CLR_SIZE, GL2.GL_FLOAT, 0, shape.getValue().colors);
-            gl.glNormalPointer(GL2.GL_FLOAT, 0, shape.getValue().nCoords);
-            gl.glVertexPointer(Vertex.POS_SIZE, GL2.GL_FLOAT, 0, shape.getValue().vCoords);
-
-            gl.glDrawArrays(shapeType, 0, shape.getValue().vCoords.limit() / Vertex.POS_SIZE);
-
-            gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-            gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-            gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-            gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        });
     }
 
     @Override
     public void init(GL2 gl) {
+        meshGL.init(gl);
     }
 
     @Override
     public void update(GL2 gl) {
+        meshGL.update(gl, meshGL);
     }
 
     @Override
     public void delete(GL2 gl) {
+        meshGL.delete(gl);
     }
 
     @Override
     public BoundingSphere getBoundingSphere() {
-        return null;
+        return boundingSphere;
     }
 
     @Override
-    public boolean isSelectable(){
-        return false;
+    public boolean isSelectable() {
+        return true;
     }
 
-    
-    
-    
+    @Override
+    public String getType() {
+        return "MESH";
+    }
+
+    public final void calculateBounds() {
+        BoundingBox boundingBox = new BoundingBox(cmesh);
+        this.boundingSphere = new BoundingSphere(boundingBox);
+    }
 }

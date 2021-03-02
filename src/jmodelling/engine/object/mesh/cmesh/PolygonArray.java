@@ -21,16 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.cmesh2;
-
-import jmodelling.engine.object.newmesh.Vertex;
+package jmodelling.engine.object.mesh.cmesh;
 
 /**
  *
  * @author ANTONIO
  */
 public class PolygonArray {
-    
     public final int nLoops;
     
     public final int[] edgeInds;
@@ -64,7 +61,7 @@ public class PolygonArray {
         return (nLoops - 2) * getNumPolygons();
     }
     
-    public Vertex getVertex(CMesh2 cmesh, int vIndex){
+    public Vertex getVertex(CMesh cmesh, int vIndex){
         float[] vtx = new float[3];
         float[] nrm = new float[3];
         float[] clr = new float[3];

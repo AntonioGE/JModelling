@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.mesh.emesh;
 
 import java.util.Objects;
 import jmodelling.math.vec.Vec2f;
@@ -99,5 +99,4 @@ public class Loop {
         }
         return true;
     }
-
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.mesh.emesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,18 +29,16 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import jmodelling.engine.object.material.Material;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.ListUtils;
-import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
  * @author ANTONIO
  */
-public class Mesh {
+public class EMesh {
 
     public ArrayList<Vec3f> vtxs;
     public HashMap<Edge, Edge> edges;
@@ -48,45 +46,36 @@ public class Mesh {
 
     public LinkedHashSet<Material> mats;
 
-    public Mesh() {
+    public EMesh() {
         vtxs = new ArrayList<>();
         edges = new LinkedHashMap<>();
         polys = new LinkedHashSet<>();
 
         mats = new LinkedHashSet<>();
     }
-    
-    public Mesh(MeshGL meshGL){
-        vtxs = new ArrayList<>(meshGL.vVtxs.limit() / (3 * 3));
-        
-        for(int i = 0; i < meshGL.vVtxs.limit(); i += 9){
-            vtxs.add(new Vec3f(meshGL.vVtxs, i));
-        }
-        
-    }
 
-    public Mesh(Mesh other) {
+    public EMesh(EMesh other) {
         this();
-        
-        IdentityHashMap<Vec3f, Vec3f> vToCopy = new IdentityHashMap<>(other.vtxs.size()); 
-        for(Vec3f vtx : other.vtxs){
+
+        IdentityHashMap<Vec3f, Vec3f> vToCopy = new IdentityHashMap<>(other.vtxs.size());
+        for (Vec3f vtx : other.vtxs) {
             Vec3f vCopy = vtx.clone();
             vtxs.add(vCopy);
             vToCopy.put(vtx, vCopy);
         }
-        
+
         IdentityHashMap<Edge, Edge> eToCopy = new IdentityHashMap<>(other.edges.size());
-        for(Edge edge : other.edges.keySet()){
+        for (Edge edge : other.edges.keySet()) {
             Vec3f v0Copy = vToCopy.get(edge.v0);
             Vec3f v1Copy = vToCopy.get(edge.v1);
             Edge edgeCopy = new Edge(v0Copy, v1Copy);
             edges.put(edgeCopy, edgeCopy);
             eToCopy.put(edge, edgeCopy);
         }
-        
-        for(Polygon poly : other.polys){
+
+        for (Polygon poly : other.polys) {
             LinkedHashSet<Loop> loopsCopy = new LinkedHashSet<>(poly.loops.size());
-            for(Loop loop : poly.loops){
+            for (Loop loop : poly.loops) {
                 Vec3f vCopy = vToCopy.get(loop.vtx);
                 Edge eCopy = eToCopy.get(loop.edge);
                 Loop loopCopy = new Loop(vCopy, eCopy, loop.nrm.clone(), loop.clr.clone(), loop.uv.clone());
@@ -97,10 +86,10 @@ public class Mesh {
     }
 
     @Override
-    public Mesh clone(){
-        return new Mesh(this);
+    public EMesh clone() {
+        return new EMesh(this);
     }
-    
+
     public void addVertex(Vec3f vtx) {
         vtxs.add(vtx);
     }
@@ -129,7 +118,7 @@ public class Mesh {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
-            if(edges.containsKey(edge)){
+            if (edges.containsKey(edge)) {
                 edge = edges.get(edges.get(edge));
             }
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
@@ -140,7 +129,7 @@ public class Mesh {
         }
 
         Polygon poly = new Polygon(newLoops, mat);
-        for(Edge edge : newEdges){
+        for (Edge edge : newEdges) {
             edges.put(edge, edge);
         }
         polys.add(poly);
@@ -157,45 +146,44 @@ public class Mesh {
         });
         return count;
     }
-    
-    public HashMap<Material, LinkedHashSet<Polygon>> getPolysGroupedByMat(){
+
+    public HashMap<Material, LinkedHashSet<Polygon>> getPolysGroupedByMat() {
         HashMap<Material, Integer> nPolysPerMat = getNumPolysPerMat();
         HashMap<Material, LinkedHashSet<Polygon>> polysGrouped = new HashMap<>(nPolysPerMat.size());
-        
+
         nPolysPerMat.entrySet().forEach((entry) -> {
             polysGrouped.put(entry.getKey(), new LinkedHashSet<>(entry.getValue()));
         });
-     
+
         polys.forEach((poly) -> {
             polysGrouped.get(poly.mat).add(poly);
         });
         return polysGrouped;
     }
-    
-    private static HashMap<Integer, Integer> countPolysBySize(LinkedHashSet<Polygon> polys){
+
+    private static HashMap<Integer, Integer> countPolysBySize(LinkedHashSet<Polygon> polys) {
         //Key is the number of sides of the polygon, value is the number of occurences
         HashMap<Integer, Integer> counts = new HashMap<>();
-        for(Polygon poly : polys){
+        for (Polygon poly : polys) {
             int nSides = poly.loops.size();
-            if(counts.containsKey(nSides)){
+            if (counts.containsKey(nSides)) {
                 counts.put(nSides, counts.get(nSides) + 1);
-            }else{
+            } else {
                 counts.put(nSides, 0);
             }
         }
         return counts;
     }
-    
+
     /**
-     * Groups the polygons by the number of sides
-     * The result is stored in a HashMap in which the key is the number of sides
-     * of the polygons, and the values are the polygons that have that number of
-     * sides
-     * 
+     * Groups the polygons by the number of sides The result is stored in a
+     * HashMap in which the key is the number of sides of the polygons, and the
+     * values are the polygons that have that number of sides
+     *
      * @param polys polygons
      * @return polygons grouped by number of sides
      */
-    public static HashMap<Integer, LinkedHashSet<Polygon>> groupPolysBySize(LinkedHashSet<Polygon> polys){
+    public static HashMap<Integer, LinkedHashSet<Polygon>> groupPolysBySize(LinkedHashSet<Polygon> polys) {
         HashMap<Integer, Integer> nPolysBySize = countPolysBySize(polys);
         HashMap<Integer, LinkedHashSet<Polygon>> groupedPolys = new HashMap<>(nPolysBySize.size());
         nPolysBySize.entrySet().forEach((entry) -> {
@@ -206,7 +194,7 @@ public class Mesh {
         });
         return groupedPolys;
     }
-    
+
     public void applyFlatShading() {
         polys.forEach((poly) -> {
             Vec3f normal = poly.getNormal();
@@ -215,5 +203,4 @@ public class Mesh {
             });
         });
     }
-
 }

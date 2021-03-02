@@ -21,42 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.cmesh2;
+package jmodelling.engine.object.mesh.emesh;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import jmodelling.engine.object.material.Material;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class CShape2 {
-    
+public class Polygon {
+
+    public LinkedHashSet<Loop> loops;
     public Material mat;
-    
-    public HashMap<Integer, PolygonArray> polys;
-    
-    public CShape2(Material mat, HashMap<Integer, PolygonArray> polys){
+
+    public Polygon(LinkedHashSet<Loop> loops, Material mat) {
+        this.loops = loops;
         this.mat = mat;
-        this.polys = polys;
     }
-    
-    public int getNumVertices(){
-        int count = 0;
-        for(PolygonArray pArray : polys.values()){
-            count += pArray.vtxInds.length;
-        }
-        return count;
+
+    //TODO: Use the get normal function used in the ear clipping triangulation
+    public Vec3f getNormal() {
+        Iterator<Loop> ite = loops.iterator();
+        Loop l0 = ite.next();
+        Loop l1 = ite.next();
+        Loop l2 = ite.next();
+
+        return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
     }
-    
-    public int getNumTris(){
-        int count = 0;
-        for(PolygonArray pArray : polys.values()){
-            count += pArray.getNumTriangles();
-        }
-        return count;
+
+    public List<Vec3f> getVertices() {
+        List<Vec3f> vtxs = new ArrayList<>(loops.size());
+        loops.forEach((loop) -> {
+            vtxs.add(loop.vtx);
+        });
+        return vtxs;
     }
-    
-    
-    
 }

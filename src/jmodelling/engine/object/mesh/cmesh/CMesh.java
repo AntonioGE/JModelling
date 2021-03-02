@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.cmesh2;
+package jmodelling.engine.object.mesh.cmesh;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
-import jmodelling.engine.object.newmesh.Edge;
-import jmodelling.engine.object.newmesh.Loop;
-import jmodelling.engine.object.newmesh.Mesh;
-import jmodelling.engine.object.newmesh.Polygon;
+import jmodelling.engine.object.mesh.emesh.EMesh;
+import jmodelling.engine.object.mesh.emesh.Edge;
+import jmodelling.engine.object.mesh.emesh.Loop;
+import jmodelling.engine.object.mesh.emesh.Polygon;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
@@ -41,19 +41,17 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class CMesh2 {
-
+public class CMesh {
     public final float[] vtxs;
     public final float[] nrms;
     public final float[] clrs;
     public final float[] uvs;
 
     public final int[] edges;
-
-    //public final int[] tris;
-    public final HashMap<Material, CShape2> shapes;
-
-    public CMesh2(Mesh mesh) {
+    
+    public final HashMap<Material, CShape> shapes;
+    
+    public CMesh(EMesh mesh) {
         /**
          * STEP 1: Create HashMaps.
          *
@@ -133,7 +131,7 @@ public class CMesh2 {
         HashMap<Material, LinkedHashSet<Polygon>> matPolys = mesh.getPolysGroupedByMat();
         shapes = new HashMap<>(matPolys.size());
         matPolys.entrySet().forEach((mpEntry) -> {
-            HashMap<Integer, LinkedHashSet<Polygon>> sizePolys = Mesh.groupPolysBySize(mpEntry.getValue());
+            HashMap<Integer, LinkedHashSet<Polygon>> sizePolys = EMesh.groupPolysBySize(mpEntry.getValue());
             HashMap<Integer, PolygonArray> polyArrays = new HashMap<>(sizePolys.size());
             for (Map.Entry<Integer, LinkedHashSet<Polygon>> spEntry : sizePolys.entrySet()) {
                 PolygonArray pArray = new PolygonArray(spEntry.getKey(), spEntry.getValue().size());
@@ -170,8 +168,7 @@ public class CMesh2 {
                 }
                 polyArrays.put(pArray.nLoops, pArray);
             }
-            shapes.put(mpEntry.getKey(), new CShape2(mpEntry.getKey(), polyArrays));
+            shapes.put(mpEntry.getKey(), new CShape(mpEntry.getKey(), polyArrays));
         });
     }
-
 }

@@ -21,35 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.mesh.cmesh;
 
-import java.util.Objects;
-import jmodelling.math.vec.Vec3f;
+import java.util.Arrays;
 
 /**
  *
  * @author ANTONIO
  */
-public class Edge {
+public class Vertex {
 
-    public final Vec3f v0;
-    public final Vec3f v1;
+    public final float[] vtx;
+    public final float[] nrm;
+    public final float[] clr;
+    public final float[] uv;
 
-    public Edge(Vec3f v0, Vec3f v1) {
-        if (v0 == v1) {
-            throw new IllegalArgumentException();
-        }
-        this.v0 = v0;
-        this.v1 = v1;
-    }
-    
-    public boolean contains(Vec3f vtx){
-        return vtx == v0 || vtx == v1;
+    public Vertex(float[] vtx, float[] nrm, float[] clr, float[] uv) {
+        this.vtx = vtx;
+        this.clr = clr;
+        this.nrm = nrm;
+        this.uv = uv;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+        int hash = 7;
+        hash = 79 * hash + Arrays.hashCode(this.vtx);
+        hash = 79 * hash + Arrays.hashCode(this.nrm);
+        hash = 79 * hash + Arrays.hashCode(this.clr);
+        hash = 79 * hash + Arrays.hashCode(this.uv);
+        return hash;
     }
 
     @Override
@@ -63,10 +64,20 @@ public class Edge {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Edge other = (Edge) obj;
-
-        return ((this.v0 == other.v0) && (this.v1 == other.v1))
-                || ((this.v0 == other.v1) && (this.v1 == other.v0));
+        final Vertex other = (Vertex) obj;
+        if (!Arrays.equals(this.vtx, other.vtx)) {
+            return false;
+        }
+        if (!Arrays.equals(this.nrm, other.nrm)) {
+            return false;
+        }
+        if (!Arrays.equals(this.clr, other.clr)) {
+            return false;
+        }
+        if (!Arrays.equals(this.uv, other.uv)) {
+            return false;
+        }
+        return true;
     }
 
 }

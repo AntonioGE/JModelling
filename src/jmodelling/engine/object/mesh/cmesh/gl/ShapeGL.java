@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.newmesh;
+package jmodelling.engine.object.mesh.cmesh.gl;
 
 import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
@@ -32,7 +32,7 @@ import jmodelling.engine.object.material.Material;
  *
  * @author ANTONIO
  */
-public class ShapeGL2 {
+public class ShapeGL {
     
     public Material mat;
   
@@ -49,7 +49,7 @@ public class ShapeGL2 {
     
     public IntBuffer elems;
 
-    public ShapeGL2(Material mat, int nNonRepeated, int nElements){
+    public ShapeGL(Material mat, int nNonRepeated, int nElements){
         this.mat = mat;
         this.nElements = nElements;
         

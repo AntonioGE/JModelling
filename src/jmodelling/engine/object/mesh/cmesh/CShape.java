@@ -21,42 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.shape;
+package jmodelling.engine.object.mesh.cmesh;
 
-import com.jogamp.common.nio.Buffers;
-import java.nio.FloatBuffer;
+import java.util.HashMap;
 import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.face.Face;
-import jmodelling.engine.object.mesh.vertex.Vertex;
 
 /**
  *
  * @author ANTONIO
  */
-public class Shape {
+public class CShape {
+     public Material mat;
     
-    public Material material;
+    public HashMap<Integer, PolygonArray> polys;
     
-    public FloatBuffer vCoords;
-    public FloatBuffer tCoords;
-    public FloatBuffer nCoords;
-    public FloatBuffer colors;
-    
-    public Shape(Material material, int numVertices){
-        this.material = material;
-        vCoords = Buffers.newDirectFloatBuffer(numVertices * Vertex.POS_SIZE);
-        tCoords = Buffers.newDirectFloatBuffer(numVertices * Vertex.TEX_SIZE);
-        nCoords = Buffers.newDirectFloatBuffer(numVertices * Vertex.NRM_SIZE);
-        colors = Buffers.newDirectFloatBuffer(numVertices * Vertex.CLR_SIZE);
+    public CShape(Material mat, HashMap<Integer, PolygonArray> polys){
+        this.mat = mat;
+        this.polys = polys;
     }
     
-    public void writeFace(Face face, int vertexOffset){
-        for(Vertex v : face.vertices){
-            v.pos.writeInBuffer(vCoords, vertexOffset * Vertex.POS_SIZE);
-            v.tex.writeInBuffer(tCoords, vertexOffset * Vertex.TEX_SIZE);
-            v.nrm.writeInBuffer(nCoords, vertexOffset * Vertex.NRM_SIZE);
-            v.clr.writeInBuffer(colors, vertexOffset * Vertex.CLR_SIZE);
-            vertexOffset ++;
+    public int getNumVertices(){
+        int count = 0;
+        for(PolygonArray pArray : polys.values()){
+            count += pArray.vtxInds.length;
         }
+        return count;
+    }
+    
+    public int getNumTris(){
+        int count = 0;
+        for(PolygonArray pArray : polys.values()){
+            count += pArray.getNumTriangles();
+        }
+        return count;
     }
 }

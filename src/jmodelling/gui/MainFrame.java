@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
+import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.CircularLinkedList;

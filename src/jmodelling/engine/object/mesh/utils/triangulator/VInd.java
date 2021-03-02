@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.editor.triangulator;
+package jmodelling.engine.object.mesh.utils.triangulator;
 
 import jmodelling.utils.collections.nodes.CircularLinkList;
 import jmodelling.utils.collections.nodes.Node;

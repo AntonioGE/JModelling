@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
+import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.engine.object.mesh.emesh.Edge;
 import jmodelling.engine.object.mesh.emesh.Loop;

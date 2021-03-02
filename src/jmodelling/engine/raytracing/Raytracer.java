@@ -32,6 +32,7 @@ import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.cmesh.CShape;
+import jmodelling.engine.object.mesh.cmesh.PolygonArray;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec3f;
@@ -111,23 +112,23 @@ public class Raytracer {
         Vec3f intersection = new Vec3f();
         float minDist = Float.MAX_VALUE;
         boolean intersectionFound = false;
-        //TODO: Fix this:
-        /*
         for (CShape shape : meshObject.cmesh.shapes.values()) {
-            for (int i = 0; i < shape.vtxInds.length; i += 3) {
-                Vec3f v0 = shape.getVCoords(meshObject.cmesh, i);
-                Vec3f v1 = shape.getVCoords(meshObject.cmesh, i + 1);
-                Vec3f v2 = shape.getVCoords(meshObject.cmesh, i + 2);
-                if (rayIntersectsTriangle(rayOriginTransf, rayVectorTransf, v0, v1, v2, intersection)) {
-                    intersectionFound = true;
-                    float dist = intersection.dist(rayOriginTransf);
-                    if(dist < minDist){
-                        minDist = dist;
-                        outIntersectionPoint.set(intersection);
+            for (PolygonArray pArray : shape.polys.values()) {
+                for (int i = 0; i < pArray.tris.length; i += 3) {
+                    Vec3f v0 = pArray.getVtx(meshObject.cmesh, pArray.tris[i]);
+                    Vec3f v1 = pArray.getVtx(meshObject.cmesh, pArray.tris[i + 1]);
+                    Vec3f v2 = pArray.getVtx(meshObject.cmesh, pArray.tris[i + 2]);
+                    if (rayIntersectsTriangle(rayOriginTransf, rayVectorTransf, v0, v1, v2, intersection)) {
+                        intersectionFound = true;
+                        float dist = intersection.dist(rayOriginTransf);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            outIntersectionPoint.set(intersection);
+                        }
                     }
                 }
             }
-        }*/
+        }
 
         if (intersectionFound) {
             outIntersectionPoint.mul(transf).add(meshObject.loc);
@@ -137,8 +138,7 @@ public class Raytracer {
         }
     }
 
-    // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
-    // returns t value of intersection and intersection point q 
+    
     public static boolean rayIntersectsSphere(Vec3f rayPos, Vec3f rayDir,
             Vec3f sphPos, float sphRadius, float t, Vec3f q) {
 

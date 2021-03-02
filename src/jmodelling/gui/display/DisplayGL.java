@@ -51,7 +51,7 @@ import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshObject;
-import jmodelling.engine.object.mesh.editor.triangulator.EarClipping;
+import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.engine.object.other.Axis;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
@@ -328,7 +328,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
          */
         gl.glDisable(GL2.GL_STENCIL_TEST);
 
+        scene.updateGL(gl);
+        scene.getObjects().forEach((obj) -> {
+            if (obj != objectSelected) {
+                obj.renderOpaque(gl);
+            }
+        });
         
+        /*
         scene.updateGL(gl);
         gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
         gl.glPolygonOffset(1.0f, 1.0f);
@@ -349,7 +356,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             }
         });
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-
+        */
+        
         if (objectSelected != null) {
             //Stencil
             gl.glClearStencil(0);

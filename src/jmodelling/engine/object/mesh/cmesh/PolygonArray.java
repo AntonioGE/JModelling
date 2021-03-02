@@ -23,6 +23,8 @@
  */
 package jmodelling.engine.object.mesh.cmesh;
 
+import jmodelling.math.vec.Vec3f;
+
 /**
  *
  * @author ANTONIO
@@ -73,5 +75,9 @@ public class PolygonArray {
         System.arraycopy(cmesh.uvs, uvInds[vIndex] * 2, uv, 0, 2);
         
         return new Vertex(vtx, nrm, clr, uv);
+    }
+    
+    public Vec3f getVtx(CMesh cmesh, int vIndex){
+        return new Vec3f(cmesh.vtxs, vtxInds[vIndex] * 3);
     }
 }

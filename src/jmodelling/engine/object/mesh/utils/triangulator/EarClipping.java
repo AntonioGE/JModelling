@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.editor.triangulator;
+package jmodelling.engine.object.mesh.utils.triangulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public class EarClipping {
                 iteConvx.remove();
             }
         }
-        
+
         //Create a triangle list for storing the triangulated polygon as vertex 
         //indices that point to the original list
         final List<Integer> tris = new ArrayList<>((poly.size() - 2) * 3);
@@ -131,11 +131,11 @@ public class EarClipping {
             CircularLinkList<Node<VInd>> reflxs,
             CircularLinkList<Node<VInd>> ears) {
         if (node.item.item.list != reflxs) {
-            if (isVertexEar(poly, node.item, reflxs)){
-                if(node.item.item.list != ears){
+            if (isVertexEar(poly, node.item, reflxs)) {
+                if (node.item.item.list != ears) {
                     moveNode(node, ears);
                 }
-            }else if (node.item.item.list == ears) {
+            } else if (node.item.item.list == ears) {
                 moveNode(node, convxs);
             }
         }
@@ -143,7 +143,7 @@ public class EarClipping {
 
     private static void moveNode(Node<Node<VInd>> node, CircularLinkList<Node<VInd>> dst) {
         node.item.item.list.remove(node);
-        
+
         dst.add(node.item);
         node.item.item.list = dst;
         node.item.item.node = dst.getLastNode();

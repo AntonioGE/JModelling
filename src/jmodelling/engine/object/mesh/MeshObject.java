@@ -51,6 +51,8 @@ public class MeshObject extends Object3D {
 
         this.cmesh = cmesh;
         this.meshGL = new CMeshGL(cmesh);
+        
+        calculateBounds();
     }
 
     //TODO: Temporary function, remove it later

@@ -121,7 +121,6 @@ public class MeshGL3 {
     //TODO: Move to renderer class
     public void render(GL2 gl) {
         for (ShapeGL2 shape : shapes.values()) {
-
             gl.glBindVertexArray(shape.vao[0]);
 
             gl.glDrawElements(GL2.GL_TRIANGLES, shape.nElements, GL2.GL_UNSIGNED_INT, 0);
@@ -178,16 +177,16 @@ public class MeshGL3 {
 
         cmesh.shapes.values().forEach((shape) -> {
             /**
-             * Create a hash map for storing the vertices as keys and their indices
-             * as values.
+             * Create a hash map for storing the vertices as keys and their
+             * indices as values.
              */
-            
+
             HashMap<Vertex, Integer> vertices = new HashMap<>(shape.getNumVertices());
             int[] vInds = new int[shape.getNumTris() * 3];
             int vtxsAdded = 0;
             int vIndOffset = 0;
             for (PolygonArray pArray : shape.polys.values()) {
-                for(int i = 0; i < pArray.tris.length; i++, vIndOffset++){
+                for (int i = 0; i < pArray.tris.length; i++, vIndOffset++) {
                     Vertex vtx = pArray.getVertex(cmesh, pArray.tris[i]);
                     Integer index = vertices.get(vtx);
                     if (index == null) {
@@ -199,7 +198,7 @@ public class MeshGL3 {
                     }
                 }
             }
-            
+
             //Create the shape for OpenGL and initialize the buffers
             ShapeGL2 shapeGL = new ShapeGL2(shape.mat, vertices.size(), vInds.length);
             shapeGL.vtxs.mark();
@@ -222,7 +221,7 @@ public class MeshGL3 {
                 shapeGL.clrs.put(vtx.clr);
                 shapeGL.uvs.put(vtx.uv);
             }
-            
+
             //Put all the elements data
             shapeGL.elems.put(vInds);
 
@@ -235,7 +234,7 @@ public class MeshGL3 {
 
             //Put the new shapeGL into the map
             shapes.put(shapeGL.mat, shapeGL);
-            
+
         });
         return shapes;
     }

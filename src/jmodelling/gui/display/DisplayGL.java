@@ -158,7 +158,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private float firstDist = 0.0f;
 
     private MeshObject3 mesh3;
-    
+
     public DisplayGL() {
         super(generateCapabilities());
 
@@ -188,13 +188,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 scene.add(newObject);
             }
         }
-        
+
         mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
         scene.add(mesh3);
-        
 
         addGLEventListener(this);
         addMouseListener(this);
@@ -337,12 +336,27 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
          */
         gl.glDisable(GL2.GL_STENCIL_TEST);
 
+        
         scene.updateGL(gl);
+        gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
+        gl.glPolygonOffset(1.0f, 1.0f);
         scene.getObjects().forEach((obj) -> {
             if (obj != objectSelected) {
                 obj.renderOpaque(gl);
             }
         });
+        gl.glDisable(GL2.GL_POLYGON_OFFSET_FILL);
+        
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glDisable(GL2.GL_LIGHT0);
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        scene.getObjects().forEach((obj) -> {
+            if (obj != objectSelected) {
+                obj.renderOpaque(gl);
+            }
+        });
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 
         if (objectSelected != null) {
             //Stencil

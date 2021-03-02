@@ -178,9 +178,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 newObject.rot.x = (float) (Math.random() * 360.0f);
                 newObject.rot.y = (float) (Math.random() * 360.0f);
                 newObject.rot.z = (float) (Math.random() * 360.0f);
+                //newObject.sca.x = (float) (Math.random() * 2.0f);
+                //newObject.sca.y = (float) (Math.random() * 2.0f);
+                //newObject.sca.z = (float) (Math.random() * 2.0f);
                 newObject.sca.x = 0.2f;
-                newObject.sca.y = 0.2f;
-                newObject.sca.z = 0.2f;
+                newObject.sca.y = 0.8f;
+                newObject.sca.z = 0.5f;
                 scene.add(newObject);
             }
         }
@@ -251,7 +254,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnd();*/
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
-        gl.glEnable(GL2.GL_NORMALIZE);
+        //gl.glEnable(GL2.GL_NORMALIZE);
         //gl.glEnable(GL2.GL_RESCALE_NORMAL);
         ///////////////////
         gl.glLoadIdentity();
@@ -291,7 +294,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
          */
         ////////////////////
         gl.glLoadIdentity();
-
+        lighting(gl);
         //lighting2(gl);
 
         Mat4f p = TransfMat.perspective_(cam.fov, (float) getWidth() / getHeight(), 0.1f, 1000.0f);
@@ -315,7 +318,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
 
-        lighting2(gl);
+        
         
         //Stencil
         /*

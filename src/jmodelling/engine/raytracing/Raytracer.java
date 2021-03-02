@@ -238,14 +238,14 @@ public class Raytracer {
                 Mat3f transfInv = transf.transp_();
                 
                 Vec3f rayPosLocal = rayPos.sub_(obj.loc).mul(transfInv).had(obj.sca.invert_());
-                Vec3f rayDirLocal = rayDir.mul_(transfInv);
+                Vec3f rayDirLocal = rayDir.mul_(transfInv).had(obj.sca.invert_()).normalize(); 
 
                 if (rayIntersectsBoundingSphereLocal(rayPosLocal, rayDirLocal, obj)) {
                     Vec3f intersection = new Vec3f();
                     if (rayIntersectsCMeshLocal(rayPosLocal, rayDirLocal, obj, intersection)) {
                         intersection.had(obj.sca).mul(transf).add(obj.loc);
                         meshIntersections.put(obj, intersection);
-                        System.out.println(obj.name + " " + intersection.toString());
+                        //System.out.println(obj.name + " " + intersection.toString());
                     }
                 }
             }
@@ -276,16 +276,12 @@ public class Raytracer {
             }
         }
 
-        if (intersectedMeshes.isEmpty()) {
-            System.out.println("EMPTY!!!!");
-        }
-
         HashMap<MeshObject, Vec3f> meshIntersections = new HashMap<>();
         intersectedMeshes.forEach((obj) -> {
             Vec3f intersection = new Vec3f();
             if (rayIntersectsCMesh(rayPos, rayDir, obj, intersection)) {
                 meshIntersections.put(obj, intersection);
-                System.out.println(obj.name + " " + intersection.toString());
+                //System.out.println(obj.name + " " + intersection.toString());
             }
         });
 
@@ -306,6 +302,7 @@ public class Raytracer {
     public static Vec3f getClosestIntersectionPoint(Vec3f rayPos, Vec3f rayDir,
             Set<MeshObject> objects) {
 
+        int count = 0;
         HashMap<MeshObject, Vec3f> meshIntersections = new HashMap<>();
         for (MeshObject obj : objects) {
             if (obj.isSelectable()) {
@@ -313,19 +310,22 @@ public class Raytracer {
                 Mat3f transfInv = transf.transp_();
                 
                 Vec3f rayPosLocal = rayPos.sub_(obj.loc).mul(transfInv).had(obj.sca.invert_());
-                Vec3f rayDirLocal = rayDir.mul_(transfInv);
+                Vec3f rayDirLocal = rayDir.mul_(transfInv).had(obj.sca.invert_()).normalize(); 
 
                 if (rayIntersectsBoundingSphereLocal(rayPosLocal, rayDirLocal, obj)) {
+                    count++;
                     Vec3f intersection = new Vec3f();
                     if (rayIntersectsCMeshLocal(rayPosLocal, rayDirLocal, obj, intersection)) {
                         intersection.had(obj.sca).mul(transf).add(obj.loc);
                         meshIntersections.put(obj, intersection);
-                        System.out.println(obj.name + " " + intersection.toString());
+                        //System.out.println(obj.name + " " + intersection.toString());
                     }
                 }
             }
         }
 
+        System.out.println("SPHERE INTERSECTIONS: " + count);
+        
         float minDist = Float.MAX_VALUE;
         MeshObject closestObject = null;
         for (Map.Entry<MeshObject, Vec3f> entry : meshIntersections.entrySet()) {

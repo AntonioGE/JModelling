@@ -60,8 +60,8 @@ public class MeshObject extends Object3D {
         HashMap<String, EMesh> meshes;
         try {
             meshes = ObjReader.readObj(objPath);
-            this.cmesh = new CMesh(meshes.get("Suzanne"));
-            //this.cmesh = new CMesh(meshes.get("spot"));
+            //this.cmesh = new CMesh(meshes.get("Suzanne"));
+            this.cmesh = new CMesh(meshes.get("spot"));
             //this.cmesh = new CMesh(meshes.get("Plane"));
             meshGL = new CMeshGL(cmesh);
 
@@ -75,8 +75,8 @@ public class MeshObject extends Object3D {
     @Override
     public void renderOpaque(GL2 gl) {
         gl.glPushMatrix();
+        
         gl.glMultMatrixf(getLocalAxis().toArray(), 0);
-
         meshGL.render(gl);
 
         gl.glPopMatrix();

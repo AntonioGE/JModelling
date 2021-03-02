@@ -139,7 +139,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private Scene scene = new Scene();
 
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-    private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+    //private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
@@ -166,6 +167,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         //scene.add(nObject);
         //nObject.loc.set(5.0f, 2.0f, 1.0f);
+        /*
         MeshObject temp = new MeshObject("Temp", new Vec3f(), nObject.cmesh);
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -176,12 +178,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 newObject.rot.x = (float) (Math.random() * 360.0f);
                 newObject.rot.y = (float) (Math.random() * 360.0f);
                 newObject.rot.z = (float) (Math.random() * 360.0f);
+                //newObject.sca.x = 0.2f;
+                //newObject.sca.y = 0.2f;
+                //newObject.sca.z = 0.2f;
                 scene.add(newObject);
             }
-        }
+        }*/
 
-        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
-        mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+        mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
@@ -328,6 +333,18 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
          */
         gl.glDisable(GL2.GL_STENCIL_TEST);
 
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glDepthFunc(GL2.GL_ALWAYS);
+        gl.glPointSize(4.0f);
+        gl.glBegin(GL2.GL_POINTS);
+        for (Vec3f point : points) {
+            gl.glColor3f(0.0f, 0.0f, 0.0f);
+            gl.glVertex3f(point.x, point.y, point.z);
+        }
+        gl.glEnd();
+        gl.glDepthFunc(GL2.GL_LESS);
+        
+        gl.glEnable(GL2.GL_LIGHTING);
         scene.updateGL(gl);
         scene.getObjects().forEach((obj) -> {
             if (obj != objectSelected) {
@@ -400,13 +417,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         gl.glEnd();
         gl.glPopMatrix();
 
-        gl.glPointSize(4.0f);
-        gl.glBegin(GL2.GL_POINTS);
-        for (Vec3f point : points) {
-            gl.glColor3f(0.0f, 0.0f, 0.0f);
-            gl.glVertex3f(point.x, point.y, point.z);
-        }
-        gl.glEnd();
+        
 
         gl.glBegin(GL2.GL_LINES);
         for (int i = 0; i < lines.size() / 2; i++) {
@@ -453,6 +464,9 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
+        
+        
+        
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
         textRenderer.beginRendering(getWidth(), getHeight());

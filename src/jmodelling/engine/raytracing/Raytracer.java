@@ -193,7 +193,11 @@ public class Raytracer {
                 }
             }
         }
-
+        
+        if(intersectedMeshes.isEmpty() ){
+            System.out.println("EMPTY!!!!");
+        }
+        
         HashMap<MeshObject, Vec3f> meshIntersections = new HashMap<>();
         intersectedMeshes.forEach((obj) -> {
             Vec3f intersection = new Vec3f();

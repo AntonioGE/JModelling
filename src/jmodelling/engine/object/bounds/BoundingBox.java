@@ -45,7 +45,7 @@ public class BoundingBox {
 
         min = new Vec3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         max = new Vec3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE);
-        for (int i = 0; i < cmesh.vtxs.length; i += 9) {
+        for (int i = 0; i < cmesh.vtxs.length; i += 3) {
             Vec3f v = new Vec3f(cmesh.vtxs, i);
             if (v.x < min.x) {
                 min.x = v.x;
@@ -61,12 +61,12 @@ public class BoundingBox {
 
             if (v.z < min.z) {
                 min.z = v.z;
-            } else if (v.y > max.z) {
+            } else if (v.z > max.z) {
                 max.z = v.z;
             }
         }
 
-        //System.out.println(min.toString() + " " + max.toString());
+        System.out.println(min.toString() + " " + max.toString());
     }
 
     public BoundingBox(EMesh mesh) {

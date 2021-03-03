@@ -23,11 +23,10 @@
  */
 package jmodelling.engine.editor;
 
-import com.jogamp.opengl.GLEventListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
+import com.jogamp.opengl.GLAutoDrawable;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import jmodelling.engine.Engine;
 import jmodelling.gui.display.EditorDisplayGL;
 
@@ -35,17 +34,42 @@ import jmodelling.gui.display.EditorDisplayGL;
  *
  * @author ANTONIO
  */
-public abstract class Editor implements GLEventListener, MouseListener, MouseMotionListener, KeyListener, MouseWheelListener{
-    
-    protected EditorDisplayGL panel;
+public abstract class Editor {
+
     protected final Engine engine;
 
-    public Editor(Engine engine){
+    public Editor(Engine engine) {
         this.engine = engine;
     }
-    
-    public void setPanel(EditorDisplayGL panel){
-        this.panel = panel;
-    }
-    
+
+    public abstract void init(EditorDisplayGL panel, GLAutoDrawable glad);
+
+    public abstract void dispose(EditorDisplayGL panel, GLAutoDrawable glad);
+
+    public abstract void display(EditorDisplayGL panel, GLAutoDrawable glad);
+
+    public abstract void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height);
+
+    public abstract void mouseClicked(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mousePressed(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mouseReleased(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mouseEntered(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mouseExited(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mouseDragged(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void mouseMoved(EditorDisplayGL panel, MouseEvent e);
+
+    public abstract void keyTyped(EditorDisplayGL panel, KeyEvent e);
+
+    public abstract void keyPressed(EditorDisplayGL panel, KeyEvent e);
+
+    public abstract void keyReleased(EditorDisplayGL panel, KeyEvent e);
+
+    public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
+
 }

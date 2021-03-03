@@ -47,7 +47,6 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     
     public EditorDisplayGL(GLAutoDrawable sharedDrawable, Editor editor) {
         this.editor = editor;
-        editor.setPanel(this);
         
         setSharedAutoDrawable(sharedDrawable);
         
@@ -62,77 +61,77 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
 
     @Override
     public void init(GLAutoDrawable glad) {
-        editor.init(glad);
+        editor.init(this, glad);
     }
 
     @Override
     public void dispose(GLAutoDrawable glad) {
-        editor.dispose(glad);
+        editor.dispose(this, glad);
     }
 
     @Override
     public void display(GLAutoDrawable glad) {
-        editor.display(glad);
+        editor.display(this, glad);
     }
 
     @Override
     public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
-        editor.reshape(glad, i, i1, width, height);
+        editor.reshape(this, glad, i, i1, width, height);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        editor.mouseClicked(e);
+        editor.mouseClicked(this, e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        editor.mousePressed(e);
+        editor.mousePressed(this, e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        editor.mouseReleased(e);
+        editor.mouseReleased(this, e);
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        editor.mouseEntered(e);
+        editor.mouseEntered(this, e);
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        editor.mouseExited(e);
+        editor.mouseExited(this, e);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        editor.mouseDragged(e);
+        editor.mouseDragged(this, e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        editor.mouseMoved(e);
+        editor.mouseMoved(this, e);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        editor.keyTyped(e);
+        editor.keyTyped(this, e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        editor.keyPressed(e);
+        editor.keyPressed(this, e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        editor.keyReleased(e);
+        editor.keyReleased(this, e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        editor.mouseWheelMoved(e);
+        editor.mouseWheelMoved(this, e);
     }
     
     public float getAspect(){

@@ -44,7 +44,7 @@ import jmodelling.math.vec.Vec3f;
 public class View3D extends Editor {
 
     private CamArcball cam;
-    
+
     protected int lastMouseX, lastMouseY;
 
     public View3D(Engine engine) {
@@ -56,23 +56,23 @@ public class View3D extends Editor {
     }
 
     @Override
-    public void init(GLAutoDrawable glad) {
+    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
-        
+
         engine.scene.updateGL(gl);
     }
 
     @Override
-    public void dispose(GLAutoDrawable glad) {
+    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
     }
 
     @Override
-    public void display(GLAutoDrawable glad) {
+    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
@@ -85,7 +85,7 @@ public class View3D extends Editor {
         Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
         gl.glLoadMatrixf(transf.toArray(), 0);
-        
+
         engine.scene.updateGL(gl);
         engine.scene.getObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
@@ -93,33 +93,33 @@ public class View3D extends Editor {
     }
 
     @Override
-    public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
+    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height) {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
         lastMouseX = e.getX();
         lastMouseY = e.getY();
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             final float deltaX = -(float) (e.getX() - lastMouseX) / (panel.getWidth() / 2);
             final float deltaY = (float) (e.getY() - lastMouseY) / (panel.getHeight() / 2);
@@ -147,23 +147,23 @@ public class View3D extends Editor {
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
         float delta = 1.2f;
         if (e.getWheelRotation() > 0) {
             cam.moveTowardsTarget(cam.distToTarget * delta);

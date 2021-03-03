@@ -51,7 +51,59 @@ public class CMeshGL {
         genData(cmesh);
     }
 
-    //TODO: Move this?
+    //TODO: Move to renderer class?
+    public void init(GL2 gl) {
+        for (ShapeGL shape : shapes.values()) {
+            shape.vbos = new int[4];
+            shape.ebo = new int[1];
+
+            gl.glGenBuffers(shape.vbos.length, shape.vbos, 0);
+            gl.glGenBuffers(shape.ebo.length, shape.ebo, 0);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.vtxs.limit() * Float.BYTES, shape.vtxs, GL2.GL_STATIC_DRAW);
+            //gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
+            //gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.nrms.limit() * Float.BYTES, shape.nrms, GL2.GL_STATIC_DRAW);
+            //gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
+            //gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.clrs.limit() * Float.BYTES, shape.clrs, GL2.GL_STATIC_DRAW);
+            //gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
+            //gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.uvs.limit() * Float.BYTES, shape.uvs, GL2.GL_STATIC_DRAW);
+            //gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
+            //gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.ebo[0]);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.elems.limit() * Integer.BYTES, shape.elems, GL2.GL_STATIC_DRAW);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+
+            //Free buffers after uploading to graphics card
+            //TODO: Is this needed?
+            shape.vtxs.clear();
+            shape.nrms.clear();
+            shape.clrs.clear();
+            shape.uvs.clear();
+            shape.elems.clear();
+
+            shape.vtxs = null;
+            shape.nrms = null;
+            shape.clrs = null;
+            shape.uvs = null;
+            shape.elems = null;
+        }
+    }
+
+    /*
+    //TODO: Move to renderer class?
+    //Rendering with VAOs (VAOs can't be shared between contexts)
     public void init(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
             shape.vbos = new int[4];
@@ -103,8 +155,7 @@ public class CMeshGL {
             shape.uvs = null;
             shape.elems = null;
         }
-    }
-
+    }*/
     public void update(GL2 gl, CMeshGL mesh) {
         //delete(gl);
         //init(gl);
@@ -118,7 +169,40 @@ public class CMeshGL {
         });
     }
 
+    //TODO: Move to renderer class?
+    public void render(GL2 gl) {
+        for (ShapeGL shape : shapes.values()) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
+            gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
+            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
+            gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
+            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
+            gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
+            gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
+            gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
+            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.ebo[0]);
+            gl.glDrawElements(GL2.GL_TRIANGLES, shape.nElements, GL2.GL_UNSIGNED_INT, 0);
+
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+
+            //gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+            //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+            //gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+            //gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+
+    /*
     //TODO: Move to renderer class
+    //Rendering with VAOs (VAOs can't be shared between contexts)
     public void render(GL2 gl) {
         for (ShapeGL shape : shapes.values()) {
             gl.glBindVertexArray(shape.vao[0]);
@@ -127,8 +211,7 @@ public class CMeshGL {
 
             gl.glBindVertexArray(0);
         }
-    }
-
+    }*/
     public final void genData(CMesh cmesh) {
         vVtxs = genVVtxs(cmesh);
         //cVtxs = genCVtxs(cmesh);

@@ -60,6 +60,7 @@ public class MeshObject extends Object3D {
         HashMap<String, EMesh> meshes;
         try {
             meshes = ObjReader.readObj(objPath);
+            //this.cmesh = new CMesh(meshes.get("Cylinder"));
             this.cmesh = new CMesh(meshes.get("Suzanne"));
             //this.cmesh = new CMesh(meshes.get("spot"));
             //this.cmesh = new CMesh(meshes.get("Plane"));

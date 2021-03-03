@@ -141,6 +141,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
     //private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
     private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+    //private MeshObject nObject = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cubo.obj");
     //private NewMeshObject nObject = new NewMeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
 
@@ -189,11 +190,12 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
         mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+        //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //mesh3 = new MeshObject3("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\poly.obj");
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
         mesh3.rot.set(45.0f, -20.0f, 14.0f);
-        mesh3.sca.set(0.2f, 0.2f, 0.2f);
+        mesh3.sca.set(1f, 1f, 0.2f);
         scene.add(mesh3);
 
         addGLEventListener(this);
@@ -423,6 +425,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         }
         gl.glEnd();
 
+        
         axis.renderOpaque(gl);
 
         for (Axis axis : cosas) {

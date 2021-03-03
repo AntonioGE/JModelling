@@ -21,15 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.renderer;
+package jmodelling.engine.editor;
+
+import com.jogamp.opengl.GLEventListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
+import jmodelling.engine.Engine;
+import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class Renderer {
+public abstract class Editor implements GLEventListener, MouseListener, MouseMotionListener, KeyListener, MouseWheelListener{
     
+    protected EditorDisplayGL panel;
+    protected final Engine engine;
+
+    public Editor(Engine engine){
+        this.engine = engine;
+    }
     
-    
+    public void setPanel(EditorDisplayGL panel){
+        this.panel = panel;
+    }
     
 }

@@ -32,8 +32,11 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import jmodelling.engine.Engine;
+import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
+import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.CircularLinkedList;
 
@@ -45,10 +48,17 @@ public class MainFrame extends JFrame {
 
     private JPanel container;
     private DisplayGL displayGL;
+    
+    private EditorDisplayGL editorDisplay1;
+    private EditorDisplayGL editorDisplay2;
+    
+    private Engine engine;
 
     public MainFrame(String title) {
         super(title);
 
+        engine = new Engine();
+        
         initComponents();
     }
 
@@ -67,12 +77,20 @@ public class MainFrame extends JFrame {
         displayGL.setBorder(new LineBorder(Color.GRAY, 1));
         container.add(displayGL);
 
+        editorDisplay1 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
+        container.add(editorDisplay1);
+        
+        editorDisplay2 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
+        container.add(editorDisplay2);
+        
         GridBagConstraints display3DConstraints = new GridBagConstraints();
         display3DConstraints.weightx = 1.0f;
         display3DConstraints.weighty = 1.0f;
         display3DConstraints.fill = GridBagConstraints.BOTH;
         display3DConstraints.insets = new Insets(5, 5, 5, 5);
         containerLayout.setConstraints(displayGL, display3DConstraints);
+        containerLayout.setConstraints(editorDisplay1, display3DConstraints);
+        containerLayout.setConstraints(editorDisplay2, display3DConstraints);
 
         pack();
         setLocationRelativeTo(null);

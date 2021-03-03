@@ -21,15 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.renderer;
+package jmodelling.engine;
+
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLCapabilitiesImmutable;
+import com.jogamp.opengl.GLDrawableFactory;
+import com.jogamp.opengl.GLProfile;
+import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.scene.Scene;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class Renderer {
-    
-    
-    
-    
+public class Engine {
+
+    public Scene scene;
+
+    public final GLAutoDrawable sharedDrawable;
+
+    public Engine() {
+        final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+        final GLProfile glp = caps.getGLProfile();
+
+        final boolean createNewDevice = true;
+        sharedDrawable = GLDrawableFactory.getFactory(glp).createDummyAutoDrawable(null, createNewDevice, caps, null);
+        sharedDrawable.display();
+
+        scene = new Scene();
+        //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
+        scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj"));
+
+    }
+
 }

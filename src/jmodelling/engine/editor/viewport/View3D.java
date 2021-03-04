@@ -31,6 +31,7 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Editor;
+import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.mat.Mat4f;
@@ -43,6 +44,7 @@ import jmodelling.math.vec.Vec3f;
  */
 public class View3D extends Editor {
 
+    private Mode mode;
     private CamArcball cam;
 
     protected int lastMouseX, lastMouseY;
@@ -53,6 +55,8 @@ public class View3D extends Editor {
         cam = new CamArcball("",
                 new Vec3f(0.0f, -5.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f),
                 CamArcball.Type.PERSPECTIVE, 0.1f, 1000f, 60.0f, 1.0f);
+
+        mode = new ObjectMode(this, engine);
     }
 
     @Override
@@ -65,10 +69,13 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_BLEND);
 
         engine.scene.updateGL(gl);
+
+        mode.init(panel, glad);
     }
 
     @Override
     public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+        mode.dispose(panel, glad);
     }
 
     @Override
@@ -76,6 +83,9 @@ public class View3D extends Editor {
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+
+        gl.glLoadIdentity();
+        lighting(gl);
 
         Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
@@ -90,36 +100,101 @@ public class View3D extends Editor {
         engine.scene.getObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
+
+        mode.display(panel, glad);
     }
 
     @Override
     public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height) {
+        mode.reshape(panel, glad, i, i1, width, height);
     }
 
     @Override
     public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseClicked(panel, e);
     }
 
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
         lastMouseX = e.getX();
         lastMouseY = e.getY();
+
+        mode.mousePressed(panel, e);
     }
 
     @Override
     public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseReleased(panel, e);
     }
 
     @Override
     public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseEntered(panel, e);
     }
 
     @Override
     public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseExited(panel, e);
     }
 
     @Override
     public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseDragged(panel, e);
+    }
+
+    @Override
+    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+        mode.mouseMoved(panel, e);
+    }
+
+    @Override
+    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+        mode.keyTyped(panel, e);
+    }
+
+    @Override
+    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
+        mode.keyPressed(panel, e);
+    }
+
+    @Override
+    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+        mode.keyReleased(panel, e);
+    }
+
+    @Override
+    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
+
+        mode.mouseWheelMoved(panel, e);
+    }
+
+    private void lighting(GL2 gl) {
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT1);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+
+    }
+
+    public void zoomCamera(EditorDisplayGL panel, MouseWheelEvent e) {
+        float delta = 1.2f;
+        if (e.getWheelRotation() > 0) {
+            cam.moveTowardsTarget(cam.distToTarget * delta);
+        } else {
+            cam.moveTowardsTarget(cam.distToTarget / delta);
+        }
+        panel.repaint();
+    }
+
+    public void moveCamera(EditorDisplayGL panel, MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             final float deltaX = -(float) (e.getX() - lastMouseX) / (panel.getWidth() / 2);
             final float deltaY = (float) (e.getY() - lastMouseY) / (panel.getHeight() / 2);
@@ -141,34 +216,6 @@ public class View3D extends Editor {
             lastMouseY = e.getY();
 
             cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
-        }
-
-        panel.repaint();
-    }
-
-    @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
-    }
-
-    @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
-    }
-
-    @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
-        float delta = 1.2f;
-        if (e.getWheelRotation() > 0) {
-            cam.moveTowardsTarget(cam.distToTarget * delta);
-        } else {
-            cam.moveTowardsTarget(cam.distToTarget / delta);
         }
         panel.repaint();
     }

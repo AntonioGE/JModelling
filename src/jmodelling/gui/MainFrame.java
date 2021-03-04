@@ -33,6 +33,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import jmodelling.engine.Engine;
+import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;

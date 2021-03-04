@@ -21,136 +21,102 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object;
+package jmodelling.engine.editor.viewport.object.tools;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Tool;
-import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.tools.Navigate;
+import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
  * @author ANTONIO
  */
-public class ObjectMode extends Mode {
+public class Grab extends ObjectTool{
 
-    private Tool tool;
-
-    public ObjectMode(View3D editor, Engine engine) {
-        super(editor, engine);
-        
-        tool = new Navigate(editor, this);
+    public Grab(View3D editor, ObjectMode objectMode) {
+        super(editor, objectMode);
     }
 
     @Override
     public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.init(panel, glad);
-        }
+
     }
 
     @Override
     public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.dispose(panel, glad);
-        }
+
     }
 
     @Override
     public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.display(panel, glad);
-        }
+
     }
 
     @Override
     public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
-        if (tool != null) {
-            tool.reshape(panel, glad, x, y, width, height);
-        }
+
     }
 
     @Override
     public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseClicked(panel, e);
-        }
+
     }
 
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mousePressed(panel, e);
-        }
+
     }
 
     @Override
     public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseReleased(panel, e);
-        }
+
     }
 
     @Override
     public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseEntered(panel, e);
-        }
+
     }
 
     @Override
     public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseExited(panel, e);
-        }
+
     }
 
     @Override
     public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseDragged(panel, e);
-        }
+
     }
 
     @Override
     public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseMoved(panel, e);
-        }
+
     }
 
     @Override
     public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
-        if (tool != null) {
-            tool.keyTyped(panel, e);
-        }
+
     }
 
     @Override
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-        if (tool != null) {
-            tool.keyPressed(panel, e);
-        }
+
     }
 
     @Override
     public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
-        if (tool != null) {
-            tool.keyReleased(panel, e);
-        }
+
     }
 
     @Override
     public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
-        if (tool != null) {
-            tool.mouseWheelMoved(panel, e);
-        }
+
     }
 
+    
+    
 }

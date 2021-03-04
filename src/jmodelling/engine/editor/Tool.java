@@ -21,30 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport;
+package jmodelling.engine.editor;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import jmodelling.engine.Engine;
-import jmodelling.engine.editor.viewport.edit.EditMode;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class Mode {
-
-    private final View3D editor;
-    private final Engine engine;
-    
-    public Mode(View3D editor, Engine engine){
-        this.editor = editor;
-        this.engine = engine;
-    }
+public abstract class Tool {
     
     public abstract void init(EditorDisplayGL panel, GLAutoDrawable glad);
 
@@ -52,7 +41,7 @@ public abstract class Mode {
 
     public abstract void display(EditorDisplayGL panel, GLAutoDrawable glad);
 
-    public abstract void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height);
+    public abstract void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height);
 
     public abstract void mouseClicked(EditorDisplayGL panel, MouseEvent e);
 
@@ -75,6 +64,5 @@ public abstract class Mode {
     public abstract void keyReleased(EditorDisplayGL panel, KeyEvent e);
 
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
-    
     
 }

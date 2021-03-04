@@ -33,6 +33,8 @@ import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.Cam;
+import jmodelling.engine.object.hud.Axis;
+import jmodelling.engine.object.hud.InfiniteLine;
 import jmodelling.engine.object.transform.Transform;
 import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transformation;
@@ -50,17 +52,20 @@ public class Grab extends ObjectTool {
     private HashMap<Object3D, Transform> transforms;
     private HashSet<Object3D> selectedObjs;
     private Object3D lastSelected;
+    //private Vec3f center; //TODO: Move objects from the mean center
 
     private static enum GrabType {
-        PLANAR(new Vec3f()),
-        X(new Vec3f(1.0f, 0.0f, 0.0f)),
-        Y(new Vec3f(0.0f, 1.0f, 0.0f)),
-        Z(new Vec3f(0.0f, 0.0f, 1.0f));
-        
-        public final Vec3f axis;
+        PLANAR(new Vec3f(), new Vec3f()),
+        X(new Vec3f(1.0f, 0.0f, 0.0f), new Vec3f(1.0f, 0.0f, 0.0f)),
+        Y(new Vec3f(0.0f, 1.0f, 0.0f), new Vec3f(0.0f, 1.0f, 0.0f)),
+        Z(new Vec3f(0.0f, 0.0f, 1.0f), new Vec3f(0.0f, 0.0f, 1.0f));
 
-        private GrabType(Vec3f axis) {
+        public final Vec3f axis;
+        public final Vec3f color;
+
+        private GrabType(Vec3f axis, Vec3f color) {
             this.axis = axis;
+            this.color = color;
         }
     }
     private GrabType grabType;
@@ -173,31 +178,19 @@ public class Grab extends ObjectTool {
             }
 
             case KeyEvent.VK_X: {
-                if (grabType != GrabType.X) {
-                    grabType = GrabType.X;
-                } else {
-                    grabType = GrabType.PLANAR;
-                }
+                setLinearGrabType(GrabType.X);
                 panel.repaint();
                 break;
             }
 
             case KeyEvent.VK_Y: {
-                if (grabType != GrabType.Y) {
-                    grabType = GrabType.Y;
-                } else {
-                    grabType = GrabType.PLANAR;
-                }
+                setLinearGrabType(GrabType.Y);
                 panel.repaint();
                 break;
             }
 
             case KeyEvent.VK_Z: {
-                if (grabType != GrabType.Z) {
-                    grabType = GrabType.Z;
-                } else {
-                    grabType = GrabType.PLANAR;
-                }
+                setLinearGrabType(GrabType.Z);
                 panel.repaint();
                 break;
             }
@@ -227,6 +220,17 @@ public class Grab extends ObjectTool {
                 Cam.pixelToView(lastGrabX, lastGrabY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
                 editor.getCam(), panel.getAspect());
+    }
+
+    private void setLinearGrabType(GrabType grabLinear) {
+        if (grabType != grabLinear) {
+            grabType = grabLinear;
+            editor.getScene().replaceHudObject(new InfiniteLine(
+                    transforms.get(lastSelected).loc,
+                    grabType.axis, grabType.color));
+        } else {
+            grabType = GrabType.PLANAR;
+        }
     }
 
 }

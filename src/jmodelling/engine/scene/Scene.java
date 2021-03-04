@@ -46,15 +46,19 @@ public class Scene {
     private final HashSet<Object3D> selectedObjects;
     private Object3D lastSelectedObject;
 
-    private final IdentitySet<Object3D> objectsToInit;
-    private final IdentitySet<Object3D> objectsToDelete;
-    private final IdentitySet<Object3D> objectsToUpdate;
-    
     /**
      * HUD objects
      */
     private final HashSet<Object3D> hudObjects;
+    private final Set<Object3D> hudObjectsReadOnly;
 
+    /**
+     * Objects GL updating
+     */
+    private final IdentitySet<Object3D> objectsToInit;
+    private final IdentitySet<Object3D> objectsToDelete;
+    private final IdentitySet<Object3D> objectsToUpdate;
+    
     public Scene() {
         objects = new HashSet<>();
         objectsReadOnly = Collections.unmodifiableSet(objects);
@@ -66,6 +70,7 @@ public class Scene {
         objectsToUpdate = new IdentitySet();
         
         hudObjects = new HashSet<>();
+        hudObjectsReadOnly = Collections.unmodifiableSet(hudObjects);
     }
 
     public void updateGL(GL2 gl) {
@@ -96,7 +101,7 @@ public class Scene {
         objectsToUpdate.clear();
     }
 
-    public boolean add(Object3D object) {
+    public boolean addObject(Object3D object) {
         if (objects.contains(object)) {
             return false;
         }
@@ -105,7 +110,7 @@ public class Scene {
         return true;
     }
 
-    public boolean remove(Object3D object) {
+    public boolean removeObject(Object3D object) {
         if (!objects.contains(object)) {
             return false;
         }
@@ -180,6 +185,36 @@ public class Scene {
 
     public boolean isLastObjectSelected() {
         return lastSelectedObject != null;
+    }
+
+    public boolean addHudObject(Object3D object) {
+        if (hudObjects.contains(object)) {
+            return false;
+        }
+        hudObjects.add(object);
+        objectsToInit.add(object);
+        return true;
+    }
+    
+    public boolean replaceHudObject(Object3D object){
+        if (hudObjects.contains(object)) {
+            removeHudObject(object);
+        }
+        return addHudObject(object);
+    }
+
+    public boolean removeHudObject(Object3D object) {
+        if (!hudObjects.contains(object)) {
+            return false;
+        }
+
+        hudObjects.remove(object);
+        objectsToDelete.add(object);
+        return true;
+    }
+
+    public Set<Object3D> getHudObjects() {
+        return hudObjectsReadOnly;
     }
 
 }

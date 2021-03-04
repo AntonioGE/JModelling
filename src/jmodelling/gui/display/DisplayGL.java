@@ -49,7 +49,7 @@ import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
-import jmodelling.engine.object.other.Axis;
+import jmodelling.engine.object.hud.AxisSmall;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transformation;
@@ -104,14 +104,14 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             1.0f
     );
 
-    private Axis axis = new Axis("",
+    private AxisSmall axis = new AxisSmall("",
             new Vec3f(0.5f, 0.0f, 0.5f),
             new Vec3f(21.0f, 33.0f, 33.0f),
             new Vec3f(1.0f, 1.0f, 1.0f)
     );
 
     private final int w = 10, h = 100;
-    private Axis[] cosas = new Axis[w * h];
+    private AxisSmall[] cosas = new AxisSmall[w * h];
 
     private MeshObject cube;
 
@@ -156,7 +156,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         for (int i = 0, c = 0; i < w; i++) {
             for (int j = 0; j < h; j++, c++) {
-                cosas[c] = new Axis("",
+                cosas[c] = new AxisSmall("",
                         new Vec3f(i, j, (float) Math.random()),
                         new Vec3f((float) Math.random() * 360.0f, (float) Math.random() * 360.0f, (float) Math.random() * 360.0f),
                         new Vec3f(1.0f, 1.0f, 1.0f));
@@ -181,7 +181,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 newObject.sca.x = 0.2f;
                 newObject.sca.y = 0.8f;
                 newObject.sca.z = 0.5f;
-                scene.add(newObject);
+                scene.addObject(newObject);
             }
         }
         //mesh3 = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
@@ -192,7 +192,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         mesh3.loc.set(0.0f, 0.0f, 4.0f);
         mesh3.rot.set(45.0f, -20.0f, 14.0f);
         mesh3.sca.set(1f, 1f, 0.2f);
-        scene.add(mesh3);
+        scene.addObject(mesh3);
 
         addGLEventListener(this);
         addMouseListener(this);
@@ -421,7 +421,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         axis.renderOpaque(gl);
 
-        for (Axis axis : cosas) {
+        for (AxisSmall axis : cosas) {
             axis.renderOpaque(gl);
         }
 
@@ -588,11 +588,11 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A:
-                scene.add(nObject);
+                scene.addObject(nObject);
                 repaint();
                 break;
             case KeyEvent.VK_D:
-                scene.remove(nObject);
+                scene.removeObject(nObject);
                 repaint();
                 break;
             case KeyEvent.VK_G:

@@ -103,6 +103,11 @@ public class View3D extends Editor {
         engine.scene.getObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
+        
+        gl.glDisable(GL2.GL_LIGHTING);
+        engine.scene.getHudObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
 
         mode.display(panel, glad);
     }

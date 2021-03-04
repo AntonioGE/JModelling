@@ -67,6 +67,10 @@ public abstract class Object3D {
         this("", loc, rot, new Vec3f(1.0f, 1.0f, 1.0f));
     }
 
+    public Object3D(String name){
+        this(name, new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f), new Vec3f(1.0f, 1.0f, 1.0f));
+    }
+         
     public Object3D() {
         this(new Vec3f(0.0f, 0.0f, 0.0f),
                 new Vec3f(0.0f, 0.0f, 0.0f),

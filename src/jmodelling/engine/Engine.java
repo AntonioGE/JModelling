@@ -29,6 +29,7 @@ import com.jogamp.opengl.GLCapabilitiesImmutable;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
 import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.object.hud.Axis;
 import jmodelling.engine.scene.Scene;
 
 /**
@@ -50,8 +51,9 @@ public class Engine {
         sharedDrawable.display();
 
         scene = new Scene();
+        scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
-        scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj"));
+        scene.addObject(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj"));
         scene.selectAll();
     }
 

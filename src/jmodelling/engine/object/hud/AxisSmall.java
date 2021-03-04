@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.other;
+package jmodelling.engine.object.hud;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
@@ -35,7 +35,7 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class Axis extends Object3D {
+public class AxisSmall extends Object3D {
 
     private static final FloatBuffer axisCoordsBuff = Buffers.newDirectFloatBuffer(new float[]{
         0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -49,8 +49,12 @@ public class Axis extends Object3D {
         0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
     });
 
-    public Axis(String name, Vec3f loc, Vec3f rot, Vec3f sca) {
+    public AxisSmall(String name, Vec3f loc, Vec3f rot, Vec3f sca) {
         super(name, loc, rot, sca);
+    }
+    
+    public AxisSmall(){
+        super("Axis");
     }
 
     @Override

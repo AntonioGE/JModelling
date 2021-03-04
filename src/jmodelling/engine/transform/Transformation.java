@@ -35,7 +35,7 @@ import jmodelling.math.transf.TransfMat;
  *
  * @author ANTONIO
  */
-public class Transform {
+public class Transformation {
 
     /**
      * Converts a point from world coordinates to the view screen coordinates

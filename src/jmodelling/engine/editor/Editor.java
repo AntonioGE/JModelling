@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import jmodelling.engine.Engine;
+import jmodelling.engine.scene.Scene;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
@@ -72,4 +73,12 @@ public abstract class Editor {
 
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
 
+    public Engine getEngine(){
+        return engine;
+    }
+    
+    public Scene getScene(){
+        return engine.scene;
+    }
+    
 }

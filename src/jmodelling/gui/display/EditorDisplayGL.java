@@ -45,6 +45,9 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
 
     private Editor editor;
     
+    protected int lastPressX, lastPressY;
+    protected int mouseX, mouseY;
+    
     public EditorDisplayGL(GLAutoDrawable sharedDrawable, Editor editor) {
         this.editor = editor;
         
@@ -86,6 +89,9 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
 
     @Override
     public void mousePressed(MouseEvent e) {
+        lastPressX = e.getX();
+        lastPressY = e.getY();
+
         editor.mousePressed(this, e);
     }
 
@@ -97,6 +103,7 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     @Override
     public void mouseEntered(MouseEvent e) {
         editor.mouseEntered(this, e);
+        requestFocus();
     }
 
     @Override
@@ -111,6 +118,9 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        
         editor.mouseMoved(this, e);
     }
 
@@ -137,5 +147,33 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     public float getAspect(){
         return (float)getWidth() / getHeight();
     }
+    
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    public int getMouseY() {
+        return mouseY;
+    }
+
+    public int getLastPressX() {
+        return lastPressX;
+    }
+
+    public int getLastPressY() {
+        return lastPressY;
+    }
+
+    //TODO: Remove this?
+    public void setLastPressX(int lastPressX) {
+        this.lastPressX = lastPressX;
+    }
+
+    //TODO: Remove this?
+    public void setLastPressY(int lastPressY) {
+        this.lastPressY = lastPressY;
+    }
+    
+    
 
 }

@@ -28,8 +28,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import jmodelling.engine.Engine;
-import jmodelling.engine.editor.viewport.edit.EditMode;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
@@ -38,8 +36,8 @@ import jmodelling.gui.display.EditorDisplayGL;
  */
 public abstract class Mode {
 
-    private final View3D editor;
-    private final Engine engine;
+    protected final View3D editor;
+    protected final Engine engine;
     
     public Mode(View3D editor, Engine engine){
         this.editor = editor;

@@ -25,13 +25,9 @@ package jmodelling.engine.scene;
 
 import com.jogamp.opengl.GL2;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Set;
 import jmodelling.engine.object.Object3D;
-import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.utils.collections.IdentitySet;
 
@@ -41,22 +37,37 @@ import jmodelling.utils.collections.IdentitySet;
  */
 public class Scene {
 
+    /**
+     * Scene objects
+     */
     private final HashSet<Object3D> objects;
     private final Set<Object3D> objectsReadOnly;
-    
+
+    private final HashSet<Object3D> selectedObjects;
+    private Object3D lastSelectedObject;
+
     private final IdentitySet<Object3D> objectsToInit;
     private final IdentitySet<Object3D> objectsToDelete;
     private final IdentitySet<Object3D> objectsToUpdate;
+    
+    /**
+     * HUD objects
+     */
+    private final HashSet<Object3D> hudObjects;
 
     public Scene() {
         objects = new HashSet<>();
         objectsReadOnly = Collections.unmodifiableSet(objects);
-        
+
+        selectedObjects = new HashSet<>();
+
         objectsToInit = new IdentitySet();
         objectsToDelete = new IdentitySet();
         objectsToUpdate = new IdentitySet();
+        
+        hudObjects = new HashSet<>();
     }
-    
+
     public void updateGL(GL2 gl) {
         removeObjects(gl);
         updateObjects(gl);
@@ -99,6 +110,7 @@ public class Scene {
             return false;
         }
 
+        deselectObject(object);
         objects.remove(object);
         objectsToDelete.add(object);
         return true;
@@ -109,20 +121,65 @@ public class Scene {
         return true;
     }
 
-    public Set<Object3D> getObjects(){
+    public Set<Object3D> getObjects() {
         return objectsReadOnly;
     }
-    
-    public Set<MeshObject> getMeshObjects(){
+
+    public Set<MeshObject> getMeshObjects() {
         HashSet<MeshObject> meshObjects = new HashSet<>();
         objects.stream().filter((obj) -> (obj.getType().equals("MESH"))).forEachOrdered((obj) -> {
-            try{
-                meshObjects.add((MeshObject)obj);
-            }catch(ClassCastException ex){
-                
+            try {
+                meshObjects.add((MeshObject) obj);
+            } catch (ClassCastException ex) {
+
             }
         });
         return meshObjects;
     }
-    
+
+    public HashSet<Object3D> getSelectedObjects() {
+        return selectedObjects;
+    }
+
+    public boolean selectObject(Object3D object) {
+        if (!objects.contains(object)) {
+            return false;
+        }
+        selectedObjects.add(object);
+        lastSelectedObject = object;
+        return true;
+    }
+
+    public boolean deselectObject(Object3D object) {
+        if (!selectedObjects.contains(object)) {
+            return false;
+        }
+        selectedObjects.remove(object);
+        lastSelectedObject = null;
+        return true;
+    }
+
+    public boolean selectAll() {
+        if (objects.isEmpty()) {
+            return false;
+        } else {
+            objects.forEach((obj) -> {
+                selectedObjects.add(obj);
+            });
+            return true;
+        }
+    }
+
+    public boolean isAnyObjectSelected() {
+        return !selectedObjects.isEmpty();
+    }
+
+    public Object3D getLastSelectedObject() {
+        return lastSelectedObject;
+    }
+
+    public boolean isLastObjectSelected() {
+        return lastSelectedObject != null;
+    }
+
 }

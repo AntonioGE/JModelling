@@ -103,7 +103,7 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-
+        mode.changeMode(e);
     }
 
     @Override

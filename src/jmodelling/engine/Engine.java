@@ -52,7 +52,7 @@ public class Engine {
         scene = new Scene();
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj"));
-
+        scene.selectAll();
     }
 
 }

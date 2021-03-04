@@ -31,7 +31,9 @@ import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
+import jmodelling.engine.editor.viewport.object.tools.Grab;
 import jmodelling.engine.editor.viewport.object.tools.Navigate;
+import jmodelling.engine.editor.viewport.object.tools.ObjectTool;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
@@ -44,7 +46,7 @@ public class ObjectMode extends Mode {
 
     public ObjectMode(View3D editor, Engine engine) {
         super(editor, engine);
-        
+
         tool = new Navigate(editor, this);
     }
 
@@ -136,6 +138,8 @@ public class ObjectMode extends Mode {
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
         if (tool != null) {
             tool.keyPressed(panel, e);
+        } else {
+            changeMode(e);
         }
     }
 
@@ -151,6 +155,29 @@ public class ObjectMode extends Mode {
         if (tool != null) {
             tool.mouseWheelMoved(panel, e);
         }
+    }
+
+    public void changeMode(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_ESCAPE: {
+                setDefaultTool();
+            }
+            break;
+            case KeyEvent.VK_G: {
+                if (editor.getScene().isAnyObjectSelected()) {
+                    tool = new Grab(editor, this);
+                }
+            }
+            break;
+        }
+    }
+
+    public void setTool(ObjectTool tool) {
+        this.tool = tool;
+    }
+
+    public void setDefaultTool() {
+        this.tool = new Navigate(editor, this);
     }
 
 }

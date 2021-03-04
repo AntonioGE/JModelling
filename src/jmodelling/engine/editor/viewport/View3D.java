@@ -44,10 +44,13 @@ import jmodelling.math.vec.Vec3f;
  */
 public class View3D extends Editor {
 
-    private Mode mode;
-    private CamArcball cam;
+    protected Mode mode;
+    protected CamArcball cam;
 
-    protected int lastMouseX, lastMouseY;
+    protected int lastPressX, lastPressY;
+    protected int mouseX, mouseY;
+    
+    protected Mat4f transf;
 
     public View3D(Engine engine) {
         super(engine);
@@ -92,7 +95,7 @@ public class View3D extends Editor {
         Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
-        Mat4f transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
+        transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
 
         gl.glLoadMatrixf(transf.toArray(), 0);
 
@@ -116,8 +119,8 @@ public class View3D extends Editor {
 
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
-        lastMouseX = e.getX();
-        lastMouseY = e.getY();
+        lastPressX = e.getX();
+        lastPressY = e.getY();
 
         mode.mousePressed(panel, e);
     }
@@ -144,6 +147,9 @@ public class View3D extends Editor {
 
     @Override
     public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        
         mode.mouseMoved(panel, e);
     }
 
@@ -196,10 +202,10 @@ public class View3D extends Editor {
 
     public void moveCamera(EditorDisplayGL panel, MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            final float deltaX = -(float) (e.getX() - lastMouseX) / (panel.getWidth() / 2);
-            final float deltaY = (float) (e.getY() - lastMouseY) / (panel.getHeight() / 2);
-            lastMouseX = e.getX();
-            lastMouseY = e.getY();
+            final float deltaX = -(float) (e.getX() - lastPressX) / (panel.getWidth() / 2);
+            final float deltaY = (float) (e.getY() - lastPressY) / (panel.getHeight() / 2);
+            lastPressX = e.getX();
+            lastPressY = e.getY();
 
             Vec3f trans = new Vec3f(
                     deltaX * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)) * panel.getAspect(),
@@ -210,13 +216,42 @@ public class View3D extends Editor {
 
         } else if (SwingUtilities.isRightMouseButton(e)) {
             float sensitivity = 2.0f;
-            float deltaX = (e.getX() - lastMouseX) / sensitivity;
-            float deltaY = (e.getY() - lastMouseY) / sensitivity;
-            lastMouseX = e.getX();
-            lastMouseY = e.getY();
+            float deltaX = (e.getX() - lastPressX) / sensitivity;
+            float deltaY = (e.getY() - lastPressY) / sensitivity;
+            lastPressX = e.getX();
+            lastPressY = e.getY();
 
             cam.orbit(new Vec3f(-deltaY, 0.0f, -deltaX));
         }
         panel.repaint();
     }
+
+    //TODO: Move all of this to the panel class?
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    public int getMouseY() {
+        return mouseY;
+    }
+
+    public int getLastPressX() {
+        return lastPressX;
+    }
+
+    public int getLastPressY() {
+        return lastPressY;
+    }
+
+    public CamArcball getCam() {
+        return cam;
+    }
+
+    public Mat4f getTransf() {
+        return transf;
+    }
+    
+    
+    
+    
 }

@@ -21,26 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object.tools;
+package jmodelling.engine.object.transform;
 
-import jmodelling.engine.editor.Tool;
-import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
+import jmodelling.engine.object.Object3D;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class ObjectTool extends Tool{
-    
-    protected View3D editor;
-    protected ObjectMode mode;
-    
-    public ObjectTool(View3D editor, ObjectMode objectMode){
-        this.editor = editor;
-        this.mode = objectMode;
+public class Transform {
+
+    public Vec3f loc;
+    public Vec3f rot;
+    public Vec3f sca;
+
+    public Transform(Object3D obj) {
+        this.loc = obj.loc;
+        this.rot = obj.rot;
+        this.sca = obj.sca;
     }
     
+    public Transform(Transform other){
+        this.loc = other.loc.clone();
+        this.rot = other.rot.clone();
+        this.sca = other.sca.clone();
+    }
     
-    
+    @Override
+    public Transform clone(){
+        return new Transform(this);
+    }
 }

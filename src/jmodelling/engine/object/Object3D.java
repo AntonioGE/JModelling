@@ -27,7 +27,6 @@ import com.jogamp.opengl.GL2;
 import java.util.Objects;
 import jmodelling.engine.object.bounds.BoundingSphere;
 import jmodelling.engine.object.transform.Transform;
-import jmodelling.engine.transform.Transformation;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;

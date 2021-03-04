@@ -173,11 +173,14 @@ public class ObjectMode extends Mode {
     }
 
     public void setTool(ObjectTool tool) {
+        if(this.tool != null){
+            tool.destroy();
+        }
         this.tool = tool;
     }
 
     public void setDefaultTool() {
-        this.tool = new Navigate(editor, this);
+        setTool(new Navigate(editor, this));
     }
 
 }

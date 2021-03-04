@@ -24,8 +24,11 @@
 package jmodelling.engine.scene;
 
 import com.jogamp.opengl.GL2;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.mesh.MeshObject;
@@ -40,8 +43,8 @@ public class Scene {
     /**
      * Scene objects
      */
-    private final HashSet<Object3D> objects;
-    private final Set<Object3D> objectsReadOnly;
+    private final HashMap<String, Object3D> objects;
+    private final Map<String, Object3D> objectsReadOnly;
 
     private final HashSet<Object3D> selectedObjects;
     private Object3D lastSelectedObject;
@@ -49,8 +52,8 @@ public class Scene {
     /**
      * HUD objects
      */
-    private final HashSet<Object3D> hudObjects;
-    private final Set<Object3D> hudObjectsReadOnly;
+    private final HashMap<String, Object3D> hudObjects;
+    private final Map<String, Object3D> hudObjectsReadOnly;
 
     /**
      * Objects GL updating
@@ -60,8 +63,8 @@ public class Scene {
     private final IdentitySet<Object3D> objectsToUpdate;
     
     public Scene() {
-        objects = new HashSet<>();
-        objectsReadOnly = Collections.unmodifiableSet(objects);
+        objects = new HashMap<>();
+        objectsReadOnly = Collections.unmodifiableMap(objects);
 
         selectedObjects = new HashSet<>();
 
@@ -69,8 +72,8 @@ public class Scene {
         objectsToDelete = new IdentitySet();
         objectsToUpdate = new IdentitySet();
         
-        hudObjects = new HashSet<>();
-        hudObjectsReadOnly = Collections.unmodifiableSet(hudObjects);
+        hudObjects = new HashMap<>();
+        hudObjectsReadOnly = Collections.unmodifiableMap(hudObjects);
     }
 
     public void updateGL(GL2 gl) {
@@ -102,21 +105,21 @@ public class Scene {
     }
 
     public boolean addObject(Object3D object) {
-        if (objects.contains(object)) {
+        if (objects.containsKey(object.name)) {
             return false;
         }
-        objects.add(object);
+        objects.put(object.name, object);
         objectsToInit.add(object);
         return true;
     }
 
     public boolean removeObject(Object3D object) {
-        if (!objects.contains(object)) {
+        if (!objects.containsKey(object.name)) {
             return false;
         }
 
         deselectObject(object);
-        objects.remove(object);
+        objects.remove(object.name);
         objectsToDelete.add(object);
         return true;
     }
@@ -126,13 +129,13 @@ public class Scene {
         return true;
     }
 
-    public Set<Object3D> getObjects() {
-        return objectsReadOnly;
+    public Collection<Object3D> getObjects() {
+        return objectsReadOnly.values();
     }
 
     public Set<MeshObject> getMeshObjects() {
         HashSet<MeshObject> meshObjects = new HashSet<>();
-        objects.stream().filter((obj) -> (obj.getType().equals("MESH"))).forEachOrdered((obj) -> {
+        objects.values().stream().filter((obj) -> (obj.getType().equals("MESH"))).forEachOrdered((obj) -> {
             try {
                 meshObjects.add((MeshObject) obj);
             } catch (ClassCastException ex) {
@@ -147,7 +150,7 @@ public class Scene {
     }
 
     public boolean selectObject(Object3D object) {
-        if (!objects.contains(object)) {
+        if (!objects.containsKey(object.name)) {
             return false;
         }
         selectedObjects.add(object);
@@ -168,7 +171,7 @@ public class Scene {
         if (objects.isEmpty()) {
             return false;
         } else {
-            objects.forEach((obj) -> {
+            objects.values().forEach((obj) -> {
                 selectedObjects.add(obj);
             });
             return true;
@@ -188,33 +191,37 @@ public class Scene {
     }
 
     public boolean addHudObject(Object3D object) {
-        if (hudObjects.contains(object)) {
+        if (hudObjects.containsKey(object.name)) {
             return false;
         }
-        hudObjects.add(object);
+        hudObjects.put(object.name, object);
         objectsToInit.add(object);
         return true;
     }
     
     public boolean replaceHudObject(Object3D object){
-        if (hudObjects.contains(object)) {
+        if (hudObjects.containsKey(object.name)) {
             removeHudObject(object);
         }
         return addHudObject(object);
     }
 
     public boolean removeHudObject(Object3D object) {
-        if (!hudObjects.contains(object)) {
+        if (object == null || !hudObjects.containsKey(object.name)) {
             return false;
         }
 
-        hudObjects.remove(object);
+        hudObjects.remove(object.name);
         objectsToDelete.add(object);
         return true;
     }
 
-    public Set<Object3D> getHudObjects() {
-        return hudObjectsReadOnly;
+    public boolean removeHudObject(String name){
+        return removeHudObject(hudObjects.get(name));
+    }
+    
+    public Collection<Object3D> getHudObjects() {
+        return hudObjectsReadOnly.values();
     }
 
 }

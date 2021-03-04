@@ -34,12 +34,14 @@ import jmodelling.math.vec.Vec3f;
  */
 public class InfiniteLine extends Object3D{
 
+    public static final String TYPE_NAME = "INFINITE_LINE";
+    
     private final float scale = 100.0f;
     private final Vec3f dir;
     private final Vec3f color;
     
     public InfiniteLine(Vec3f loc, Vec3f dir, Vec3f color){
-        super("INFINITE_LINE", loc);
+        super(TYPE_NAME, loc);
         this.dir = dir;
         this.color = color;
     }
@@ -86,7 +88,7 @@ public class InfiniteLine extends Object3D{
 
     @Override
     public String getType() {
-        return "INFINITE_LINE";
+        return TYPE_NAME;
     }
     
 }

@@ -115,5 +115,10 @@ public class Navigate extends ObjectTool {
     public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
         editor.zoomCamera(panel, e);
     }
+
+    @Override
+    public void destroy() {
+        
+    }
     
 }

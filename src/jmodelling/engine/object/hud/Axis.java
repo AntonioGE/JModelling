@@ -28,7 +28,6 @@ import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.bounds.BoundingSphere;
-import jmodelling.math.vec.Vec3f;
 
 /**
  *

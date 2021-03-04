@@ -34,7 +34,7 @@ import jmodelling.gui.display.EditorDisplayGL;
  * @author ANTONIO
  */
 public abstract class Tool {
-    
+
     public abstract void init(EditorDisplayGL panel, GLAutoDrawable glad);
 
     public abstract void dispose(EditorDisplayGL panel, GLAutoDrawable glad);
@@ -64,5 +64,6 @@ public abstract class Tool {
     public abstract void keyReleased(EditorDisplayGL panel, KeyEvent e);
 
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
-    
+
+    public abstract void destroy();
 }

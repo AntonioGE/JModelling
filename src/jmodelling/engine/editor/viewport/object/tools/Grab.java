@@ -24,25 +24,14 @@
 package jmodelling.engine.editor.viewport.object.tools;
 
 import com.jogamp.opengl.GLAutoDrawable;
-import java.awt.AWTException;
-import java.awt.Point;
-import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
-import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.Cam;
-import jmodelling.engine.object.hud.Axis;
 import jmodelling.engine.object.hud.InfiniteLine;
-import jmodelling.engine.object.transform.Transform;
-import jmodelling.engine.scene.Scene;
 import jmodelling.engine.transform.Transformation;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.vec.Vec3f;
@@ -51,17 +40,7 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class Grab extends ObjectTool {
-
-    private final int lastGrabX, lastGrabY;
-
-    private HashMap<Object3D, Transform> transforms;
-    private final HashSet<Object3D> selectedObjs;
-    private final Object3D lastSelected;
-    //private Vec3f center; //TODO: Move objects from the mean center
-
-    private String moveAmount;
-    private boolean negateMove;
+public class Grab extends TransformTool {
 
     private static enum GrabType {
         PLANAR(new Vec3f(), new Vec3f()),
@@ -82,26 +61,8 @@ public class Grab extends ObjectTool {
     public Grab(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
 
-        lastGrabX = editor.getMouseX();
-        lastGrabY = editor.getMouseY();
-
-        Scene scene = editor.getScene();
-        selectedObjs = scene.getSelectedObjects();
-        transforms = new HashMap<>(selectedObjs.size());
-        selectedObjs.forEach((obj) -> {
-            transforms.put(obj, obj.getTransform().clone());
-        });
-
-        if (scene.isLastObjectSelected()) {
-            lastSelected = scene.getLastSelectedObject();
-        } else {
-            lastSelected = selectedObjs.iterator().next();
-        }
-
         grabType = GrabType.PLANAR;
 
-        moveAmount = "";
-        negateMove = false;
     }
 
     @Override
@@ -242,14 +203,14 @@ public class Grab extends ObjectTool {
 
     private Vec3f linearTranslation(EditorDisplayGL panel) {
         return Transformation.linearTranslation_(transforms.get(lastSelected).loc, grabType.axis,
-                Cam.pixelToView(lastGrabX, lastGrabY, panel.getWidth(), panel.getHeight()),
+                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
                 editor.getTransf(), editor.getCam(), panel.getAspect());
     }
 
     private Vec3f planarTranslation(EditorDisplayGL panel) {
         return Transformation.planarTranslation_(transforms.get(lastSelected).loc,
-                Cam.pixelToView(lastGrabX, lastGrabY, panel.getWidth(), panel.getHeight()),
+                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
                 editor.getCam(), panel.getAspect());
     }
@@ -299,26 +260,4 @@ public class Grab extends ObjectTool {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
     }
-
-    private boolean isTypingAmount(KeyEvent e) {
-        return ("0123456789.-".contains(Character.toString(e.getKeyChar()))
-                || e.getKeyCode() == KeyEvent.VK_DELETE)
-                || (e.getKeyCode() == KeyEvent.VK_BACK_SLASH);
-    }
-
-    private void parseAmount(KeyEvent e) {
-        char c = e.getKeyChar();
-        if (Character.isDigit(c)) {
-            moveAmount += c;
-        } else if (c == '.') {
-            moveAmount += c;
-        } else if (c == '-') {
-            negateMove = !negateMove;
-        } else if ((e.getKeyCode() == KeyEvent.VK_DELETE) || (e.getKeyCode() == KeyEvent.VK_BACK_SLASH)) {
-            if (moveAmount.length() > 0) {
-                moveAmount = moveAmount.substring(0, moveAmount.length() - 1);
-            }
-        }
-    }
-
 }

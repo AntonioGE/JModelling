@@ -21,168 +21,133 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object;
+package jmodelling.engine.editor.viewport.object.tools;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import jmodelling.engine.Engine;
-import jmodelling.engine.editor.Tool;
-import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.tools.Grab;
-import jmodelling.engine.editor.viewport.object.tools.Navigate;
-import jmodelling.engine.editor.viewport.object.tools.ObjectTool;
+import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.gui.display.EditorDisplayGL;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class ObjectMode extends Mode {
+public class Rotate extends TransformTool {
 
-    private Tool tool;
+    private static enum RotationType {
+        PLANAR(new Vec3f(), new Vec3f()),
+        X(new Vec3f(1.0f, 0.0f, 0.0f), new Vec3f(1.0f, 0.5f, 0.5f)),
+        Y(new Vec3f(0.0f, 1.0f, 0.0f), new Vec3f(0.5f, 1.0f, 0.5f)),
+        Z(new Vec3f(0.0f, 0.0f, 1.0f), new Vec3f(0.5f, 0.0f, 1.5f));
 
-    public ObjectMode(View3D editor, Engine engine) {
-        super(editor, engine);
+        public final Vec3f axis;
+        public final Vec3f color;
 
-        tool = new Navigate(editor, this);
+        private RotationType(Vec3f axis, Vec3f color) {
+            this.axis = axis;
+            this.color = color;
+        }
+    }
+    private RotationType grabType;
+    
+    public Rotate(View3D editor, ObjectMode objectMode) {
+        super(editor, objectMode);
     }
 
     @Override
     public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.init(panel, glad);
-        }
+
     }
 
     @Override
     public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.dispose(panel, glad);
-        }
+
     }
 
     @Override
     public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
-        if (tool != null) {
-            tool.display(panel, glad);
-        }
+
     }
 
     @Override
     public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
-        if (tool != null) {
-            tool.reshape(panel, glad, x, y, width, height);
-        }
+
     }
 
     @Override
     public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseClicked(panel, e);
-        }
+
     }
 
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mousePressed(panel, e);
-        }
+
     }
 
     @Override
     public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseReleased(panel, e);
-        }
+
     }
 
     @Override
     public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseEntered(panel, e);
-        }
+
     }
 
     @Override
     public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseExited(panel, e);
-        }
+
     }
 
     @Override
     public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseDragged(panel, e);
-        }
+
     }
 
     @Override
     public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
-        if (tool != null) {
-            tool.mouseMoved(panel, e);
-        }
+
     }
 
     @Override
     public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
-        if (tool != null) {
-            tool.keyTyped(panel, e);
-        }
+
     }
 
     @Override
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-            setDefaultTool();
-        }else if (tool != null) {
-            tool.keyPressed(panel, e);
-        } else {
-            changeMode(e);
-        }
+
     }
 
     @Override
     public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
-        if (tool != null) {
-            tool.keyReleased(panel, e);
-        }
+
     }
 
     @Override
     public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
-        if (tool != null) {
-            tool.mouseWheelMoved(panel, e);
-        }
+
     }
 
-    public void changeMode(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE: {
-                setDefaultTool();
-            }
-            break;
-            case KeyEvent.VK_G: {
-                if (editor.getScene().isAnyObjectSelected()) {
-                    tool = new Grab(editor, this);
-                }
-            }
-            break;
-        }
+    @Override
+    public void destroy() {
+
     }
 
-    public void setTool(ObjectTool tool) {
-        if(this.tool != null){
-            tool.destroy();
-        }
-        this.tool = tool;
-    }
+    public Vec3f planarRotation() {
+        /*
+        Mat3f rot = Transformation.planarRotation_(objPos,
+                Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
+                Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
+                transf, cam, (float) getWidth() / getHeight());
 
-    public void setDefaultTool() {
-        setTool(new Navigate(editor, this));
+        Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
+        cube.rot.set(angles);*/
+        return null;
     }
 
 }

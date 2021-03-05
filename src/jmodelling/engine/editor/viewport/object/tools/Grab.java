@@ -24,6 +24,7 @@
 package jmodelling.engine.editor.viewport.object.tools;
 
 import com.jogamp.opengl.GLAutoDrawable;
+import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -93,13 +94,13 @@ public class Grab extends TransformTool {
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            exitTool();
+            exitTool(panel);
             editor.repaintSameEditors();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             selectedObjs.forEach((obj) -> {
                 obj.loc.set(transforms.get(obj).loc);
             });
-            exitTool();
+            exitTool(panel);
             editor.repaintSameEditors();
         }
     }
@@ -144,19 +145,19 @@ public class Grab extends TransformTool {
         } else {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_ESCAPE: {
-                    exitTool();
+                    exitTool(panel);
                     editor.repaintSameEditors();
                     break;
                 }
 
                 case KeyEvent.VK_G: {
-                    exitTool();
+                    exitTool(panel);
                     editor.repaintSameEditors();
                     break;
                 }
                 
                 case KeyEvent.VK_ENTER:{
-                    exitTool();
+                    exitTool(panel);
                     editor.repaintSameEditors();
                     break;
                 }
@@ -257,9 +258,10 @@ public class Grab extends TransformTool {
     }
 
     @Override
-    public void exitTool() {
+    public void exitTool(EditorDisplayGL panel) {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
+        panel.setCursor(Cursor.getDefaultCursor());
     }
     
     

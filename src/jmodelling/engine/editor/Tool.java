@@ -67,5 +67,5 @@ public abstract class Tool {
 
     public abstract void destroy();
     
-    public abstract void exitTool();
+    public abstract void exitTool(EditorDisplayGL panel);
 }

@@ -63,6 +63,21 @@ public abstract class Cam extends Object3D {
         dirToRot(dir, rot);
         return rot;
     }
+    
+    public static void rotToUp(Vec3f rot, Vec3f dst){
+        dst.set(0.0f, 1.0f, 0.0f);
+        dst.mul(TransfMat.eulerDegToMat_(rot));
+    }
+    
+    public static Vec3f rotToUp_(Vec3f rot){
+        Vec3f dst = new Vec3f();
+        rotToUp(rot, dst);
+        return dst;
+    }
+    
+    public Vec3f getUp(){
+        return rotToUp_(rot);
+    }
 
     public Vec3f getDir() {
         return rotToDir_(rot);

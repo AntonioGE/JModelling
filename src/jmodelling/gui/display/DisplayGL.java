@@ -453,6 +453,8 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
 
         gl.glLineStipple(1, (short) 0xFFFF);
 
+        cam.getUp().print();
+        
         //cam.getDir().print();
         //new Vec3f(0.0f, 0.0f, -1.0f).mul(cam.getLocalAxis3f()).print();
         textRenderer.beginRendering(getWidth(), getHeight());

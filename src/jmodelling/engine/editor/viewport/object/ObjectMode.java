@@ -139,6 +139,7 @@ public class ObjectMode extends Mode {
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             setDefaultTool();
+            panel.repaint();
         } else if (tool != null) {
             tool.keyPressed(panel, e);
         } else {

@@ -44,5 +44,6 @@ public abstract class ObjectTool extends Tool {
         this.editor = editor;
         this.mode = objectMode;
     }
+    
 
 }

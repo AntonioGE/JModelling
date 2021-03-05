@@ -36,8 +36,8 @@ import jmodelling.engine.scene.Scene;
  *
  * @author ANTONIO
  */
-public abstract class TransformTool extends ObjectTool{
-    
+public abstract class TransformTool extends ObjectTool {
+
     protected final int firstMouseX, firstMouseY;
     protected HashMap<Object3D, Transform> transforms;
     protected final HashSet<Object3D> selectedObjs;
@@ -45,10 +45,10 @@ public abstract class TransformTool extends ObjectTool{
     //private Vec3f center; //TODO: Move objects from the mean center
     protected String moveAmount;
     protected boolean negateMove;
-    
+
     public TransformTool(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
-        
+
         firstMouseX = editor.getMouseX();
         firstMouseY = editor.getMouseY();
 
@@ -68,7 +68,7 @@ public abstract class TransformTool extends ObjectTool{
         moveAmount = "";
         negateMove = false;
     }
-    
+
     protected boolean isTypingAmount(KeyEvent e) {
         return ("0123456789.-".contains(Character.toString(e.getKeyChar()))
                 || e.getKeyCode() == KeyEvent.VK_DELETE)
@@ -89,4 +89,5 @@ public abstract class TransformTool extends ObjectTool{
             }
         }
     }
+
 }

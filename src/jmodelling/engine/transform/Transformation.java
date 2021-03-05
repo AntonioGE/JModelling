@@ -69,9 +69,9 @@ public class Transformation {
         worldToView(src, camTransf, dst);
         dst.x *= aspect;
     }
-    
+
     public static Vec2f worldToViewAspect_(Vec3f src, Mat4f camTransf,
-            float aspect){
+            float aspect) {
         Vec2f dst = new Vec2f();
         worldToViewAspect(src, camTransf, aspect, dst);
         return dst;
@@ -333,11 +333,62 @@ public class Transformation {
         return dst;
     }
 
+    /**
+     * Converts a rotation from view coordinates to a rotation around a ball.
+     * 
+     * @param src initial position of the point to be rotated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param sensitivity amount of rotation per mouse moved
+     * @param dst output matrix representing the rotation
+     */
+    public static void ballRotation(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, Cam cam, float aspect, 
+            float sensitivity,
+            Mat3f dst) {
+
+        Vec2f mouse = p1.sub_(p0);
+        
+        Vec3f camUp = cam.getUp();
+        Vec3f camDir = cam.getDir();
+
+        camUp.rotate(camDir, -mouse.angle());
+        
+        TransfMat.rotation3f(mouse.norm() * sensitivity, camUp, dst);
+    }
+    
+    /**
+     * Converts a rotation from view coordinates to a rotation around a ball and
+     * stores the result in a new matrix.
+     * 
+     * @param src initial position of the point to be rotated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param sensitivity amount of rotation per mouse moved
+     * @return matrix representing the rotation
+     */
+    public static Mat3f ballRotation_(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, Cam cam, float aspect, 
+            float sensitivity) {
+
+        Mat3f dst = new Mat3f();
+        ballRotation(src, p0, p1, camTransf, cam, aspect, sensitivity, dst);
+        return dst;
+    }
+
     public static void scale(Vec3f src,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, float aspect,
             Vec3f dst) {
-        
+
         Vec2f center = worldToView_(src, camTransf);
         Vec2f p0A = p0.clone();
         Vec2f p1A = p1.clone();
@@ -345,17 +396,17 @@ public class Transformation {
         center.x *= aspect;
         p0A.x *= aspect;
         p1A.x *= aspect;
-        
+
         float d0 = p0A.dist(center);
         float d1 = p1A.dist(center);
-        
+
         float scale = d1 / d0;
         dst.set(scale, scale, scale);
     }
 
     public static Vec3f scale_(Vec3f src,
             Vec2f p0, Vec2f p1,
-            Mat4f camTransf, float aspect){
+            Mat4f camTransf, float aspect) {
         Vec3f dst = new Vec3f();
         scale(src, p0, p1, camTransf, aspect, dst);
         return dst;

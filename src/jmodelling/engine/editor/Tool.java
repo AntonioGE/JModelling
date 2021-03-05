@@ -66,4 +66,6 @@ public abstract class Tool {
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
 
     public abstract void destroy();
+    
+    public abstract void exitTool();
 }

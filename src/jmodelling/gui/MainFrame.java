@@ -29,6 +29,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -50,15 +51,17 @@ public class MainFrame extends JFrame {
     private JPanel container;
     private DisplayGL displayGL;
     
-    private EditorDisplayGL editorDisplay1;
-    private EditorDisplayGL editorDisplay2;
+    //private EditorDisplayGL editorDisplay1;
+    //private EditorDisplayGL editorDisplay2;
+    //TODO: move this to engine?
+    public List<EditorDisplayGL> editorDisplays;
     
     private Engine engine;
 
     public MainFrame(String title) {
         super(title);
 
-        engine = new Engine();
+        engine = new Engine(this);
         
         initComponents();
     }
@@ -78,11 +81,14 @@ public class MainFrame extends JFrame {
         displayGL.setBorder(new LineBorder(Color.GRAY, 1));
         container.add(displayGL);
 
-        editorDisplay1 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
+        editorDisplays = new ArrayList<>(2);
+        EditorDisplayGL editorDisplay1 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
         container.add(editorDisplay1);
+        editorDisplays.add(editorDisplay1);
         
-        editorDisplay2 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
+        EditorDisplayGL editorDisplay2 = new EditorDisplayGL(engine.sharedDrawable, new View3D(engine));
         container.add(editorDisplay2);
+        editorDisplays.add(editorDisplay2);
         
         GridBagConstraints display3DConstraints = new GridBagConstraints();
         display3DConstraints.weightx = 1.0f;

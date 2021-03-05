@@ -27,9 +27,15 @@ import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
+import jmodelling.engine.object.camera.Cam;
+import jmodelling.engine.object.hud.InfiniteLine;
+import jmodelling.engine.transform.Transformation;
 import jmodelling.gui.display.EditorDisplayGL;
+import jmodelling.math.mat.Mat3f;
+import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -52,8 +58,8 @@ public class Rotate extends TransformTool {
             this.color = color;
         }
     }
-    private RotationType grabType;
-    
+    private RotationType rotationType;
+
     public Rotate(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
     }
@@ -85,7 +91,16 @@ public class Rotate extends TransformTool {
 
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
-
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            exitTool();
+            editor.repaintSameEditors();
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            selectedObjs.forEach((obj) -> {
+                obj.rot.set(transforms.get(obj).rot);
+            });
+            exitTool();
+            editor.repaintSameEditors();
+        }
     }
 
     @Override
@@ -110,7 +125,8 @@ public class Rotate extends TransformTool {
 
     @Override
     public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
-
+        rotateObjects(panel);
+        editor.repaintSameEditors();
     }
 
     @Override
@@ -120,7 +136,13 @@ public class Rotate extends TransformTool {
 
     @Override
     public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_R: {
+                exitTool();
+                editor.repaintSameEditors();
+                break;
+            }
+        }
     }
 
     @Override
@@ -138,16 +160,26 @@ public class Rotate extends TransformTool {
 
     }
 
-    public Vec3f planarRotation() {
-        /*
-        Mat3f rot = Transformation.planarRotation_(objPos,
-                Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
-                Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
-                transf, cam, (float) getWidth() / getHeight());
+    private Mat3f planarRotation(EditorDisplayGL panel) {
+        return Transformation.planarRotation_(transforms.get(lastSelected).loc,
+                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
+                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
+                editor.getTransf(), editor.getCam(), panel.getAspect());
+    }
 
-        Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
-        cube.rot.set(angles);*/
-        return null;
+    private void rotateObjects(EditorDisplayGL panel) {
+        Mat3f rot = planarRotation(panel);
+        selectedObjs.forEach((obj) -> {
+            Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(transforms.get(obj).rot)));
+            obj.rot.set(angles);
+        });
+
+    }
+
+    @Override
+    public void exitTool() {
+        mode.setDefaultTool();
+        editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
     }
 
 }

@@ -93,14 +93,14 @@ public class Grab extends TransformTool {
     @Override
     public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            exitMode();
-            panel.repaint();
+            exitTool();
+            editor.repaintSameEditors();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             selectedObjs.forEach((obj) -> {
                 obj.loc.set(transforms.get(obj).loc);
             });
-            exitMode();
-            panel.repaint();
+            exitTool();
+            editor.repaintSameEditors();
         }
     }
 
@@ -127,7 +127,7 @@ public class Grab extends TransformTool {
     @Override
     public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
         moveObjects(panel);
-        panel.repaint();
+        editor.repaintSameEditors();
     }
 
     @Override
@@ -140,45 +140,45 @@ public class Grab extends TransformTool {
         if (isTypingAmount(e)){
             parseAmount(e);
             moveObjects(panel);
-            panel.repaint();
+            editor.repaintSameEditors();
         } else {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_ESCAPE: {
-                    exitMode();
-                    panel.repaint();
+                    exitTool();
+                    editor.repaintSameEditors();
                     break;
                 }
 
                 case KeyEvent.VK_G: {
-                    exitMode();
-                    panel.repaint();
+                    exitTool();
+                    editor.repaintSameEditors();
                     break;
                 }
                 
                 case KeyEvent.VK_ENTER:{
-                    exitMode();
-                    panel.repaint();
+                    exitTool();
+                    editor.repaintSameEditors();
                     break;
                 }
 
                 case KeyEvent.VK_X: {
                     setLinearGrabType(GrabType.X);
                     moveObjects(panel);
-                    panel.repaint();
+                    editor.repaintSameEditors();
                     break;
                 }
 
                 case KeyEvent.VK_Y: {
                     setLinearGrabType(GrabType.Y);
                     moveObjects(panel);
-                    panel.repaint();
+                    editor.repaintSameEditors();
                     break;
                 }
 
                 case KeyEvent.VK_Z: {
                     setLinearGrabType(GrabType.Z);
                     moveObjects(panel);
-                    panel.repaint();
+                    editor.repaintSameEditors();
                     break;
                 }
 
@@ -256,8 +256,11 @@ public class Grab extends TransformTool {
         }
     }
 
-    private void exitMode() {
+    @Override
+    public void exitTool() {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
     }
+    
+    
 }

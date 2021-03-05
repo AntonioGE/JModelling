@@ -75,4 +75,5 @@ public abstract class Mode {
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
     
     
+    
 }

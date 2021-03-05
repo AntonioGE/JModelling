@@ -28,9 +28,12 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLCapabilitiesImmutable;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
+import jmodelling.engine.editor.Editor;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.hud.Axis;
 import jmodelling.engine.scene.Scene;
+import jmodelling.gui.MainFrame;
+import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
@@ -38,11 +41,14 @@ import jmodelling.engine.scene.Scene;
  */
 public class Engine {
 
+    private final MainFrame frame;
     public Scene scene;
 
     public final GLAutoDrawable sharedDrawable;
-
-    public Engine() {
+    
+    public Engine(MainFrame frame) {
+        this.frame = frame;
+        
         final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         final GLProfile glp = caps.getGLProfile();
 
@@ -57,4 +63,12 @@ public class Engine {
         scene.selectAll();
     }
 
+    public void updateDisplaysUsingEditor(Editor editor){
+        for(EditorDisplayGL display : frame.editorDisplays){
+            if(display.getEditor().getEditorName().equals(editor.getEditorName())){
+                display.repaint();
+            }
+        }
+    }
+    
 }

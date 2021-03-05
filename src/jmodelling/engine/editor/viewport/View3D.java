@@ -255,6 +255,11 @@ public class View3D extends Editor {
     public Mat4f getTransf() {
         return transf;
     }
+
+    @Override
+    public String getEditorName() {
+        return "VIEW3D";
+    }
     
     
     

@@ -120,5 +120,10 @@ public class Navigate extends ObjectTool {
     public void destroy() {
         
     }
+
+    @Override
+    public void exitTool() {
+
+    }
     
 }

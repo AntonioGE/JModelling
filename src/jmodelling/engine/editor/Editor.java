@@ -73,6 +73,12 @@ public abstract class Editor {
 
     public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
 
+    public abstract String getEditorName();
+    
+    public void repaintSameEditors(){
+        engine.updateDisplaysUsingEditor(this);
+    }
+    
     public Engine getEngine(){
         return engine;
     }

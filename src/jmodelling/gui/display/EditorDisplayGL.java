@@ -173,6 +173,10 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     public void setLastPressY(int lastPressY) {
         this.lastPressY = lastPressY;
     }
+
+    public Editor getEditor() {
+        return editor;
+    }
     
     
 

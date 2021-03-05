@@ -44,15 +44,16 @@ import jmodelling.engine.editor.Editor;
 public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseListener, MouseMotionListener, KeyListener, MouseWheelListener {
 
     private Editor editor;
-    
+
     protected int lastPressX, lastPressY;
     protected int mouseX, mouseY;
-    
+
     public EditorDisplayGL(GLAutoDrawable sharedDrawable, Editor editor) {
         this.editor = editor;
-        
+        editor.setPanel(this);
+
         setSharedAutoDrawable(sharedDrawable);
-        
+
         addGLEventListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -64,27 +65,27 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
 
     @Override
     public void init(GLAutoDrawable glad) {
-        editor.init(this, glad);
+        editor.init(glad);
     }
 
     @Override
     public void dispose(GLAutoDrawable glad) {
-        editor.dispose(this, glad);
+        editor.dispose(glad);
     }
 
     @Override
     public void display(GLAutoDrawable glad) {
-        editor.display(this, glad);
+        editor.display(glad);
     }
 
     @Override
     public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
-        editor.reshape(this, glad, i, i1, width, height);
+        editor.reshape(glad, i, i1, width, height);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        editor.mouseClicked(this, e);
+        editor.mouseClicked(e);
     }
 
     @Override
@@ -92,62 +93,62 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
         lastPressX = e.getX();
         lastPressY = e.getY();
 
-        editor.mousePressed(this, e);
+        editor.mousePressed(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        editor.mouseReleased(this, e);
+        editor.mouseReleased(e);
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        editor.mouseEntered(this, e);
+        editor.mouseEntered(e);
         requestFocus();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        editor.mouseExited(this, e);
+        editor.mouseExited(e);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        editor.mouseDragged(this, e);
+        editor.mouseDragged(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
-        
-        editor.mouseMoved(this, e);
+
+        editor.mouseMoved(e);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        editor.keyTyped(this, e);
+        editor.keyTyped(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        editor.keyPressed(this, e);
+        editor.keyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        editor.keyReleased(this, e);
+        editor.keyReleased(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        editor.mouseWheelMoved(this, e);
+        editor.mouseWheelMoved(e);
     }
-    
-    public float getAspect(){
-        return (float)getWidth() / getHeight();
+
+    public float getAspect() {
+        return (float) getWidth() / getHeight();
     }
-    
+
     public int getMouseX() {
         return mouseX;
     }
@@ -177,7 +178,5 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     public Editor getEditor() {
         return editor;
     }
-    
-    
 
 }

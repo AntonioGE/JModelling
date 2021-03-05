@@ -42,88 +42,88 @@ public class Navigate extends ObjectTool {
     }
 
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void dispose(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
+    public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
 
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
 
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseExited(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
-        editor.moveCamera(panel, e);
+    public void mouseDragged(MouseEvent e) {
+        editor.moveCamera( e);
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
-
-    }
-
-    @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+    public void mouseMoved(MouseEvent e) {
 
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
         mode.changeMode(e);
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
 
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
-        editor.zoomCamera(panel, e);
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        editor.zoomCamera( e);
     }
 
     @Override
     public void destroy() {
-        
+
     }
 
     @Override
     public void exitTool(EditorDisplayGL panel) {
 
     }
-    
+
 }

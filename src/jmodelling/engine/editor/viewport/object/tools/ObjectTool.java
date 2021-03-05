@@ -41,8 +41,10 @@ public abstract class ObjectTool extends Tool {
     protected ObjectMode mode;
 
     public ObjectTool(View3D editor, ObjectMode objectMode) {
+        super(editor.panel);
         this.editor = editor;
         this.mode = objectMode;
+        
     }
     
 

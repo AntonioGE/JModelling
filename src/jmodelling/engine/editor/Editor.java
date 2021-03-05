@@ -37,54 +37,59 @@ import jmodelling.gui.display.EditorDisplayGL;
  */
 public abstract class Editor {
 
-    protected final Engine engine;
+    public final Engine engine;
+    public EditorDisplayGL panel;
 
     public Editor(Engine engine) {
         this.engine = engine;
     }
 
-    public abstract void init(EditorDisplayGL panel, GLAutoDrawable glad);
+    public abstract void init(GLAutoDrawable glad);
 
-    public abstract void dispose(EditorDisplayGL panel, GLAutoDrawable glad);
+    public abstract void dispose(GLAutoDrawable glad);
 
-    public abstract void display(EditorDisplayGL panel, GLAutoDrawable glad);
+    public abstract void display(GLAutoDrawable glad);
 
-    public abstract void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height);
+    public abstract void reshape(GLAutoDrawable glad, int i, int i1, int width, int height);
 
-    public abstract void mouseClicked(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseClicked(MouseEvent e);
 
-    public abstract void mousePressed(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mousePressed(MouseEvent e);
 
-    public abstract void mouseReleased(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseReleased(MouseEvent e);
 
-    public abstract void mouseEntered(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseEntered(MouseEvent e);
 
-    public abstract void mouseExited(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseExited(MouseEvent e);
 
-    public abstract void mouseDragged(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseDragged(MouseEvent e);
 
-    public abstract void mouseMoved(EditorDisplayGL panel, MouseEvent e);
+    public abstract void mouseMoved(MouseEvent e);
 
-    public abstract void keyTyped(EditorDisplayGL panel, KeyEvent e);
+    public abstract void keyTyped(KeyEvent e);
 
-    public abstract void keyPressed(EditorDisplayGL panel, KeyEvent e);
+    public abstract void keyPressed(KeyEvent e);
 
-    public abstract void keyReleased(EditorDisplayGL panel, KeyEvent e);
+    public abstract void keyReleased(KeyEvent e);
 
-    public abstract void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e);
+    public abstract void mouseWheelMoved(MouseWheelEvent e);
 
     public abstract String getEditorName();
-    
-    public void repaintSameEditors(){
+
+    public void repaintSameEditors() {
         engine.updateDisplaysUsingEditor(this);
     }
-    
-    public Engine getEngine(){
+
+    public Engine getEngine() {
         return engine;
     }
-    
-    public Scene getScene(){
+
+    public Scene getScene() {
         return engine.scene;
     }
     
+    public void setPanel(EditorDisplayGL panel){
+        this.panel = panel;
+    }
+
 }

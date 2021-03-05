@@ -30,91 +30,90 @@ import java.awt.event.MouseWheelEvent;
 import jmodelling.engine.Engine;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
  * @author ANTONIO
  */
-public class EditMode extends Mode{
+public class EditMode extends Mode {
 
     public EditMode(View3D editor, Engine engine) {
         super(editor, engine);
     }
-    
+
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void dispose(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height) {
+    public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
 
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
 
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseExited(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseMoved(MouseEvent e) {
 
     }
 
     @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
 
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
 
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
 
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
-
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        System.out.println("Hi");
     }
-    
+
 }

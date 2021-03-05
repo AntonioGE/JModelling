@@ -52,112 +52,112 @@ public class ObjectMode extends Mode {
     }
 
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
         if (tool != null) {
-            tool.init(panel, glad);
+            tool.init(glad);
         }
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void dispose(GLAutoDrawable glad) {
         if (tool != null) {
-            tool.dispose(panel, glad);
+            tool.dispose(glad);
         }
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display(GLAutoDrawable glad) {
         if (tool != null) {
-            tool.display(panel, glad);
+            tool.display(glad);
         }
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
+    public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
         if (tool != null) {
-            tool.reshape(panel, glad, x, y, width, height);
+            tool.reshape(glad, x, y, width, height);
         }
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         if (tool != null) {
-            tool.mouseClicked(panel, e);
+            tool.mouseClicked(e);
         }
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
         if (tool != null) {
-            tool.mousePressed(panel, e);
+            tool.mousePressed(e);
         }
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
         if (tool != null) {
-            tool.mouseReleased(panel, e);
+            tool.mouseReleased(e);
         }
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {
         if (tool != null) {
-            tool.mouseEntered(panel, e);
+            tool.mouseEntered(e);
         }
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseExited(MouseEvent e) {
         if (tool != null) {
-            tool.mouseExited(panel, e);
+            tool.mouseExited(e);
         }
     }
 
     @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
         if (tool != null) {
-            tool.mouseDragged(panel, e);
+            tool.mouseDragged(e);
         }
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseMoved(MouseEvent e) {
         if (tool != null) {
-            tool.mouseMoved(panel, e);
+            tool.mouseMoved(e);
         }
     }
 
     @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
         if (tool != null) {
-            tool.keyTyped(panel, e);
+            tool.keyTyped(e);
         }
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             setDefaultTool();
-            panel.repaint();
+            editor.panel.repaint();
         } else if (tool != null) {
-            tool.keyPressed(panel, e);
+            tool.keyPressed(e);
         } else {
             changeMode(e);
         }
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
         if (tool != null) {
-            tool.keyReleased(panel, e);
+            tool.keyReleased(e);
         }
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
+    public void mouseWheelMoved(MouseWheelEvent e) {
         if (tool != null) {
-            tool.mouseWheelMoved(panel, e);
+            tool.mouseWheelMoved(e);
         }
     }
 
@@ -176,7 +176,7 @@ public class ObjectMode extends Mode {
             }
 
             case KeyEvent.VK_R: {
-                if(editor.getScene().isAnyObjectSelected()) {
+                if (editor.getScene().isAnyObjectSelected()) {
                     tool = new Rotate(editor, this);
                 }
                 break;

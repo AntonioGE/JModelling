@@ -76,17 +76,17 @@ public class Rotate extends TransformTool {
     }
 
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void dispose( GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display( GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
         if (rotationType != RotationType.BALL) {
@@ -116,17 +116,17 @@ public class Rotate extends TransformTool {
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
+    public void reshape( GLAutoDrawable glad, int x, int y, int width, int height) {
 
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseClicked( MouseEvent e) {
 
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed( MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             exitTool(panel);
             editor.repaintSameEditors();
@@ -140,38 +140,38 @@ public class Rotate extends TransformTool {
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseReleased( MouseEvent e) {
 
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseEntered( MouseEvent e) {
 
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseExited( MouseEvent e) {
 
     }
 
     @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseDragged( MouseEvent e) {
 
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseMoved( MouseEvent e) {
         rotateObjects(panel);
         editor.repaintSameEditors();
     }
 
     @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
 
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
+    public void keyPressed( KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE: {
                 exitTool(panel);
@@ -220,12 +220,12 @@ public class Rotate extends TransformTool {
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+    public void keyReleased( KeyEvent e) {
 
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
+    public void mouseWheelMoved( MouseWheelEvent e) {
 
     }
 

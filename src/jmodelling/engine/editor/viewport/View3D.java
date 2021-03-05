@@ -49,7 +49,7 @@ public class View3D extends Editor {
 
     protected int lastPressX, lastPressY;
     protected int mouseX, mouseY;
-    
+
     protected Mat4f transf;
 
     public View3D(Engine engine) {
@@ -63,7 +63,7 @@ public class View3D extends Editor {
     }
 
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
@@ -73,16 +73,16 @@ public class View3D extends Editor {
 
         engine.scene.updateGL(gl);
 
-        mode.init(panel, glad);
+        mode.init(glad);
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
-        mode.dispose(panel, glad);
+    public void dispose(GLAutoDrawable glad) {
+        mode.dispose(glad);
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
@@ -103,80 +103,80 @@ public class View3D extends Editor {
         engine.scene.getObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
-        
+
         gl.glDisable(GL2.GL_LIGHTING);
         engine.scene.getHudObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
 
-        mode.display(panel, glad);
+        mode.display(glad);
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int i, int i1, int width, int height) {
-        mode.reshape(panel, glad, i, i1, width, height);
+    public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
+        mode.reshape(glad, i, i1, width, height);
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
-        mode.mouseClicked(panel, e);
+    public void mouseClicked(MouseEvent e) {
+        mode.mouseClicked(e);
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
         lastPressX = e.getX();
         lastPressY = e.getY();
 
-        mode.mousePressed(panel, e);
+        mode.mousePressed(e);
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
-        mode.mouseReleased(panel, e);
+    public void mouseReleased(MouseEvent e) {
+        mode.mouseReleased(e);
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
-        mode.mouseEntered(panel, e);
+    public void mouseEntered(MouseEvent e) {
+        mode.mouseEntered(e);
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
-        mode.mouseExited(panel, e);
+    public void mouseExited(MouseEvent e) {
+        mode.mouseExited(e);
     }
 
     @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
-        mode.mouseDragged(panel, e);
+    public void mouseDragged(MouseEvent e) {
+        mode.mouseDragged(e);
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
-        
-        mode.mouseMoved(panel, e);
+
+        mode.mouseMoved(e);
     }
 
     @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
-        mode.keyTyped(panel, e);
+    public void keyTyped(KeyEvent e) {
+        mode.keyTyped(e);
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-        mode.keyPressed(panel, e);
+    public void keyPressed(KeyEvent e) {
+        mode.keyPressed(e);
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
-        mode.keyReleased(panel, e);
+    public void keyReleased(KeyEvent e) {
+        mode.keyReleased(e);
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
+    public void mouseWheelMoved(MouseWheelEvent e) {
 
-        mode.mouseWheelMoved(panel, e);
+        mode.mouseWheelMoved(e);
     }
 
     private void lighting(GL2 gl) {
@@ -195,7 +195,7 @@ public class View3D extends Editor {
 
     }
 
-    public void zoomCamera(EditorDisplayGL panel, MouseWheelEvent e) {
+    public void zoomCamera(MouseWheelEvent e) {
         float delta = 1.2f;
         if (e.getWheelRotation() > 0) {
             cam.moveTowardsTarget(cam.distToTarget * delta);
@@ -205,7 +205,7 @@ public class View3D extends Editor {
         panel.repaint();
     }
 
-    public void moveCamera(EditorDisplayGL panel, MouseEvent e) {
+    public void moveCamera(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             final float deltaX = -(float) (e.getX() - lastPressX) / (panel.getWidth() / 2);
             final float deltaY = (float) (e.getY() - lastPressY) / (panel.getHeight() / 2);
@@ -260,8 +260,5 @@ public class View3D extends Editor {
     public String getEditorName() {
         return "VIEW3D";
     }
-    
-    
-    
-    
+
 }

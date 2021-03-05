@@ -67,32 +67,32 @@ public class Grab extends TransformTool {
     }
 
     @Override
-    public void init(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void init(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void dispose(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void dispose(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void display(EditorDisplayGL panel, GLAutoDrawable glad) {
+    public void display(GLAutoDrawable glad) {
 
     }
 
     @Override
-    public void reshape(EditorDisplayGL panel, GLAutoDrawable glad, int x, int y, int width, int height) {
+    public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
 
     }
 
     @Override
-    public void mouseClicked(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
 
     }
 
     @Override
-    public void mousePressed(EditorDisplayGL panel, MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             exitTool(panel);
             editor.repaintSameEditors();
@@ -106,39 +106,39 @@ public class Grab extends TransformTool {
     }
 
     @Override
-    public void mouseReleased(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseReleased(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseEntered(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseExited(EditorDisplayGL panel, MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseDragged(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseExited(MouseEvent e) {
 
     }
 
     @Override
-    public void mouseMoved(EditorDisplayGL panel, MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
         moveObjects(panel);
         editor.repaintSameEditors();
     }
 
     @Override
-    public void keyTyped(EditorDisplayGL panel, KeyEvent e) {
+    public void keyTyped(KeyEvent e) {
 
     }
 
     @Override
-    public void keyPressed(EditorDisplayGL panel, KeyEvent e) {
-        if (isTypingAmount(e)){
+    public void keyPressed(KeyEvent e) {
+        if (isTypingAmount(e)) {
             parseAmount(e);
             moveObjects(panel);
             editor.repaintSameEditors();
@@ -155,8 +155,8 @@ public class Grab extends TransformTool {
                     editor.repaintSameEditors();
                     break;
                 }
-                
-                case KeyEvent.VK_ENTER:{
+
+                case KeyEvent.VK_ENTER: {
                     exitTool(panel);
                     editor.repaintSameEditors();
                     break;
@@ -188,12 +188,12 @@ public class Grab extends TransformTool {
     }
 
     @Override
-    public void keyReleased(EditorDisplayGL panel, KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
 
     }
 
     @Override
-    public void mouseWheelMoved(EditorDisplayGL panel, MouseWheelEvent e) {
+    public void mouseWheelMoved(MouseWheelEvent e) {
 
     }
 
@@ -263,6 +263,5 @@ public class Grab extends TransformTool {
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
         panel.setCursor(Cursor.getDefaultCursor());
     }
-    
-    
+
 }

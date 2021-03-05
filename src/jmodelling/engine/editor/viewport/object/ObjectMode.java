@@ -35,6 +35,7 @@ import jmodelling.engine.editor.viewport.object.tools.Grab;
 import jmodelling.engine.editor.viewport.object.tools.Navigate;
 import jmodelling.engine.editor.viewport.object.tools.ObjectTool;
 import jmodelling.engine.editor.viewport.object.tools.Rotate;
+import jmodelling.engine.editor.viewport.object.tools.Scale;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
@@ -178,6 +179,12 @@ public class ObjectMode extends Mode {
             case KeyEvent.VK_R: {
                 if (editor.getScene().isAnyObjectSelected()) {
                     tool = new Rotate(editor, this);
+                }
+                break;
+            }
+            case KeyEvent.VK_S: {
+                if (editor.getScene().isAnyObjectSelected()) {
+                    tool = new Scale(editor, this);
                 }
                 break;
             }

@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.editor.viewport.object.tools;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
@@ -34,61 +35,87 @@ import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.hud.InfiniteLine;
 import jmodelling.engine.transform.Transformation;
-import jmodelling.gui.display.EditorDisplayGL;
+import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class Grab extends TransformTool {
+public class Scale extends TransformTool {
 
-    private static enum GrabType {
-        PLANAR(new Vec3f(), new Vec3f()),
-        X(new Vec3f(1.0f, 0.0f, 0.0f), new Vec3f(1.0f, 0.5f, 0.5f)),
-        Y(new Vec3f(0.0f, 1.0f, 0.0f), new Vec3f(0.5f, 1.0f, 0.5f)),
-        Z(new Vec3f(0.0f, 0.0f, 1.0f), new Vec3f(0.5f, 0.0f, 1.5f));
+    private static enum ScaleType {
+        FULL(new Vec3f(), new Vec3f(), Cursor.getDefaultCursor(), true, true, true),
+        X(new Vec3f(1.0f, 0.0f, 0.0f), new Vec3f(1.0f, 0.5f, 0.5f), Cursor.getDefaultCursor(), true, false, false),
+        Y(new Vec3f(0.0f, 1.0f, 0.0f), new Vec3f(0.5f, 1.0f, 0.5f), Cursor.getDefaultCursor(), false, true, false),
+        Z(new Vec3f(0.0f, 0.0f, 1.0f), new Vec3f(0.5f, 0.0f, 1.5f), Cursor.getDefaultCursor(), false, false, true);
 
+        public final boolean x;
+        public final boolean y;
+        public final boolean z;
         public final Vec3f axis;
         public final Vec3f color;
+        public final Cursor cursor;
 
-        private GrabType(Vec3f axis, Vec3f color) {
+        private ScaleType(Vec3f axis, Vec3f color, Cursor cursor, boolean x, boolean y, boolean z) {
             this.axis = axis;
             this.color = color;
+            this.cursor = cursor;
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
     }
-    private GrabType grabType;
+    private ScaleType scalingType;
 
-    public Grab(View3D editor, ObjectMode objectMode) {
+    public Scale(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
 
-        grabType = GrabType.PLANAR;
-
+        scalingType = ScaleType.FULL;
     }
 
     @Override
     public void init(GLAutoDrawable glad) {
-
     }
 
     @Override
     public void dispose(GLAutoDrawable glad) {
-
     }
 
     @Override
     public void display(GLAutoDrawable glad) {
+        GL2 gl = glad.getGL().getGL2();
+
+        Vec2f center = Transformation.worldToView_(transforms.get(lastSelected).loc, editor.getTransf());
+        Vec2f cursor = Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight());
+
+        gl.glPushMatrix();
+
+        gl.glLoadIdentity();
+
+        gl.glDisable(GL2.GL_DEPTH_TEST);
+        gl.glEnable(GL2.GL_LINE_STIPPLE);
+        gl.glLineStipple(1, (short) 0xF0F0);
+
+        gl.glBegin(GL2.GL_LINES);
+        gl.glColor3f(0.0f, 0.0f, 0.0f);
+        gl.glVertex3f(center.x, center.y, 0.0f);
+        gl.glVertex3f(cursor.x, cursor.y, 0.0f);
+        gl.glEnd();
+
+        gl.glDisable(GL2.GL_LINE_STIPPLE);
+        gl.glEnable(GL2.GL_DEPTH_TEST);
+
+        gl.glPopMatrix();
 
     }
 
     @Override
     public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
@@ -98,7 +125,7 @@ public class Grab extends TransformTool {
             editor.repaintSameEditors();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             selectedObjs.forEach((obj) -> {
-                obj.loc.set(transforms.get(obj).loc);
+                obj.sca.set(transforms.get(obj).sca);
             });
             exitTool();
             editor.repaintSameEditors();
@@ -107,126 +134,122 @@ public class Grab extends TransformTool {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        moveObjects();
+        scaleObjects();
         editor.repaintSameEditors();
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (isTypingAmount(e)) {
-            parseAmount(e);
-            moveObjects();
-            editor.repaintSameEditors();
-        } else {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_ESCAPE: {
-                    exitTool();
-                    editor.repaintSameEditors();
-                    break;
-                }
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_ESCAPE: {
+                exitTool();
+                editor.repaintSameEditors();
+                break;
+            }
 
-                case KeyEvent.VK_G: {
-                    exitTool();
-                    editor.repaintSameEditors();
-                    break;
-                }
+            case KeyEvent.VK_S: {
+                exitTool();
+                editor.repaintSameEditors();
+                break;
+            }
 
-                case KeyEvent.VK_ENTER: {
-                    exitTool();
-                    editor.repaintSameEditors();
-                    break;
-                }
+            case KeyEvent.VK_ENTER: {
+                exitTool();
+                editor.repaintSameEditors();
+                break;
+            }
 
-                case KeyEvent.VK_X: {
-                    setLinearGrabType(GrabType.X);
-                    moveObjects();
-                    editor.repaintSameEditors();
-                    break;
-                }
+            case KeyEvent.VK_X: {
+                setScaleType(ScaleType.X);
+                scaleObjects();
+                editor.repaintSameEditors();
+                break;
+            }
 
-                case KeyEvent.VK_Y: {
-                    setLinearGrabType(GrabType.Y);
-                    moveObjects();
-                    editor.repaintSameEditors();
-                    break;
-                }
+            case KeyEvent.VK_Y: {
+                setScaleType(ScaleType.Y);
+                scaleObjects();
+                editor.repaintSameEditors();
+                break;
+            }
 
-                case KeyEvent.VK_Z: {
-                    setLinearGrabType(GrabType.Z);
-                    moveObjects();
-                    editor.repaintSameEditors();
-                    break;
-                }
-
+            case KeyEvent.VK_Z: {
+                setScaleType(ScaleType.Z);
+                scaleObjects();
+                editor.repaintSameEditors();
+                break;
             }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-
     }
 
     @Override
     public void destroy() {
+    }
+
+    @Override
+    public void exitTool() {
+        mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
+        panel.setCursor(Cursor.getDefaultCursor());
     }
 
-    private Vec3f linearTranslation() {
-        return Transformation.linearTranslation_(transforms.get(lastSelected).loc, grabType.axis,
+    private Vec3f fullScaling() {
+        return Transformation.scale_(transforms.get(lastSelected).loc,
+                scalingType.x, scalingType.y, scalingType.z,
                 Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), editor.getCam(), panel.getAspect());
+                editor.getTransf(), panel.getAspect());
     }
 
-    private Vec3f planarTranslation() {
-        return Transformation.planarTranslation_(transforms.get(lastSelected).loc,
+    private Vec3f axisScaling() {
+        return Transformation.scale_(transforms.get(lastSelected).loc,
+                scalingType.x, scalingType.y, scalingType.z,
                 Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getCam(), panel.getAspect());
+                editor.getTransf(), panel.getAspect());
     }
 
-    private void moveObjects() {
+    private void scaleObjects() {
         if (moveAmount.isEmpty()) {
-            Vec3f trans;
-            if (grabType.equals(GrabType.PLANAR)) {
-                trans = planarTranslation();
-            } else {
-                trans = linearTranslation();
+            Vec3f sca;
+            switch (scalingType) {
+                case FULL:
+                    sca = fullScaling();
+                    break;
+                default:
+                    sca = axisScaling();
+                    break;
             }
-
             selectedObjs.forEach((obj) -> {
-                obj.loc.set(transforms.get(obj).loc.add_(trans));
+                obj.sca.set(transforms.get(obj).sca.had_(sca));
             });
         } else {
             try {
@@ -235,9 +258,9 @@ public class Grab extends TransformTool {
                     module = -module;
                 }
 
-                final Vec3f trans = grabType.axis.scale_(module);
+                //final Vec3f trans = grabType.axis.scale_(module);
                 selectedObjs.forEach((obj) -> {
-                    obj.loc.set(transforms.get(obj).loc.add_(trans));
+                    //obj.loc.set(transforms.get(obj).loc.add_(trans));
                 });
             } catch (NumberFormatException ex) {
 
@@ -245,23 +268,9 @@ public class Grab extends TransformTool {
         }
     }
 
-    private void setLinearGrabType(GrabType grabLinear) {
-        if (grabType != grabLinear) {
-            grabType = grabLinear;
-            editor.getScene().replaceHudObject(new InfiniteLine(
-                    transforms.get(lastSelected).loc,
-                    grabType.axis, grabType.color));
-        } else {
-            grabType = GrabType.PLANAR;
-            editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
-        }
-    }
-
-    @Override
-    public void exitTool() {
-        mode.setDefaultTool();
-        editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
-        panel.setCursor(Cursor.getDefaultCursor());
+    private void setScaleType(ScaleType newType) {
+        scalingType = newType;
+        panel.setCursor(scalingType.cursor);
     }
 
 }

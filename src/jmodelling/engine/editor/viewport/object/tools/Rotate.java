@@ -128,13 +128,13 @@ public class Rotate extends TransformTool {
     @Override
     public void mousePressed( MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            exitTool(panel);
+            exitTool();
             editor.repaintSameEditors();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             selectedObjs.forEach((obj) -> {
                 obj.rot.set(transforms.get(obj).rot);
             });
-            exitTool(panel);
+            exitTool();
             editor.repaintSameEditors();
         }
     }
@@ -161,7 +161,7 @@ public class Rotate extends TransformTool {
 
     @Override
     public void mouseMoved( MouseEvent e) {
-        rotateObjects(panel);
+        rotateObjects();
         editor.repaintSameEditors();
     }
 
@@ -174,45 +174,45 @@ public class Rotate extends TransformTool {
     public void keyPressed( KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE: {
-                exitTool(panel);
+                exitTool();
                 editor.repaintSameEditors();
                 break;
             }
 
             case KeyEvent.VK_R: {
                 if (rotationType.equals(RotationType.BALL)) {
-                    setRotationType(panel, prevRotationType);
+                    setRotationType(prevRotationType);
                 }else{
-                    setRotationType(panel, RotationType.BALL);
+                    setRotationType(RotationType.BALL);
                 }
-                rotateObjects(panel);
+                rotateObjects();
                 editor.repaintSameEditors();
                 break;
             }
 
             case KeyEvent.VK_ENTER: {
-                exitTool(panel);
+                exitTool();
                 editor.repaintSameEditors();
                 break;
             }
 
             case KeyEvent.VK_X: {
-                setAxisRotationType(panel, RotationType.X);
-                rotateObjects(panel);
+                setAxisRotationType(RotationType.X);
+                rotateObjects();
                 editor.repaintSameEditors();
                 break;
             }
 
             case KeyEvent.VK_Y: {
-                setAxisRotationType(panel, RotationType.Y);
-                rotateObjects(panel);
+                setAxisRotationType(RotationType.Y);
+                rotateObjects();
                 editor.repaintSameEditors();
                 break;
             }
 
             case KeyEvent.VK_Z: {
-                setAxisRotationType(panel, RotationType.Z);
-                rotateObjects(panel);
+                setAxisRotationType(RotationType.Z);
+                rotateObjects();
                 editor.repaintSameEditors();
                 break;
             }
@@ -234,14 +234,14 @@ public class Rotate extends TransformTool {
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
     }
 
-    private Mat3f planarRotation(EditorDisplayGL panel) {
+    private Mat3f planarRotation() {
         return Transformation.planarRotation_(transforms.get(lastSelected).loc,
                 Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
                 editor.getTransf(), editor.getCam(), panel.getAspect());
     }
 
-    private Mat3f axisRotation(EditorDisplayGL panel) {
+    private Mat3f axisRotation() {
         return Transformation.axisRotation_(transforms.get(lastSelected).loc,
                 rotationType.axis,
                 Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
@@ -249,25 +249,25 @@ public class Rotate extends TransformTool {
                 editor.getTransf(), editor.getCam(), panel.getAspect());
     }
 
-    private Mat3f ballRotation(EditorDisplayGL panel) {
+    private Mat3f ballRotation() {
         return Transformation.ballRotation_(transforms.get(lastSelected).loc,
                 Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
                 Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
                 editor.getTransf(), editor.getCam(), panel.getAspect(), 3.0f);
     }
 
-    private void rotateObjects(EditorDisplayGL panel) {
+    private void rotateObjects() {
         if (moveAmount.isEmpty()) {
             Mat3f rot;
             switch (rotationType) {
                 case PLANAR:
-                    rot = planarRotation(panel);
+                    rot = planarRotation();
                     break;
                 case BALL:
-                    rot = ballRotation(panel);
+                    rot = ballRotation();
                     break;
                 default:
-                    rot = axisRotation(panel);
+                    rot = axisRotation();
                     break;
             }
             selectedObjs.forEach((obj) -> {
@@ -289,29 +289,28 @@ public class Rotate extends TransformTool {
 
             }
         }
-
     }
 
-    private void setAxisRotationType(EditorDisplayGL panel, RotationType rotationLinear) {
+    private void setAxisRotationType(RotationType rotationLinear) {
         if (rotationType != rotationLinear) {
-            setRotationType(panel, rotationLinear);
+            setRotationType(rotationLinear);
             editor.getScene().replaceHudObject(new InfiniteLine(
                     transforms.get(lastSelected).loc,
                     rotationType.axis, rotationType.color));
         } else {
-            setRotationType(panel, RotationType.PLANAR);
+            setRotationType(RotationType.PLANAR);
             editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
         }
     }
 
-    private void setRotationType(EditorDisplayGL panel, RotationType newType) {
+    private void setRotationType(RotationType newType) {
         prevRotationType = rotationType;
         rotationType = newType;
         panel.setCursor(rotationType.cursor);
     }
 
     @Override
-    public void exitTool(EditorDisplayGL panel) {
+    public void exitTool() {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
         panel.setCursor(Cursor.getDefaultCursor());

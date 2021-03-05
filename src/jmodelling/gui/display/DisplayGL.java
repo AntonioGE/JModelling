@@ -570,13 +570,15 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(objRot)));
             cube.rot.set(angles);
              */
+ /*
             Vec3f sca = Transformation.scale_(objPos,
                     Cam.pixelToView(lastGrabX, lastGrabY, getWidth(), getHeight()),
                     Cam.pixelToView(mouseX, mouseY, getWidth(), getHeight()),
                     transf, (float) getWidth() / getHeight());
 
             cube.sca.set(objSca.had_(sca));
-
+            */
+            
             repaint();
         }
     }

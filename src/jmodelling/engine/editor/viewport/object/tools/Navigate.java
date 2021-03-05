@@ -122,7 +122,7 @@ public class Navigate extends ObjectTool {
     }
 
     @Override
-    public void exitTool(EditorDisplayGL panel) {
+    public void exitTool() {
 
     }
 

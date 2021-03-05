@@ -335,7 +335,7 @@ public class Transformation {
 
     /**
      * Converts a rotation from view coordinates to a rotation around a ball.
-     * 
+     *
      * @param src initial position of the point to be rotated
      * @param p0 initial position of point in view coordinates
      * @param p1 final position of point in view coordinates
@@ -347,24 +347,24 @@ public class Transformation {
      */
     public static void ballRotation(Vec3f src,
             Vec2f p0, Vec2f p1,
-            Mat4f camTransf, Cam cam, float aspect, 
+            Mat4f camTransf, Cam cam, float aspect,
             float sensitivity,
             Mat3f dst) {
 
         Vec2f mouse = p1.sub_(p0);
-        
+
         Vec3f camUp = cam.getUp();
         Vec3f camDir = cam.getDir();
 
         camUp.rotate(camDir, -mouse.angle());
-        
+
         TransfMat.rotation3f(mouse.norm() * sensitivity, camUp, dst);
     }
-    
+
     /**
      * Converts a rotation from view coordinates to a rotation around a ball and
      * stores the result in a new matrix.
-     * 
+     *
      * @param src initial position of the point to be rotated
      * @param p0 initial position of point in view coordinates
      * @param p1 final position of point in view coordinates
@@ -376,7 +376,7 @@ public class Transformation {
      */
     public static Mat3f ballRotation_(Vec3f src,
             Vec2f p0, Vec2f p1,
-            Mat4f camTransf, Cam cam, float aspect, 
+            Mat4f camTransf, Cam cam, float aspect,
             float sensitivity) {
 
         Mat3f dst = new Mat3f();
@@ -384,31 +384,43 @@ public class Transformation {
         return dst;
     }
 
-    public static void scale(Vec3f src,
+    public static void scale(Vec3f src, boolean x, boolean y, boolean z,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, float aspect,
             Vec3f dst) {
 
-        Vec2f center = worldToView_(src, camTransf);
-        Vec2f p0A = p0.clone();
-        Vec2f p1A = p1.clone();
+        final Vec2f center = worldToView_(src, camTransf);
+        final Vec2f p0A = p0.clone();
+        final Vec2f p1A = p1.clone();
 
         center.x *= aspect;
         p0A.x *= aspect;
         p1A.x *= aspect;
 
-        float d0 = p0A.dist(center);
-        float d1 = p1A.dist(center);
+        final float d0 = p0A.dist(center);
+        final float d1 = p1A.dist(center);
 
-        float scale = d1 / d0;
-        dst.set(scale, scale, scale);
+        final float scale = d1 / d0;
+
+        float xScale = 1.0f, yScale = 1.0f, zScale = 1.0f;
+        if (x) {
+            xScale = scale;
+        }
+        if (y) {
+            yScale = scale;
+        }
+        if (z) {
+            zScale = scale;
+        }
+
+        dst.set(xScale, yScale, zScale);
     }
 
-    public static Vec3f scale_(Vec3f src,
+    public static Vec3f scale_(Vec3f src, boolean x, boolean y, boolean z,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, float aspect) {
         Vec3f dst = new Vec3f();
-        scale(src, p0, p1, camTransf, aspect, dst);
+        scale(src, x, y, z, p0, p1, camTransf, aspect, dst);
         return dst;
     }
 }

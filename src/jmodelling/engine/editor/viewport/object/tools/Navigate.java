@@ -27,9 +27,12 @@ import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.List;
+import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
-import jmodelling.gui.display.EditorDisplayGL;
+import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.raytracing.Raytracer;
 
 /**
  *
@@ -68,7 +71,20 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        if(editor.isShiftPressed()){
+            if(SwingUtilities.isRightMouseButton(e)){
+                List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
+                        editor.getCam().loc,
+                        editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                        editor.getScene().getMeshObjects());
+                for(MeshObject obj : objsSelected){
+                    System.out.println(obj.name);
+                }
+                System.out.println();
+            }
+        }else{
+            
+        }
     }
 
     @Override

@@ -92,4 +92,10 @@ public abstract class Editor {
         this.panel = panel;
     }
 
+    public EditorDisplayGL getPanel() {
+        return panel;
+    }
+    
+    
+
 }

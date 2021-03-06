@@ -35,11 +35,11 @@ import jmodelling.gui.display.EditorDisplayGL;
  */
 public abstract class Tool {
 
-    protected EditorDisplayGL panel;
+    /*protected EditorDisplayGL panel;
     
     public Tool(EditorDisplayGL panel){
         this.panel = panel;
-    }
+    }*/
     
     public abstract void init(GLAutoDrawable glad);
 

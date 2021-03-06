@@ -87,7 +87,7 @@ public class Scale extends TransformTool {
         GL2 gl = glad.getGL().getGL2();
 
         Vec2f center = Transformation.worldToView_(transforms.get(lastSelected).loc, editor.getTransf());
-        Vec2f cursor = Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight());
+        Vec2f cursor = Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight());
 
         gl.glPushMatrix();
 
@@ -218,23 +218,23 @@ public class Scale extends TransformTool {
     public void exitTool() {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
-        panel.setCursor(Cursor.getDefaultCursor());
+        editor.getPanel().setCursor(Cursor.getDefaultCursor());
     }
 
     private Vec3f fullScaling() {
         return Transformation.scale_(transforms.get(lastSelected).loc,
                 scalingType.x, scalingType.y, scalingType.z,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getPanel().getAspect());
     }
 
     private Vec3f axisScaling() {
         return Transformation.scale_(transforms.get(lastSelected).loc,
                 scalingType.x, scalingType.y, scalingType.z,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getPanel().getAspect());
     }
 
     private void scaleObjects() {
@@ -248,7 +248,9 @@ public class Scale extends TransformTool {
                     sca = axisScaling();
                     break;
             }
+            
             selectedObjs.forEach((obj) -> {
+                //TODO: rotate scaling?
                 obj.sca.set(transforms.get(obj).sca.had_(sca));
             });
         } else {
@@ -270,7 +272,7 @@ public class Scale extends TransformTool {
 
     private void setScaleType(ScaleType newType) {
         scalingType = newType;
-        panel.setCursor(scalingType.cursor);
+        editor.getPanel().setCursor(scalingType.cursor);
     }
 
 }

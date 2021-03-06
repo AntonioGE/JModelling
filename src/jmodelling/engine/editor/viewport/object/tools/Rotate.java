@@ -35,7 +35,6 @@ import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.hud.InfiniteLine;
 import jmodelling.engine.transform.Transformation;
-import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -91,7 +90,7 @@ public class Rotate extends TransformTool {
 
         if (rotationType != RotationType.BALL) {
             Vec2f center = Transformation.worldToView_(transforms.get(lastSelected).loc, editor.getTransf());
-            Vec2f cursor = Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight());
+            Vec2f cursor = Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight());
 
             gl.glPushMatrix();
 
@@ -236,24 +235,24 @@ public class Rotate extends TransformTool {
 
     private Mat3f planarRotation() {
         return Transformation.planarRotation_(transforms.get(lastSelected).loc,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), editor.getCam(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());
     }
 
     private Mat3f axisRotation() {
         return Transformation.axisRotation_(transforms.get(lastSelected).loc,
                 rotationType.axis,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), editor.getCam(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());
     }
 
     private Mat3f ballRotation() {
         return Transformation.ballRotation_(transforms.get(lastSelected).loc,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), editor.getCam(), panel.getAspect(), 3.0f);
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getCam(), editor.getPanel().getAspect(), 3.0f);
     }
 
     private void rotateObjects() {
@@ -271,7 +270,7 @@ public class Rotate extends TransformTool {
                     break;
             }
             selectedObjs.forEach((obj) -> {
-                Vec3f angles = TransfMat.matToEulerDeg_(rot.mul(TransfMat.eulerDegToMat_(transforms.get(obj).rot)));
+                Vec3f angles = TransfMat.matToEulerDeg_(rot.mul_(TransfMat.eulerDegToMat_(transforms.get(obj).rot)));
                 obj.rot.set(angles);
             });
         } else {
@@ -306,14 +305,14 @@ public class Rotate extends TransformTool {
     private void setRotationType(RotationType newType) {
         prevRotationType = rotationType;
         rotationType = newType;
-        panel.setCursor(rotationType.cursor);
+        editor.getPanel().setCursor(rotationType.cursor);
     }
 
     @Override
     public void exitTool() {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
-        panel.setCursor(Cursor.getDefaultCursor());
+        editor.getPanel().setCursor(Cursor.getDefaultCursor());
     }
 
 }

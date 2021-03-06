@@ -59,7 +59,12 @@ public class Engine {
         scene = new Scene();
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
-        scene.addObject(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj"));
+        for(int i = 0; i < 5; i++){
+            MeshObject obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+            obj.name = "Monito" + i;
+            obj.loc.set(i * 8.0f, 0.0f, 0.0f);
+            scene.addObject(obj);
+        }
         scene.selectAll();
     }
 

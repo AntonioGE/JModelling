@@ -50,6 +50,8 @@ public class View3D extends Editor {
     protected int lastPressX, lastPressY;
     protected int mouseX, mouseY;
 
+    protected boolean shiftPressed;
+
     protected Mat4f transf;
 
     public View3D(Engine engine) {
@@ -165,11 +167,24 @@ public class View3D extends Editor {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SHIFT: {
+                shiftPressed = true;
+                break;
+            }
+        }
         mode.keyPressed(e);
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SHIFT: {
+                shiftPressed = false;
+                break;
+            }
+        }
         mode.keyReleased(e);
     }
 
@@ -206,7 +221,7 @@ public class View3D extends Editor {
     }
 
     public void moveCamera(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e)) {
+        if (shiftPressed && (SwingUtilities.isLeftMouseButton(e) || SwingUtilities.isMiddleMouseButton(e))) {
             final float deltaX = -(float) (e.getX() - lastPressX) / (panel.getWidth() / 2);
             final float deltaY = (float) (e.getY() - lastPressY) / (panel.getHeight() / 2);
             lastPressX = e.getX();
@@ -219,7 +234,7 @@ public class View3D extends Editor {
             );
             cam.loc.add(trans.mul(cam.getLocalAxis3f()));
 
-        } else if (SwingUtilities.isRightMouseButton(e)) {
+        } else if (SwingUtilities.isMiddleMouseButton(e)) {
             float sensitivity = 2.0f;
             float deltaX = (e.getX() - lastPressX) / sensitivity;
             float deltaY = (e.getY() - lastPressY) / sensitivity;
@@ -256,6 +271,10 @@ public class View3D extends Editor {
         return transf;
     }
 
+    public boolean isShiftPressed() {
+        return shiftPressed;
+    }
+    
     @Override
     public String getEditorName() {
         return "VIEW3D";

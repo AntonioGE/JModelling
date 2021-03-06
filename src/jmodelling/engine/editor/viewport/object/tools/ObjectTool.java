@@ -23,13 +23,9 @@
  */
 package jmodelling.engine.editor.viewport.object.tools;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
-import jmodelling.engine.object.Object3D;
-import jmodelling.engine.object.transform.Transform;
 
 /**
  *
@@ -41,7 +37,7 @@ public abstract class ObjectTool extends Tool {
     protected ObjectMode mode;
 
     public ObjectTool(View3D editor, ObjectMode objectMode) {
-        super(editor.panel);
+        //super(editor.panel);
         this.editor = editor;
         this.mode = objectMode;
         

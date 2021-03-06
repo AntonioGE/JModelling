@@ -204,16 +204,16 @@ public class Grab extends TransformTool {
 
     private Vec3f linearTranslation() {
         return Transformation.linearTranslation_(transforms.get(lastSelected).loc, grabType.axis,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getTransf(), editor.getCam(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());
     }
 
     private Vec3f planarTranslation() {
         return Transformation.planarTranslation_(transforms.get(lastSelected).loc,
-                Cam.pixelToView(firstMouseX, firstMouseY, panel.getWidth(), panel.getHeight()),
-                Cam.pixelToView(panel.getMouseX(), panel.getMouseY(), panel.getWidth(), panel.getHeight()),
-                editor.getCam(), panel.getAspect());
+                Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                editor.getCam(), editor.getPanel().getAspect());
     }
 
     private void moveObjects() {
@@ -261,7 +261,7 @@ public class Grab extends TransformTool {
     public void exitTool() {
         mode.setDefaultTool();
         editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
-        panel.setCursor(Cursor.getDefaultCursor());
+        editor.getPanel().setCursor(Cursor.getDefaultCursor());
     }
 
 }

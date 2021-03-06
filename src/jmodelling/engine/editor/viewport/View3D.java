@@ -109,7 +109,10 @@ public class View3D extends Editor {
 
         engine.scene.updateGL(gl);
 
-        
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         /**
          * Render selected objects
@@ -123,6 +126,11 @@ public class View3D extends Editor {
             obj.renderOpaque(gl);
         });
 
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        
         gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, -1);
         //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
         gl.glLineWidth(2);
@@ -139,6 +147,12 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glDisable(GL2.GL_STENCIL_TEST);
         
+        
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        
         /**
          * Render unselected objects
          */
@@ -154,6 +168,11 @@ public class View3D extends Editor {
             obj.renderOpaque(gl);
         });
 
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        
         mode.display(glad);
     }
 

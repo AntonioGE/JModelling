@@ -112,19 +112,19 @@ public class ShapeGL {
     public void render(GL2 gl) {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[0]);
         gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[1]);
         gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        //gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[2]);
         gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        //gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[3]);
         gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        //gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
         gl.glDrawElements(GL2.GL_TRIANGLES, nElements, GL2.GL_UNSIGNED_INT, 0);

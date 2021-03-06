@@ -84,7 +84,7 @@ public class CWireGL {
     public void render(GL2 gl){
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
         gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
         gl.glDrawElements(GL2.GL_LINES, nElements, GL2.GL_UNSIGNED_INT, 0);

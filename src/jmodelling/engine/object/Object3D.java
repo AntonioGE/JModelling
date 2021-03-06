@@ -106,6 +106,8 @@ public abstract class Object3D {
     }
 
     public abstract void renderOpaque(GL2 gl);
+    
+    public abstract void renderWireframe(GL2 gl);
 
     public abstract void init(GL2 gl);
 

@@ -84,6 +84,16 @@ public class MeshObject extends Object3D {
     }
 
     @Override
+    public void renderWireframe(GL2 gl) {
+        gl.glPushMatrix();
+        
+        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+        meshGL.renderWireframe(gl);
+
+        gl.glPopMatrix();
+    }
+
+    @Override
     public void init(GL2 gl) {
         meshGL.init(gl);
     }

@@ -45,38 +45,42 @@ public class Engine {
     public Scene scene;
 
     public final GLAutoDrawable sharedDrawable;
-    
+
     public Engine(MainFrame frame) {
         this.frame = frame;
-        
+
         //final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-        caps.setStencilBits(8);
+        caps.setStencilBits(1);
+        //caps.setSampleBuffers(true);
+        //caps.setNumSamples(8);
         final GLProfile glp = caps.getGLProfile();
 
         final boolean createNewDevice = true;
         sharedDrawable = GLDrawableFactory.getFactory(glp).createDummyAutoDrawable(null, createNewDevice, caps, null);
         sharedDrawable.display();
 
-        
         scene = new Scene();
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
-        for(int i = 0; i < 5; i++){
-            MeshObject obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-            obj.name = "Monito" + i;
-            obj.loc.set(i * 8.0f, 0.0f, 0.0f);
-            scene.addObject(obj);
+        // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                MeshObject obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj"); 
+                obj.name = "Monito" + i + " " + j;
+                obj.loc.set(i * 4.0f, j * 4.0f, 0.0f);
+                scene.addObject(obj);
+            }
         }
         scene.selectAll();
     }
 
-    public void updateDisplaysUsingEditor(Editor editor){
-        for(EditorDisplayGL display : frame.editorDisplays){
-            if(display.getEditor().getEditorName().equals(editor.getEditorName())){
+    public void updateDisplaysUsingEditor(Editor editor) {
+        for (EditorDisplayGL display : frame.editorDisplays) {
+            if (display.getEditor().getEditorName().equals(editor.getEditorName())) {
                 display.repaint();
             }
         }
     }
-    
+
 }

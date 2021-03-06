@@ -49,7 +49,7 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     protected int mouseX, mouseY;
 
     public EditorDisplayGL(GLAutoDrawable sharedDrawable, Editor editor) {
-        super(sharedDrawable.getChosenGLCapabilities()); 
+        super(sharedDrawable.getChosenGLCapabilities());
         this.editor = editor;
         editor.setPanel(this);
 

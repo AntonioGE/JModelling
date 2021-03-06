@@ -26,6 +26,7 @@ package jmodelling.engine.object.mesh.cmesh.gl;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;
@@ -40,11 +41,8 @@ import jmodelling.engine.object.mesh.cmesh.Vertex;
 public class CMeshGL {
 
     public FloatBuffer vVtxs;
-    //public FloatBuffer cVtxs;
-
-    public FloatBuffer vEdges;
-    //public FloatBuffer cEdges;
-
+    
+    public CWireGL wireframe;
     public HashMap<Material, ShapeGL> shapes;
 
     public CMeshGL(CMesh cmesh) {
@@ -53,52 +51,10 @@ public class CMeshGL {
 
     //TODO: Move to renderer class?
     public void init(GL2 gl) {
-        for (ShapeGL shape : shapes.values()) {
-            shape.vbos = new int[4];
-            shape.ebo = new int[1];
-
-            gl.glGenBuffers(shape.vbos.length, shape.vbos, 0);
-            gl.glGenBuffers(shape.ebo.length, shape.ebo, 0);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
-            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.vtxs.limit() * Float.BYTES, shape.vtxs, GL2.GL_STATIC_DRAW);
-            //gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-            //gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
-            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.nrms.limit() * Float.BYTES, shape.nrms, GL2.GL_STATIC_DRAW);
-            //gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
-            //gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
-            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.clrs.limit() * Float.BYTES, shape.clrs, GL2.GL_STATIC_DRAW);
-            //gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
-            //gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
-            gl.glBufferData(GL2.GL_ARRAY_BUFFER, shape.uvs.limit() * Float.BYTES, shape.uvs, GL2.GL_STATIC_DRAW);
-            //gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
-            //gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.ebo[0]);
-            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.elems.limit() * Integer.BYTES, shape.elems, GL2.GL_STATIC_DRAW);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
-
-            //Free buffers after uploading to graphics card
-            //TODO: Is this needed?
-            shape.vtxs.clear();
-            shape.nrms.clear();
-            shape.clrs.clear();
-            shape.uvs.clear();
-            shape.elems.clear();
-
-            shape.vtxs = null;
-            shape.nrms = null;
-            shape.clrs = null;
-            shape.uvs = null;
-            shape.elems = null;
-        }
+        shapes.values().forEach((shape) -> {
+            shape.init(gl);
+        });
+        wireframe.init(gl);
     }
 
     /*
@@ -163,41 +119,16 @@ public class CMeshGL {
 
     public void delete(GL2 gl) {
         shapes.values().forEach((shape) -> {
-            gl.glDeleteVertexArrays(shape.vao.length, shape.vao, 0);
-            gl.glDeleteBuffers(shape.vbos.length, shape.vbos, 0);
-            gl.glDeleteBuffers(shape.ebo.length, shape.ebo, 0);
+            shape.delete(gl);
         });
+        wireframe.delete(gl);
     }
 
     //TODO: Move to renderer class?
     public void render(GL2 gl) {
-        for (ShapeGL shape : shapes.values()) {
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[0]);
-            gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[1]);
-            gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[2]);
-            gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, shape.vbos[3]);
-            gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
-            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, shape.ebo[0]);
-            gl.glDrawElements(GL2.GL_TRIANGLES, shape.nElements, GL2.GL_UNSIGNED_INT, 0);
-
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
-
-            //gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-            //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-            //gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-            //gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        }
+        shapes.values().forEach((shape) -> {
+            shape.render(gl);
+        });
     }
 
     /*
@@ -212,12 +143,15 @@ public class CMeshGL {
             gl.glBindVertexArray(0);
         }
     }*/
+    
+    public void renderWireframe(GL2 gl) {
+        wireframe.render(gl);
+    }
+    
     public final void genData(CMesh cmesh) {
         vVtxs = genVVtxs(cmesh);
-        //cVtxs = genCVtxs(cmesh);
 
-        vEdges = genVEdges(cmesh);
-        //cEdges = genCEdges(cmesh);
+        wireframe = genWireframe(cmesh);
 
         shapes = genShapes(cmesh);
     }
@@ -230,6 +164,10 @@ public class CMeshGL {
         return Buffers.newDirectFloatBuffer(new float[cmesh.vtxs.length]);
     }
 
+    private static CWireGL genWireframe(CMesh cmesh){
+        return new CWireGL(cmesh.vtxs, cmesh.edges);
+    }
+    
     private static FloatBuffer genVEdges(CMesh cmesh) {
         FloatBuffer buff = Buffers.newDirectFloatBuffer(cmesh.edges.length * 3);
         buff.mark();

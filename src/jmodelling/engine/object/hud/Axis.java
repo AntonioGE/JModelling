@@ -76,6 +76,11 @@ public class Axis extends Object3D{
     }
 
     @Override
+    public void renderWireframe(GL2 gl) {
+
+    }
+    
+    @Override
     public void init(GL2 gl) {
     }
 

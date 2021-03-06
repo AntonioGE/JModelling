@@ -73,6 +73,11 @@ public class CamArcball extends Cam {
 
     }
 
+    @Override
+    public void renderWireframe(GL2 gl) {
+
+    }
+
     public void orbit(Vec3f dRot) {
         //Get target position before rotation
         Vec3f tar = getTar();

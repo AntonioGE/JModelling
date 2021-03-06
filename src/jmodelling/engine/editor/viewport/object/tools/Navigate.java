@@ -40,6 +40,8 @@ import jmodelling.engine.raytracing.Raytracer;
  */
 public class Navigate extends ObjectTool {
 
+    protected int lastPressX, lastPressY;
+
     public Navigate(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
     }
@@ -71,20 +73,39 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(editor.isShiftPressed()){
-            if(SwingUtilities.isRightMouseButton(e)){
+
+        if (editor.isShiftPressed()) {
+            if (SwingUtilities.isRightMouseButton(e)) {
                 List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
                         editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());
-                for(MeshObject obj : objsSelected){
+
+                if (objsSelected.size() == 1) {
+                    //editor.getScene().selectObject(object)
+                }
+
+                for (MeshObject obj : objsSelected) {
                     System.out.println(obj.name);
                 }
                 System.out.println();
+                editor.repaintSameEditors();
             }
-        }else{
-            
+        } else {
+            if (SwingUtilities.isRightMouseButton(e)) {
+                List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
+                        editor.getCam().loc,
+                        editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
+                        editor.getScene().getMeshObjects());
+                
+                if (objsSelected.size() == 1) {
+                    editor.getScene().selectOnlyObject(objsSelected.get(0));
+                }
+                editor.repaintSameEditors();
+            }
         }
+        lastPressX = e.getX();
+        lastPressY = e.getY();
     }
 
     @Override
@@ -104,7 +125,7 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        editor.moveCamera( e);
+        editor.moveCamera(e);
     }
 
     @Override
@@ -119,6 +140,17 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        switch(e.getKeyCode()){
+            case KeyEvent.VK_A:{
+                if(editor.getScene().areAllObjectsSelected()){
+                    editor.getScene().deselectAll();
+                }else{
+                    editor.getScene().selectAll();
+                }
+                editor.repaintSameEditors();
+                break;
+            }
+        }
         mode.changeMode(e);
     }
 
@@ -129,7 +161,7 @@ public class Navigate extends ObjectTool {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        editor.zoomCamera( e);
+        editor.zoomCamera(e);
     }
 
     @Override

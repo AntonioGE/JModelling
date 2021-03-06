@@ -46,9 +46,6 @@ public class Scene {
     private final HashMap<String, Object3D> objects;
     private final Map<String, Object3D> objectsReadOnly;
 
-    private final HashSet<Object3D> selectedObjects;
-    private Object3D lastSelectedObject;
-
     /**
      * HUD objects
      */
@@ -56,24 +53,36 @@ public class Scene {
     private final Map<String, Object3D> hudObjectsReadOnly;
 
     /**
+     * Selection
+     */
+    private final HashSet<Object3D> selectedObjects;
+    private final Set<Object3D> selectedObjectsReadOnly;
+    private final HashSet<Object3D> unselectedObjects;
+    private final Set<Object3D> unselectedObjectsReadOnly;
+    private Object3D lastSelectedObject;
+
+    /**
      * Objects GL updating
      */
     private final IdentitySet<Object3D> objectsToInit;
     private final IdentitySet<Object3D> objectsToDelete;
     private final IdentitySet<Object3D> objectsToUpdate;
-    
+
     public Scene() {
         objects = new HashMap<>();
         objectsReadOnly = Collections.unmodifiableMap(objects);
 
+        hudObjects = new HashMap<>();
+        hudObjectsReadOnly = Collections.unmodifiableMap(hudObjects);
+
         selectedObjects = new HashSet<>();
+        selectedObjectsReadOnly = Collections.unmodifiableSet(selectedObjects);
+        unselectedObjects = new HashSet<>();
+        unselectedObjectsReadOnly = Collections.unmodifiableSet(unselectedObjects);
 
         objectsToInit = new IdentitySet();
         objectsToDelete = new IdentitySet();
         objectsToUpdate = new IdentitySet();
-        
-        hudObjects = new HashMap<>();
-        hudObjectsReadOnly = Collections.unmodifiableMap(hudObjects);
     }
 
     public void updateGL(GL2 gl) {
@@ -110,6 +119,7 @@ public class Scene {
         }
         objects.put(object.name, object);
         objectsToInit.add(object);
+        unselectedObjects.add(object);
         return true;
     }
 
@@ -145,8 +155,12 @@ public class Scene {
         return meshObjects;
     }
 
-    public HashSet<Object3D> getSelectedObjects() {
-        return selectedObjects;
+    public Set<Object3D> getSelectedObjects() {
+        return selectedObjectsReadOnly;
+    }
+
+    public Set<Object3D> getUnselectedObjects() {
+        return unselectedObjectsReadOnly;
     }
 
     public boolean selectObject(Object3D object) {
@@ -154,6 +168,7 @@ public class Scene {
             return false;
         }
         selectedObjects.add(object);
+        unselectedObjects.remove(object);
         lastSelectedObject = object;
         return true;
     }
@@ -163,6 +178,7 @@ public class Scene {
             return false;
         }
         selectedObjects.remove(object);
+        unselectedObjects.add(object);
         lastSelectedObject = null;
         return true;
     }
@@ -174,12 +190,51 @@ public class Scene {
             objects.values().forEach((obj) -> {
                 selectedObjects.add(obj);
             });
+            unselectedObjects.clear();
+            return true;
+        }
+    }
+
+    public boolean deselectAll() {
+        if (objects.isEmpty()) {
+            return false;
+        } else {
+            objects.values().forEach((obj) -> {
+                unselectedObjects.add(obj);
+            });
+            selectedObjects.clear();
+            return true;
+        }
+    }
+
+    public boolean selectOnlyObject(Object3D obj) {
+        if (!objects.containsKey(obj.name)) {
+            return false;
+        } else {
+            deselectAll();
+            selectObject(obj);
             return true;
         }
     }
 
     public boolean isAnyObjectSelected() {
         return !selectedObjects.isEmpty();
+    }
+
+    public boolean areAllObjectsSelected() {
+        if (objects.isEmpty()) {
+            return false;
+        } else {
+            return objects.size() == selectedObjects.size();
+        }
+    }
+    
+    public boolean areAllObjectsUnselected(){
+        if (objects.isEmpty()) {
+            return false;
+        } else {
+            return objects.size() == unselectedObjects.size();
+        }
     }
 
     public Object3D getLastSelectedObject() {
@@ -198,8 +253,8 @@ public class Scene {
         objectsToInit.add(object);
         return true;
     }
-    
-    public boolean replaceHudObject(Object3D object){
+
+    public boolean replaceHudObject(Object3D object) {
         if (hudObjects.containsKey(object.name)) {
             removeHudObject(object);
         }
@@ -216,10 +271,10 @@ public class Scene {
         return true;
     }
 
-    public boolean removeHudObject(String name){
+    public boolean removeHudObject(String name) {
         return removeHudObject(hudObjects.get(name));
     }
-    
+
     public Collection<Object3D> getHudObjects() {
         return hudObjectsReadOnly.values();
     }

@@ -49,13 +49,16 @@ public class Engine {
     public Engine(MainFrame frame) {
         this.frame = frame;
         
-        final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+        //final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+        final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+        caps.setStencilBits(8);
         final GLProfile glp = caps.getGLProfile();
 
         final boolean createNewDevice = true;
         sharedDrawable = GLDrawableFactory.getFactory(glp).createDummyAutoDrawable(null, createNewDevice, caps, null);
         sharedDrawable.display();
 
+        
         scene = new Scene();
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));

@@ -26,6 +26,7 @@ package jmodelling.engine.editor.viewport.object.tools;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
@@ -40,7 +41,7 @@ public abstract class TransformTool extends ObjectTool {
 
     protected final int firstMouseX, firstMouseY;
     protected HashMap<Object3D, Transform> transforms;
-    protected final HashSet<Object3D> selectedObjs;
+    protected final Set<Object3D> selectedObjs;
     protected final Object3D lastSelected;
     //private Vec3f center; //TODO: Move objects from the mean center
     protected String moveAmount;

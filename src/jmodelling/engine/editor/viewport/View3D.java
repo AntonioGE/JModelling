@@ -68,10 +68,14 @@ public class View3D extends Editor {
     public void init(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
-        gl.glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+        gl.glClearColor(0.2235f, 0.2235f, 0.2235f, 1.0f);
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
+
+        gl.glEnable(GL2.GL_STENCIL_TEST);
+        gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
+        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
 
         engine.scene.updateGL(gl);
 
@@ -87,7 +91,7 @@ public class View3D extends Editor {
     public void display(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
 
         gl.glLoadIdentity();
         lighting(gl);
@@ -102,10 +106,45 @@ public class View3D extends Editor {
         gl.glLoadMatrixf(transf.toArray(), 0);
 
         engine.scene.updateGL(gl);
-        engine.scene.getObjects().forEach((obj) -> {
+
+        
+
+        /**
+         * Render selected objects
+         */
+        //gl.glClearStencil(0);
+        //gl.glClear(GL2.GL_STENCIL_BUFFER_BIT);
+        gl.glEnable(GL2.GL_STENCIL_TEST);
+        gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
+        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
         });
 
+        gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, -1);
+        //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+        gl.glLineWidth(2);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glDisable(GL2.GL_LIGHTING);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);//TODO render only edges!!
+        });
+
+        gl.glLineWidth(1);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glDisable(GL2.GL_STENCIL_TEST);
+        
+        /**
+         * Render unselected objects
+         */
+        engine.scene.getUnselectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+        
+        /**
+         * Render HUD
+         */
         gl.glDisable(GL2.GL_LIGHTING);
         engine.scene.getHudObjects().forEach((obj) -> {
             obj.renderOpaque(gl);
@@ -274,7 +313,7 @@ public class View3D extends Editor {
     public boolean isShiftPressed() {
         return shiftPressed;
     }
-    
+
     @Override
     public String getEditorName() {
         return "VIEW3D";

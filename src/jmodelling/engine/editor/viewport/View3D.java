@@ -119,6 +119,7 @@ public class View3D extends Editor {
          */
         //gl.glClearStencil(0);
         //gl.glClear(GL2.GL_STENCIL_BUFFER_BIT);
+        
         gl.glEnable(GL2.GL_STENCIL_TEST);
         gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
         gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
@@ -146,6 +147,33 @@ public class View3D extends Editor {
         //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);//TODO: This slows down
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glDisable(GL2.GL_STENCIL_TEST);
+        
+        
+        /*
+        gl.glDisable(GL2.GL_STENCIL_TEST);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glDepthMask(false); 
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glLineWidth(2);
+        gl.glColor3f(1.0f, 0.66f, 0.251f);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderWireframe(gl);
+        });
+
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glDepthMask(true); 
+        gl.glLineWidth(1);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+        */
         
         
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);

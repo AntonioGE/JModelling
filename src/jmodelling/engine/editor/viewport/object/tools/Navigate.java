@@ -33,6 +33,8 @@ import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.raytracing.Raytracer;
+import jmodelling.engine.scene.Scene;
+import jmodelling.math.vec.Vec2f;
 
 /**
  *
@@ -93,13 +95,25 @@ public class Navigate extends ObjectTool {
             }
         } else {
             if (SwingUtilities.isRightMouseButton(e)) {
-                List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
+                final List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
                         editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());
                 
+                final Scene scene = editor.getScene();
                 if (objsSelected.size() == 1) {
-                    editor.getScene().selectOnlyObject(objsSelected.get(0));
+                    scene.selectOnlyObject(objsSelected.get(0));
+                }else if(objsSelected.size() > 1){
+                    if(scene.getLastSelectedObject() == objsSelected.get(0)){
+                        scene.selectOnlyObject(objsSelected.get(1));
+                    }else{
+                        if(new Vec2f(lastPressX, lastPressY).dist(new Vec2f(e.getX(), e.getY())) < 2.0f){
+                            int index = objsSelected.indexOf(scene.getLastSelectedObject());
+                            scene.selectOnlyObject(objsSelected.get((index + 1) % objsSelected.size()));
+                        }else{
+                            scene.selectOnlyObject(objsSelected.get(0));
+                        }
+                    }
                 }
                 editor.repaintSameEditors();
             }

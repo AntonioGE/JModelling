@@ -203,6 +203,7 @@ public class Scene {
                 unselectedObjects.add(obj);
             });
             selectedObjects.clear();
+            lastSelectedObject = null;
             return true;
         }
     }

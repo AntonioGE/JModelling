@@ -40,6 +40,20 @@ public class CShape {
         this.polys = polys;
     }
     
+    public CShape(CShape other){
+        mat = other.mat;
+        
+        polys = new HashMap<>(other.polys.size());
+        other.polys.entrySet().forEach((entry)->{ 
+            polys.put(entry.getKey(), entry.getValue().clone());
+        });
+    }
+    
+     @Override
+    public CShape clone(){
+        return new CShape(this);
+    }
+    
     public int getNumVertices(){
         int count = 0;
         for(PolygonArray pArray : polys.values()){

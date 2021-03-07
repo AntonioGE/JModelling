@@ -42,6 +42,7 @@ public class PolygonArray {
     
     public PolygonArray(int nLoops, int nElements){
         this.nLoops = nLoops;
+        
         edgeInds = new int[nLoops * nElements];
         vtxInds = new int[nLoops * nElements];
         nrmInds = new int[nLoops * nElements];
@@ -49,6 +50,23 @@ public class PolygonArray {
         uvInds = new int[nLoops * nElements];
         
         tris = new int[((nLoops - 2) * nElements) * 3];
+    }
+    
+    public PolygonArray(PolygonArray other){
+        this.nLoops = other.nLoops;
+        
+        edgeInds = other.edgeInds.clone();
+        vtxInds = other.vtxInds.clone();
+        nrmInds = other.nrmInds.clone();
+        clrInds = other.clrInds.clone();
+        uvInds = other.uvInds.clone();
+        
+        tris = other.tris.clone();
+    }
+    
+    @Override
+    public PolygonArray clone(){
+        return new PolygonArray(this);
     }
     
     public int getNumVertices(){

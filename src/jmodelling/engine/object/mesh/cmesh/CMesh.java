@@ -171,4 +171,23 @@ public class CMesh {
             shapes.put(mpEntry.getKey(), new CShape(mpEntry.getKey(), polyArrays));
         });
     }
+    
+    public CMesh(CMesh other){
+        vtxs = other.vtxs.clone();
+        nrms = other.nrms.clone();
+        clrs = other.clrs.clone();
+        uvs = other.uvs.clone();
+        
+        edges = other.edges.clone();
+        
+        shapes = new HashMap<>(other.shapes.size());
+        other.shapes.entrySet().forEach((entry)->{
+            shapes.put(entry.getKey(), entry.getValue().clone());
+        });
+    }
+    
+    @Override
+    public CMesh clone(){
+        return new CMesh(this);
+    }
 }

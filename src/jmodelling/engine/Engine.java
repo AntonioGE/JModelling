@@ -34,6 +34,7 @@ import jmodelling.engine.object.hud.Axis;
 import jmodelling.engine.scene.Scene;
 import jmodelling.gui.MainFrame;
 import jmodelling.gui.display.EditorDisplayGL;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -53,7 +54,7 @@ public class Engine {
         final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         //caps.setStencilBits(8);
         //caps.setSampleBuffers(true);
-        //caps.setNumSamples(8);
+        //caps.setNumSamples(2);
         final GLProfile glp = caps.getGLProfile();
 
         final boolean createNewDevice = true;
@@ -64,11 +65,11 @@ public class Engine {
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                MeshObject obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj"); 
-                obj.name = "Monito" + i + " " + j;
-                obj.loc.set(i * 4.0f, j * 4.0f, 0.0f);
+        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                MeshObject obj = new MeshObject("Monito" + i + " " + j,
+                        new Vec3f(i * 4.0f, j * 4.0f, 0.0f), mono.cmesh.clone());
                 scene.addObject(obj);
             }
         }

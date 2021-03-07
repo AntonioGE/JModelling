@@ -91,9 +91,10 @@ public class Rotate extends TransformTool {
         if (rotationType != RotationType.BALL) {
             Vec2f center = Transformation.worldToView_(transforms.get(lastSelected).loc, editor.getTransf());
             Vec2f cursor = Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight());
-
-            gl.glPushMatrix();
-
+            
+            gl.glMatrixMode(GL2.GL_PROJECTION);
+            gl.glLoadIdentity();
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glLoadIdentity();
 
             gl.glDisable(GL2.GL_DEPTH_TEST);
@@ -108,8 +109,6 @@ public class Rotate extends TransformTool {
 
             gl.glDisable(GL2.GL_LINE_STIPPLE);
             gl.glEnable(GL2.GL_DEPTH_TEST);
-
-            gl.glPopMatrix();
         }
 
     }

@@ -89,8 +89,9 @@ public class Scale extends TransformTool {
         Vec2f center = Transformation.worldToView_(transforms.get(lastSelected).loc, editor.getTransf());
         Vec2f cursor = Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight());
 
-        gl.glPushMatrix();
-
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 
         gl.glDisable(GL2.GL_DEPTH_TEST);
@@ -105,9 +106,6 @@ public class Scale extends TransformTool {
 
         gl.glDisable(GL2.GL_LINE_STIPPLE);
         gl.glEnable(GL2.GL_DEPTH_TEST);
-
-        gl.glPopMatrix();
-
     }
 
     @Override
@@ -248,7 +246,7 @@ public class Scale extends TransformTool {
                     sca = axisScaling();
                     break;
             }
-            
+
             selectedObjs.forEach((obj) -> {
                 //TODO: rotate scaling?
                 obj.sca.set(transforms.get(obj).sca.had_(sca));

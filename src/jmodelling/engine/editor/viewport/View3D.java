@@ -74,6 +74,8 @@ public class View3D extends Editor {
         //gl.glEnable(GL2.GL_MULTISAMPLE);
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
+        gl.glEnable(GL2.GL_RESCALE_NORMAL);
+        //gl.glEnable(GL2.GL_NORMALIZE);
 
         //gl.glEnable(GL2.GL_STENCIL_TEST);
         //gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
@@ -102,10 +104,15 @@ public class View3D extends Editor {
         Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
-        transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
-
-        gl.glLoadMatrixf(transf.toArray(), 0);
-
+        Mat4f mv = rx.mul_(ry).mul(rz).mul(t);
+        transf = p.mul_(mv);
+        
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadMatrixf(p.toArray(), 0);
+        
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glLoadMatrixf(mv.toArray(), 0);
+        
         engine.scene.updateGL(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -180,9 +187,9 @@ public class View3D extends Editor {
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
 
-        gl.glLoadIdentity();
-        lighting(gl);
-
+        //gl.glLoadIdentity();
+        //lighting(gl);
+        
         Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
@@ -192,6 +199,8 @@ public class View3D extends Editor {
 
         gl.glLoadMatrixf(transf.toArray(), 0);
 
+        lighting(gl);
+        
         engine.scene.updateGL(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -340,7 +349,38 @@ public class View3D extends Editor {
         mode.mouseWheelMoved(e);
     }
 
+    private void lightinOld2(GL2 gl) {
+        gl.glEnable(GL2.GL_LIGHTING);
+        //gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 1.0f}, 0);
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 1.0f}, 0);
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 1.0f}, 0);
+//
+//        gl.glEnable(GL2.GL_LIGHT1);
+//        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 1.0f}, 0);
+//        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 1.0f}, 0);
+
+    }
+    
     private void lighting(GL2 gl) {
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
+
+        gl.glEnable(GL2.GL_LIGHT1);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
+
+    }
+    private void lightingOld(GL2 gl) {
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
 

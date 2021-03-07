@@ -51,7 +51,7 @@ public class Engine {
 
         //final GLCapabilitiesImmutable caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
         final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-        caps.setStencilBits(8);
+        //caps.setStencilBits(8);
         //caps.setSampleBuffers(true);
         //caps.setNumSamples(8);
         final GLProfile glp = caps.getGLProfile();
@@ -64,8 +64,8 @@ public class Engine {
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
                 MeshObject obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj"); 
                 obj.name = "Monito" + i + " " + j;
                 obj.loc.set(i * 4.0f, j * 4.0f, 0.0f);

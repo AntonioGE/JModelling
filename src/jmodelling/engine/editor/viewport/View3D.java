@@ -75,9 +75,9 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
         
-        gl.glEnable(GL2.GL_STENCIL_TEST);
-        gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
-        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
+        //gl.glEnable(GL2.GL_STENCIL_TEST);
+        //gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
+        //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
 
         engine.scene.updateGL(gl);
 
@@ -91,6 +91,84 @@ public class View3D extends Editor {
 
     @Override
     public void display(GLAutoDrawable glad) {
+        GL2 gl = glad.getGL().getGL2();
+
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);//| GL2.GL_STENCIL_BUFFER_BIT);
+
+        gl.glLoadIdentity();
+        lighting(gl);
+
+        Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
+        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(cam.loc.negate_());
+        transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
+
+        gl.glLoadMatrixf(transf.toArray(), 0);
+
+        engine.scene.updateGL(gl);
+
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        
+        /**
+         * Render unselected objects
+         */
+        engine.scene.getUnselectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+        
+        /**
+         * Render HUD
+         */
+        gl.glDisable(GL2.GL_LIGHTING);
+        engine.scene.getHudObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+
+        /**
+         * Render selected objects outline
+         */
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glDepthMask(false); 
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glLineWidth(2);
+        gl.glColor3f(1.0f, 0.66f, 0.251f);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderWireframe(gl);
+        });
+
+        /**
+         * Render selected objects 
+         */
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glDepthMask(true); 
+        gl.glLineWidth(1);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+        
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisable(GL2.GL_LIGHTING);
+        
+        mode.display(glad);
+    }
+
+    //This display method uses stencil testing
+    public void displayOld(GLAutoDrawable glad){
         GL2 gl = glad.getGL().getGL2();
 
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
@@ -149,33 +227,6 @@ public class View3D extends Editor {
         gl.glDisable(GL2.GL_STENCIL_TEST);
         
         
-        /*
-        gl.glDisable(GL2.GL_STENCIL_TEST);
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl.glDepthMask(false); 
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glLineWidth(2);
-        gl.glColor3f(1.0f, 0.66f, 0.251f);
-        engine.scene.getSelectedObjects().forEach((obj) -> {
-            obj.renderWireframe(gl);
-        });
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glDepthMask(true); 
-        gl.glLineWidth(1);
-        engine.scene.getSelectedObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-        */
-        
-        
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
@@ -203,7 +254,7 @@ public class View3D extends Editor {
         
         mode.display(glad);
     }
-
+    
     @Override
     public void reshape(GLAutoDrawable glad, int i, int i1, int width, int height) {
         mode.reshape(glad, i, i1, width, height);

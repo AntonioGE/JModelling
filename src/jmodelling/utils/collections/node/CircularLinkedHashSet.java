@@ -23,7 +23,7 @@
  */
 package jmodelling.utils.collections.node;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -32,27 +32,27 @@ import java.util.Iterator;
  */
 public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
 
-    protected HashSet<E> set;
+    protected HashMap<E, Node<E>> map;
 
     public CircularLinkedHashSet() {
-        set = new HashSet<>();
+        map = new HashMap<>();
     }
 
     @Override
-    public boolean add(E e) {
-        if (set.contains(e)) {
-            return false;
+    public Node<E> add(E e) {
+        if (map.containsKey(e)) {
+            return null;
         } else {
-            super.add(e);
-            set.add(e);
-            return true;
+            Node<E> node = super.add(e);
+            map.put(node.item, node);
+            return node;
         }
     }
 
     @Override
     protected boolean unlink(Node<E> node) {
         if (super.unlink(node)) {
-            set.remove(node.item);
+            map.remove(node.item);
             return true;
         }
         return false;
@@ -66,6 +66,10 @@ public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
     @Override
     public NodeIterator nodeIterator(){
         return new CircularIterator(first);
+    }
+    
+    public Node<E> getNode(E e){
+        return map.get(e);
     }
 
     public class CircularIterator extends CircularLinkedList.CircularIterator {

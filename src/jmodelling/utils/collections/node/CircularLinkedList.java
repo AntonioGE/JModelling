@@ -34,7 +34,7 @@ public class CircularLinkedList<E> implements Iterable<E> {
     protected Node<E> first;
     protected int size;
 
-    public boolean add(E e) {
+    public Node<E> add(E e) {
         final Node<E> newNode;
         if (first == null) {
             newNode = new Node(null, e, null);
@@ -47,7 +47,7 @@ public class CircularLinkedList<E> implements Iterable<E> {
             first.prev = newNode;
         }
         size++;
-        return true;
+        return newNode;
     }
 
     protected boolean unlink(Node<E> n) {

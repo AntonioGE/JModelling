@@ -135,7 +135,6 @@ public class MainFrame extends JFrame {
         list.add("FIFTH");
         
         
-        
         NodeIterator<String> ite = list.nodeIterator();
         while(ite.hasNext()){
             String s = ite.next();

@@ -23,7 +23,6 @@
  */
 package jmodelling.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,15 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 import jmodelling.engine.Engine;
-import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.vec.Vec3f;
-import jmodelling.utils.collections.CircularLinkedList;
+import jmodelling.utils.collections.node.CircularLinkedHashSet;
+import jmodelling.utils.collections.node.CircularLinkedList;
+import jmodelling.utils.collections.node.NodeIterator;
 
 /**
  *
@@ -126,21 +125,31 @@ public class MainFrame extends JFrame {
         vtxs.add(new Vec3f(+0.0f, +2.0f, 0.0f));
         EarClipping.triangulate(vtxs);
 
-        CircularLinkedList<String> list = new CircularLinkedList<>();
+        CircularLinkedHashSet<String> list = new CircularLinkedHashSet<>();
         list.add("FIRST");
         list.add("SECOND");
         list.add("THIRD");
         list.add("FOURTH");
-
-        for(CircularLinkedList<String>.CircularIterator<String> ite = list.getIterator(); ite.hasNext(); ite.move()){
-            String value = ite.getCurrent();
-            
-            if(value.equals("SECOND")){
+        list.add("FOURTH");
+        list.add("FOURTH");
+        list.add("FIFTH");
+        
+        
+        
+        NodeIterator<String> ite = list.nodeIterator();
+        while(ite.hasNext()){
+            String s = ite.next();
+            System.out.println(s);
+            if(s.equals("FIFTH")){
                 ite.remove();
             }
-            System.out.println(value);
         }
-
+        
+        for(String s : list){
+            System.out.println(s);
+        }
+        
+        
         System.out.println(Runtime.getRuntime().availableProcessors());
 
         java.awt.EventQueue.invokeLater(new Runnable() {

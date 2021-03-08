@@ -21,27 +21,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.emesh.gl;
+package jmodelling.utils.collections.node;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.emesh.EMesh;
-import jmodelling.engine.object.mesh.emesh.Polygon;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  *
  * @author ANTONIO
  */
-public class EMeshGL {
-    
-    public HashMap<Material, EShapeGL> shapes;
-    
-    public EMeshGL(EMesh emesh){
-        
-        HashMap<Material, LinkedHashSet<Polygon>> polys = emesh.getPolysGroupedByMat();
-        
-        
+public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
+
+    protected HashSet<E> set;
+
+    public CircularLinkedHashSet() {
+        set = new HashSet<>();
+    }
+
+    @Override
+    public boolean add(E e) {
+        if (set.contains(e)) {
+            return false;
+        } else {
+            super.add(e);
+            set.add(e);
+            return true;
+        }
+    }
+
+    @Override
+    protected boolean unlink(Node<E> node) {
+        if (super.unlink(node)) {
+            set.remove(node.item);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new CircularIterator(first);
     }
     
+    @Override
+    public NodeIterator nodeIterator(){
+        return new CircularIterator(first);
+    }
+
+    public class CircularIterator extends CircularLinkedList.CircularIterator {
+
+        public CircularIterator(Node first) {
+            super(first);
+        }
+
+        @Override
+        public void remove() {
+            unlink(lastReturned);
+            nextNode--;
+        }
+
+    }
+
 }

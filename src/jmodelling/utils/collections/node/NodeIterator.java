@@ -21,27 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.emesh.gl;
+package jmodelling.utils.collections.node;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.emesh.EMesh;
-import jmodelling.engine.object.mesh.emesh.Polygon;
+import java.util.Iterator;
 
 /**
  *
  * @author ANTONIO
  */
-public class EMeshGL {
-    
-    public HashMap<Material, EShapeGL> shapes;
-    
-    public EMeshGL(EMesh emesh){
-        
-        HashMap<Material, LinkedHashSet<Polygon>> polys = emesh.getPolysGroupedByMat();
-        
-        
-    }
+public interface NodeIterator<E> extends Iterator<E> {
+
+    public abstract Node<E> getCurrentNode();
+
+    public abstract Node<E> getPrevNode();
+
+    public abstract Node<E> getNextNode();
+
+    public abstract E getCurrent();
+
+    public abstract E getPrev();
+
+    public abstract E getNext();
+
+    public abstract void remove();
     
 }

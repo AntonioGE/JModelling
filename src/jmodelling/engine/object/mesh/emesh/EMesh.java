@@ -49,6 +49,8 @@ public class EMesh {
     public LinkedHashSet<Polygon> polys;
 
     public LinkedHashSet<Material> mats;
+    
+    private boolean edited;
 
     public EMesh() {
         vtxs = new ArrayList<>();

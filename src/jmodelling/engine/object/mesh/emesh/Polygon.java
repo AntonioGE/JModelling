@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
+import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -39,11 +40,13 @@ public class Polygon {
     public LinkedHashSet<Loop> loops;
     public Material mat;
 
+    public List<Integer> tris;
+
     public Polygon(LinkedHashSet<Loop> loops, Material mat) {
         this.loops = loops;
         this.mat = mat;
     }
-    
+
     //TODO: Use the get normal function used in the ear clipping triangulation
     public Vec3f getNormal() {
         Iterator<Loop> ite = loops.iterator();
@@ -54,11 +57,43 @@ public class Polygon {
         return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
     }
 
+    /*
+    public Vec3f getNormal(){
+        Vec3f normal = new Vec3f();
+
+        for (int i = 0; i < loops.size(); i++) {
+            Vec3f c = loops.get.get(i);
+            Vec3f n = vtxs.get((i + 1) % vtxs.size());
+            normal.x += (c.y - n.y) * (c.z + n.z);
+            normal.y += (c.z - n.z) * (c.x + n.x);
+            normal.z += (c.x - n.x) * (c.y + n.y);
+        }
+        return normal.normalize();
+    }*/
+    
     public List<Vec3f> getVertices() {
         List<Vec3f> vtxs = new ArrayList<>(loops.size());
         loops.forEach((loop) -> {
             vtxs.add(loop.vtx);
         });
         return vtxs;
+    }
+
+    public boolean isTri(){
+        return loops.size() == 3;
+    }
+    
+    public void updateTris() {
+        if (isTri()) {
+            tris = new ArrayList<Integer>() {
+                {
+                    add(0);
+                    add(1);
+                    add(2);
+                }
+            };
+        } else {
+            tris = EarClipping.triangulate(getVertices());
+        }
     }
 }

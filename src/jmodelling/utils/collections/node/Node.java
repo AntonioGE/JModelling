@@ -21,27 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.emesh.gl;
-
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import jmodelling.engine.object.material.Material;
-import jmodelling.engine.object.mesh.emesh.EMesh;
-import jmodelling.engine.object.mesh.emesh.Polygon;
+package jmodelling.utils.collections.node;
 
 /**
  *
  * @author ANTONIO
  */
-public class EMeshGL {
-    
-    public HashMap<Material, EShapeGL> shapes;
-    
-    public EMeshGL(EMesh emesh){
-        
-        HashMap<Material, LinkedHashSet<Polygon>> polys = emesh.getPolysGroupedByMat();
-        
-        
+public class Node<E> {
+
+    protected E item;
+    protected Node<E> prev;
+    protected Node<E> next;
+
+    public Node(Node<E> prev, E element, Node<E> next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+
+    public Node<E> prev() {
+        return prev;
+    }
+
+    public Node<E> next() {
+        return next;
     }
     
+    public E prevItem(){
+        return prev.item;
+    }
+    
+    public E nextItem(){
+        return next.item;
+    }
+    
+    public E item(){
+        return item;
+    }
+
 }

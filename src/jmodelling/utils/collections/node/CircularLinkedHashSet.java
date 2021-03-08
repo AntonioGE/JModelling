@@ -71,6 +71,14 @@ public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
     public Node<E> getNode(E e){
         return map.get(e);
     }
+    
+    public void removeNode(Node<E> node){
+        unlink(node);
+    }
+    
+    public void remove(E e){
+        unlink(map.get(e));
+    }
 
     public class CircularIterator extends CircularLinkedList.CircularIterator {
 

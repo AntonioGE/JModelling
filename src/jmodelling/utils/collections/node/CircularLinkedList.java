@@ -51,7 +51,7 @@ public class CircularLinkedList<E> implements Iterable<E> {
     }
 
     protected boolean unlink(Node<E> n) {
-        if (first == null) {
+        if (first == null || n == null) {
             return false;
         }
 
@@ -61,7 +61,7 @@ public class CircularLinkedList<E> implements Iterable<E> {
             n.prev.next = n.next;
             n.next.prev = n.prev;
             if (n == first) {
-                first = n.prev;
+                first = n.next;//first = n.prev;
             }
         }
         //n.item = null; //TODO: Does this help in Garbage Collection?

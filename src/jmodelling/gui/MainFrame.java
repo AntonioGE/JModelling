@@ -134,6 +134,7 @@ public class MainFrame extends JFrame {
         list.add("FOURTH");
         list.add("FIFTH");
         
+        //list.remove("FIRST");
         
         NodeIterator<String> ite = list.nodeIterator();
         while(ite.hasNext()){

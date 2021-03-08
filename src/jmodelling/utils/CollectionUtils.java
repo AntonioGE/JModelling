@@ -25,6 +25,7 @@ package jmodelling.utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 
 /**
@@ -32,17 +33,25 @@ import java.util.LinkedHashSet;
  * @author ANTONIO
  */
 public class CollectionUtils {
-    
-    public static <K, V> HashMap<K, V> newHashMap(int expectedSize){
-        return new HashMap<>((int)Math.ceil(expectedSize / 0.75f));
+
+    private static int expectedSizeToCapacity(int expectedSize){
+        return (int) Math.ceil(expectedSize / 0.75f);
     }
     
-    public static <E> HashSet<E> newHashSet(int expectedSize){
-        return new HashSet<>((int)Math.ceil(expectedSize / 0.75f));
+    public static <K, V> HashMap<K, V> newHashMap(int expectedSize) {
+        return new HashMap<>(expectedSizeToCapacity(expectedSize));
     }
-    
-    public static <E> LinkedHashSet<E> newLinkedHashSet(int expectedSize){
-        return new LinkedHashSet<>((int)Math.ceil(expectedSize / 0.75f));
+
+    public static <K, V> IdentityHashMap<K, V> newIdentityHashMap(int expectedSize) {
+        return new IdentityHashMap<>(expectedSizeToCapacity(expectedSize));
     }
-    
+
+    public static <E> HashSet<E> newHashSet(int expectedSize) {
+        return new HashSet<>(expectedSizeToCapacity(expectedSize));
+    }
+
+    public static <E> LinkedHashSet<E> newLinkedHashSet(int expectedSize) {
+        return new LinkedHashSet<>(expectedSizeToCapacity(expectedSize));
+    }
+
 }

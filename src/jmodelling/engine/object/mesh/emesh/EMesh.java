@@ -50,7 +50,7 @@ public class EMesh {
     public LinkedHashSet<Polygon> polys;
 
     public LinkedHashSet<Material> mats;
-    
+
     private boolean edited;
 
     public EMesh() {
@@ -102,14 +102,14 @@ public class EMesh {
     public EMesh(EMesh other) {
         this();
 
-        IdentityHashMap<Vec3f, Vec3f> vToCopy = new IdentityHashMap<>(other.vtxs.size());
+        IdentityHashMap<Vec3f, Vec3f> vToCopy = CollectionUtils.newIdentityHashMap(other.vtxs.size());
         for (Vec3f vtx : other.vtxs) {
             Vec3f vCopy = vtx.clone();
             vtxs.add(vCopy);
             vToCopy.put(vtx, vCopy);
         }
 
-        IdentityHashMap<Edge, Edge> eToCopy = new IdentityHashMap<>(other.edges.size());
+        IdentityHashMap<Edge, Edge> eToCopy = CollectionUtils.newIdentityHashMap(other.edges.size());
         for (Edge edge : other.edges.keySet()) {
             Vec3f v0Copy = vToCopy.get(edge.v0);
             Vec3f v1Copy = vToCopy.get(edge.v1);
@@ -157,7 +157,7 @@ public class EMesh {
             throw new IllegalArgumentException();
         }
 
-        LinkedHashSet<Edge> newEdges = new LinkedHashSet<>(vInds.size());
+        LinkedHashSet<Edge> newEdges = CollectionUtils.newLinkedHashSet(vInds.size());
         CircularLinkedHashSet<Loop> newLoops = new CircularLinkedHashSet<>();
         for (int i = 0; i < vInds.size(); i++) {
             Edge edge = new Edge(
@@ -182,7 +182,7 @@ public class EMesh {
     }
 
     public HashMap<Material, Integer> getNumPolysPerMat() {
-        HashMap<Material, Integer> count = new HashMap<>(mats.size());
+        HashMap<Material, Integer> count = CollectionUtils.newHashMap(mats.size());
         polys.forEach((p) -> {
             count.put(p.mat, 0);
         });
@@ -194,10 +194,10 @@ public class EMesh {
 
     public HashMap<Material, LinkedHashSet<Polygon>> getPolysGroupedByMat() {
         HashMap<Material, Integer> nPolysPerMat = getNumPolysPerMat();
-        HashMap<Material, LinkedHashSet<Polygon>> polysGrouped = new HashMap<>(nPolysPerMat.size());
+        HashMap<Material, LinkedHashSet<Polygon>> polysGrouped = CollectionUtils.newHashMap(nPolysPerMat.size());
 
         nPolysPerMat.entrySet().forEach((entry) -> {
-            polysGrouped.put(entry.getKey(), new LinkedHashSet<>(entry.getValue()));
+            polysGrouped.put(entry.getKey(), CollectionUtils.newLinkedHashSet(entry.getValue()));
         });
 
         polys.forEach((poly) -> {
@@ -230,9 +230,9 @@ public class EMesh {
      */
     public static HashMap<Integer, LinkedHashSet<Polygon>> groupPolysBySize(LinkedHashSet<Polygon> polys) {
         HashMap<Integer, Integer> nPolysBySize = countPolysBySize(polys);
-        HashMap<Integer, LinkedHashSet<Polygon>> groupedPolys = new HashMap<>(nPolysBySize.size());
+        HashMap<Integer, LinkedHashSet<Polygon>> groupedPolys = CollectionUtils.newHashMap(nPolysBySize.size());
         nPolysBySize.entrySet().forEach((entry) -> {
-            groupedPolys.put(entry.getKey(), new LinkedHashSet<>(entry.getValue()));
+            groupedPolys.put(entry.getKey(), CollectionUtils.newLinkedHashSet(entry.getValue()));
         });
         polys.forEach((poly) -> {
             groupedPolys.get(poly.loops.size()).add(poly);

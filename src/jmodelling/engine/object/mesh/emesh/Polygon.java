@@ -24,8 +24,6 @@
 package jmodelling.engine.object.mesh.emesh;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
@@ -49,20 +47,10 @@ public class Polygon {
         this.mat = mat;
     }
 
-    /*
     public Vec3f getNormal() {
-        Iterator<Loop> ite = loops.iterator();
-        Loop l0 = ite.next();
-        Loop l1 = ite.next();
-        Loop l2 = ite.next();
-
-        return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
-    }*/
-
-    public Vec3f getNormal(){
         Vec3f normal = new Vec3f();
-        
-        for(NodeIterator<Loop> ite = loops.nodeIterator(); ite.hasNext(); ){
+
+        for (NodeIterator<Loop> ite = loops.nodeIterator(); ite.hasNext();) {
             Vec3f c = ite.next().vtx;
             Vec3f n = ite.getNextNode().item().vtx;
             normal.x += (c.y - n.y) * (c.z + n.z);
@@ -71,8 +59,7 @@ public class Polygon {
         }
         return normal.normalize();
     }
-    
-    
+
     public List<Vec3f> getVertices() {
         List<Vec3f> vtxs = new ArrayList<>(loops.size());
         loops.forEach((loop) -> {
@@ -81,10 +68,10 @@ public class Polygon {
         return vtxs;
     }
 
-    public boolean isTri(){
+    public boolean isTri() {
         return loops.size() == 3;
     }
-    
+
     public void updateTris() {
         if (isTri()) {
             tris = new ArrayList<Integer>() {

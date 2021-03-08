@@ -25,9 +25,11 @@ package jmodelling.engine.object.mesh.emesh.gl;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.engine.object.mesh.emesh.Polygon;
+import jmodelling.utils.CollectionUtils;
 
 /**
  *
@@ -40,8 +42,10 @@ public class EMeshGL {
     public EMeshGL(EMesh emesh){
         
         HashMap<Material, LinkedHashSet<Polygon>> polys = emesh.getPolysGroupedByMat();
-        
-        
+        shapes = CollectionUtils.newHashMap(polys.size());
+        for(Map.Entry<Material, LinkedHashSet<Polygon>> entry : polys.entrySet()){
+
+        }
     }
     
 }

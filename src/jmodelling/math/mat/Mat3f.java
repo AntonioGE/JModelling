@@ -135,6 +135,20 @@ public class Mat3f {
         );
     }
 
+    public void setIdentity(){
+        m00 = 1.0f;
+        m01 = 0.0f;
+        m02 = 0.0f;
+
+        m10 = 0.0f;
+        m11 = 1.0f;
+        m12 = 0.0f;
+
+        m20 = 0.0f;
+        m21 = 0.0f;
+        m22 = 1.0f;
+    }
+    
     public static void add(Mat3f src1, Mat3f src2, Mat3f dst) {
         dst.m00 = src1.m00 + src2.m00;
         dst.m01 = src1.m01 + src2.m01;

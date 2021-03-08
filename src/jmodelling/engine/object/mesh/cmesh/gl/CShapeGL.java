@@ -33,13 +33,13 @@ import jmodelling.engine.object.material.Material;
  *
  * @author ANTONIO
  */
-public class ShapeGL {
+public class CShapeGL {
 
     public Material mat;
 
     public int[] ebo;
     public int[] vbos;
-    public int[] vao;
+    //public int[] vao;
 
     public int nElements;
 
@@ -50,7 +50,7 @@ public class ShapeGL {
 
     public IntBuffer elems;
 
-    public ShapeGL(Material mat, int nNonRepeated, int nElements) {
+    public CShapeGL(Material mat, int nNonRepeated, int nElements) {
         this.mat = mat;
         this.nElements = nElements;
 
@@ -138,7 +138,7 @@ public class ShapeGL {
     }
 
     public void delete(GL2 gl) {
-        gl.glDeleteVertexArrays(vao.length, vao, 0);
+        //gl.glDeleteVertexArrays(vao.length, vao, 0);
         gl.glDeleteBuffers(vbos.length, vbos, 0);
         gl.glDeleteBuffers(ebo.length, ebo, 0);
     }

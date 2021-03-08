@@ -21,44 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.emesh;
+package jmodelling.utils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
-import jmodelling.engine.object.material.Material;
-import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class Polygon {
-
-    public LinkedHashSet<Loop> loops;
-    public Material mat;
-
-    public Polygon(LinkedHashSet<Loop> loops, Material mat) {
-        this.loops = loops;
-        this.mat = mat;
+public class CollectionUtils {
+    
+    public static <K, V> HashMap<K, V> newHashMap(int expectedSize){
+        return new HashMap<>((int)Math.ceil(expectedSize / 0.75f));
     }
     
-    //TODO: Use the get normal function used in the ear clipping triangulation
-    public Vec3f getNormal() {
-        Iterator<Loop> ite = loops.iterator();
-        Loop l0 = ite.next();
-        Loop l1 = ite.next();
-        Loop l2 = ite.next();
-
-        return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
+    public static <E> HashSet<E> newHashSet(int expectedSize){
+        return new HashSet<>((int)Math.ceil(expectedSize / 0.75f));
     }
-
-    public List<Vec3f> getVertices() {
-        List<Vec3f> vtxs = new ArrayList<>(loops.size());
-        loops.forEach((loop) -> {
-            vtxs.add(loop.vtx);
-        });
-        return vtxs;
+    
+    public static <E> LinkedHashSet<E> newLinkedHashSet(int expectedSize){
+        return new LinkedHashSet<>((int)Math.ceil(expectedSize / 0.75f));
     }
+    
 }

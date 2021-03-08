@@ -42,15 +42,16 @@ import jmodelling.math.vec.Vec3f;
  * @author ANTONIO
  */
 public class CMesh {
+
     public final float[] vtxs;
     public final float[] nrms;
     public final float[] clrs;
     public final float[] uvs;
 
     public final int[] edges;
-    
+
     public final HashMap<Material, CShape> shapes;
-    
+
     public CMesh(EMesh mesh) {
         /**
          * STEP 1: Create HashMaps.
@@ -171,23 +172,49 @@ public class CMesh {
             shapes.put(mpEntry.getKey(), new CShape(mpEntry.getKey(), polyArrays));
         });
     }
-    
-    public CMesh(CMesh other){
+
+    public CMesh(CMesh other) {
         vtxs = other.vtxs.clone();
         nrms = other.nrms.clone();
         clrs = other.clrs.clone();
         uvs = other.uvs.clone();
-        
+
         edges = other.edges.clone();
-        
+
         shapes = new HashMap<>(other.shapes.size());
-        other.shapes.entrySet().forEach((entry)->{
+        other.shapes.entrySet().forEach((entry) -> {
             shapes.put(entry.getKey(), entry.getValue().clone());
         });
     }
-    
+
     @Override
-    public CMesh clone(){
+    public CMesh clone() {
         return new CMesh(this);
+    }
+
+    public int getNumPolygons() {
+        int count = 0;
+        for (CShape shape : shapes.values()) {
+            for (PolygonArray pArray : shape.polys.values()) {
+                count += pArray.getNumPolygons();
+            }
+        }
+        return count;
+    }
+
+    public Vec3f getVtx(int index) {
+        return new Vec3f(vtxs, index * 3);
+    }
+
+    public Vec3f getNrm(int index) {
+        return new Vec3f(nrms, index * 3);
+    }
+
+    public Vec3f getClr(int index) {
+        return new Vec3f(clrs, index * 3);
+    }
+
+    public Vec2f getUV(int index) {
+        return new Vec2f(uvs, index * 2);
     }
 }

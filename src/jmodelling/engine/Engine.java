@@ -31,6 +31,8 @@ import com.jogamp.opengl.GLProfile;
 import jmodelling.engine.editor.Editor;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.hud.Axis;
+import jmodelling.engine.object.mesh.cmesh.CMesh;
+import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.engine.scene.Scene;
 import jmodelling.gui.MainFrame;
 import jmodelling.gui.display.EditorDisplayGL;
@@ -66,6 +68,8 @@ public class Engine {
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
+        mono.cmesh = new CMesh(new EMesh(mono.cmesh));
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,

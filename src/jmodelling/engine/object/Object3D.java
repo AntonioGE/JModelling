@@ -42,7 +42,7 @@ public abstract class Object3D {
     public Vec3f loc;
     public Vec3f rot;
     public Vec3f sca;
-
+    
     public Object3D(String name, Vec3f loc, Vec3f rot, Vec3f sca) {
         this.name = name;
         this.loc = loc;
@@ -138,6 +138,5 @@ public abstract class Object3D {
     public Transform getTransform(){
         return new Transform(this);
     }
-    
     
 }

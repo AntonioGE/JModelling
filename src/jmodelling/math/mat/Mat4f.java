@@ -196,6 +196,28 @@ public class Mat4f {
                 0.0f, 0.0f, 0.0f, 1.0f
         );
     }
+    
+    public void setIdentity(){
+        this.m00 = 1.0f;
+        this.m01 = 0.0f;
+        this.m02 = 0.0f;
+        this.m03 = 0.0f;
+
+        this.m10 = 0.0f;
+        this.m11 = 1.0f;
+        this.m12 = 0.0f;
+        this.m13 = 0.0f;
+
+        this.m20 = 0.0f;
+        this.m21 = 0.0f;
+        this.m22 = 1.0f;
+        this.m23 = 0.0f;
+
+        this.m30 = 0.0f;
+        this.m31 = 0.0f;
+        this.m32 = 0.0f;
+        this.m33 = 1.0f;
+    }
 
     public static void add(Mat4f src1, Mat4f src2, Mat4f dst) {
         dst.m00 = src1.m00 + src2.m00;

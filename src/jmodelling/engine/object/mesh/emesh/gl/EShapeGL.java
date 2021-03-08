@@ -21,44 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.mesh.emesh;
+package jmodelling.engine.object.mesh.emesh.gl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.nio.FloatBuffer;
 import jmodelling.engine.object.material.Material;
-import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class Polygon {
-
-    public LinkedHashSet<Loop> loops;
-    public Material mat;
-
-    public Polygon(LinkedHashSet<Loop> loops, Material mat) {
-        this.loops = loops;
-        this.mat = mat;
-    }
+public class EShapeGL {
     
-    //TODO: Use the get normal function used in the ear clipping triangulation
-    public Vec3f getNormal() {
-        Iterator<Loop> ite = loops.iterator();
-        Loop l0 = ite.next();
-        Loop l1 = ite.next();
-        Loop l2 = ite.next();
-
-        return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
-    }
-
-    public List<Vec3f> getVertices() {
-        List<Vec3f> vtxs = new ArrayList<>(loops.size());
-        loops.forEach((loop) -> {
-            vtxs.add(loop.vtx);
-        });
-        return vtxs;
-    }
+    public Material mat;
+    
+    public int[] vbos;
+    public FloatBuffer vtxs;
+    public FloatBuffer nrms;
+    public FloatBuffer clrs;
+    public FloatBuffer uvs;
+    
+    
+    
+    
 }

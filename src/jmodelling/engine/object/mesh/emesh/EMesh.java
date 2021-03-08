@@ -30,8 +30,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
+import jmodelling.engine.object.mesh.cmesh.CMesh;
+import jmodelling.engine.object.mesh.cmesh.CShape;
+import jmodelling.engine.object.mesh.cmesh.PolygonArray;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.ListUtils;
 
 /**
@@ -52,6 +56,44 @@ public class EMesh {
         polys = new LinkedHashSet<>();
 
         mats = new LinkedHashSet<>();
+    }
+
+    public EMesh(CMesh cmesh) {
+        vtxs = new ArrayList<>(cmesh.vtxs.length / 3);
+        for (int i = 0; i < cmesh.vtxs.length; i += 3) {
+            vtxs.add(new Vec3f(cmesh.vtxs, i));
+        }
+
+        //The edges list is used for accessing the edges by index
+        ArrayList<Edge> edgesList = new ArrayList<>(cmesh.edges.length / 2);
+        edges = CollectionUtils.newHashMap(cmesh.edges.length / 2);
+        for (int i = 0; i < cmesh.edges.length; i += 2) {
+            final Edge edge = new Edge(vtxs.get(cmesh.edges[i]), vtxs.get(cmesh.edges[i + 1]));
+            edges.put(edge, edge);
+            edgesList.add(edge);
+        }
+
+        mats = CollectionUtils.newLinkedHashSet(cmesh.shapes.size());
+        polys = CollectionUtils.newLinkedHashSet(cmesh.getNumPolygons());
+        for (CShape shape : cmesh.shapes.values()) {
+            mats.add(shape.mat);
+            for (PolygonArray pArray : shape.polys.values()) {
+                final int numPolys = pArray.getNumPolygons();
+                final int numLoops = pArray.nLoops;
+                for (int i = 0, l = 0; i < numPolys; i++) {
+                    LinkedHashSet<Loop> loops = CollectionUtils.newLinkedHashSet(numLoops);
+                    for (int j = 0; j < numLoops; j++, l++) {
+                        Vec3f vtx = vtxs.get(pArray.vtxInds[l]);
+                        Edge edge = edgesList.get(pArray.edgeInds[l]);
+                        Vec3f nrm = cmesh.getNrm(pArray.nrmInds[l]);
+                        Vec3f clr = cmesh.getClr(pArray.clrInds[l]);
+                        Vec2f uv = cmesh.getUV(pArray.uvInds[l]);
+                        loops.add(new Loop(vtx, edge, nrm, clr, uv));
+                    }
+                    polys.add(new Polygon(loops, shape.mat));
+                }
+            }
+        }
     }
 
     public EMesh(EMesh other) {

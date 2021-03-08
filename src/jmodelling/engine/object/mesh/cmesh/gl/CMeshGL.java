@@ -43,7 +43,7 @@ public class CMeshGL {
     public FloatBuffer vVtxs;
     
     public CWireGL wireframe;
-    public HashMap<Material, ShapeGL> shapes;
+    public HashMap<Material, CShapeGL> shapes;
 
     public CMeshGL(CMesh cmesh) {
         genData(cmesh);
@@ -193,8 +193,8 @@ public class CMeshGL {
         return buff;
     }
 
-    private static HashMap<Material, ShapeGL> genShapes(CMesh cmesh) {
-        HashMap<Material, ShapeGL> shapes = new HashMap<>(cmesh.shapes.size());
+    private static HashMap<Material, CShapeGL> genShapes(CMesh cmesh) {
+        HashMap<Material, CShapeGL> shapes = new HashMap<>(cmesh.shapes.size());
 
         cmesh.shapes.values().forEach((shape) -> {
             /**
@@ -221,7 +221,7 @@ public class CMeshGL {
             }
 
             //Create the shape for OpenGL and initialize the buffers
-            ShapeGL shapeGL = new ShapeGL(shape.mat, vertices.size(), vInds.length);
+            CShapeGL shapeGL = new CShapeGL(shape.mat, vertices.size(), vInds.length);
             shapeGL.vtxs.mark();
             shapeGL.nrms.mark();
             shapeGL.clrs.mark();

@@ -51,6 +51,11 @@ public class Vec2f {
         this.x = data[0];
         this.y = data[1];
     }
+    
+    public Vec2f(float[] data, int offset) {
+        this.x = data[offset];
+        this.y = data[offset + 1];
+    }
 
     @Override
     public Vec2f clone() {

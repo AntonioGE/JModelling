@@ -69,6 +69,10 @@ public class CircularLinkedList<E> implements Iterable<E> {
         return true;
     }
     
+    public int size(){
+        return size;
+    }
+    
     public Node<E> getFirstNode(){
         return first;
     }
@@ -93,7 +97,7 @@ public class CircularLinkedList<E> implements Iterable<E> {
     public NodeIterator<E> nodeIterator(){
         return new CircularIterator(first);
     }
-
+    
     public class CircularIterator implements NodeIterator<E> {
 
         protected Node<E> next;

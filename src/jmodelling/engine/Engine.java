@@ -69,7 +69,15 @@ public class Engine {
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
-        mono.cmesh = new CMesh(new EMesh(mono.cmesh));
+        System.out.print("Starting CMesh->EMesh... ");
+        EMesh emesh = new EMesh(mono.cmesh);
+        System.out.println("FINISHED");
+        System.out.print("Starting Flat Shading... ");
+        emesh.applyFlatShading();
+        System.out.println("FINISHED");
+        System.out.print("Starting CMesh->EMesh... ");
+        mono.cmesh = new CMesh(emesh);
+        System.out.println("FINISHED");
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,

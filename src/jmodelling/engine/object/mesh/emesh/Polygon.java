@@ -30,6 +30,8 @@ import java.util.List;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.collections.node.CircularLinkedHashSet;
+import jmodelling.utils.collections.node.NodeIterator;
 
 /**
  *
@@ -37,17 +39,17 @@ import jmodelling.math.vec.Vec3f;
  */
 public class Polygon {
 
-    public LinkedHashSet<Loop> loops;
+    public CircularLinkedHashSet<Loop> loops;
     public Material mat;
 
     public List<Integer> tris;
 
-    public Polygon(LinkedHashSet<Loop> loops, Material mat) {
+    public Polygon(CircularLinkedHashSet<Loop> loops, Material mat) {
         this.loops = loops;
         this.mat = mat;
     }
 
-    //TODO: Use the get normal function used in the ear clipping triangulation
+    /*
     public Vec3f getNormal() {
         Iterator<Loop> ite = loops.iterator();
         Loop l0 = ite.next();
@@ -55,21 +57,21 @@ public class Polygon {
         Loop l2 = ite.next();
 
         return l1.vtx.sub_(l0.vtx).cross(l2.vtx.sub_(l0.vtx)).normalize();
-    }
+    }*/
 
-    /*
     public Vec3f getNormal(){
         Vec3f normal = new Vec3f();
-
-        for (int i = 0; i < loops.size(); i++) {
-            Vec3f c = loops.get.get(i);
-            Vec3f n = vtxs.get((i + 1) % vtxs.size());
+        
+        for(NodeIterator<Loop> ite = loops.nodeIterator(); ite.hasNext(); ){
+            Vec3f c = ite.next().vtx;
+            Vec3f n = ite.getNextNode().item().vtx;
             normal.x += (c.y - n.y) * (c.z + n.z);
             normal.y += (c.z - n.z) * (c.x + n.x);
             normal.z += (c.x - n.x) * (c.y + n.y);
         }
         return normal.normalize();
-    }*/
+    }
+    
     
     public List<Vec3f> getVertices() {
         List<Vec3f> vtxs = new ArrayList<>(loops.size());

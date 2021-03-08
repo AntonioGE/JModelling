@@ -71,22 +71,22 @@ public class CircularLinkList<E> {
         size--;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
-    
-    public Node<E> getFirstNode(){
+
+    public Node<E> getFirstNode() {
         return first;
     }
-    
-    public Node<E> getLastNode(){
+
+    public Node<E> getLastNode() {
         return first.prev;
     }
-    
-    public E getFirst(){
+
+    public E getFirst() {
         return first.item;
     }
-    
+
     public NodeIterator<E> iterator() {
         return new Iterator(first);
     }

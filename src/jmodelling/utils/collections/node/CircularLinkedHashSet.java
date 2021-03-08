@@ -31,13 +31,13 @@ import java.util.Iterator;
  * @author ANTONIO
  */
 public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
-
+    
     protected HashMap<E, Node<E>> map;
-
+    
     public CircularLinkedHashSet() {
         map = new HashMap<>();
     }
-
+    
     @Override
     public Node<E> add(E e) {
         if (map.containsKey(e)) {
@@ -48,7 +48,7 @@ public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
             return node;
         }
     }
-
+    
     @Override
     protected boolean unlink(Node<E> node) {
         if (super.unlink(node)) {
@@ -57,41 +57,41 @@ public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
         }
         return false;
     }
-
+    
     @Override
     public Iterator<E> iterator() {
         return new CircularIterator(first);
     }
     
     @Override
-    public NodeIterator nodeIterator(){
+    public NodeIterator nodeIterator() {
         return new CircularIterator(first);
     }
     
-    public Node<E> getNode(E e){
+    public Node<E> getNode(E e) {
         return map.get(e);
     }
     
-    public void removeNode(Node<E> node){
+    public void removeNode(Node<E> node) {
         unlink(node);
     }
     
-    public void remove(E e){
+    public void remove(E e) {
         unlink(map.get(e));
     }
-
+    
     public class CircularIterator extends CircularLinkedList.CircularIterator {
-
+        
         public CircularIterator(Node first) {
             super(first);
         }
-
+        
         @Override
         public void remove() {
             unlink(lastReturned);
             nextNode--;
         }
-
+        
     }
-
+    
 }

@@ -37,6 +37,7 @@ import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.ListUtils;
+import jmodelling.utils.collections.node.CircularLinkedHashSet;
 
 /**
  *
@@ -83,7 +84,7 @@ public class EMesh {
                 final int numPolys = pArray.getNumPolygons();
                 final int numLoops = pArray.nLoops;
                 for (int i = 0, l = 0; i < numPolys; i++) {
-                    LinkedHashSet<Loop> loops = CollectionUtils.newLinkedHashSet(numLoops);
+                    CircularLinkedHashSet<Loop> loops = new CircularLinkedHashSet();
                     for (int j = 0; j < numLoops; j++, l++) {
                         Vec3f vtx = vtxs.get(pArray.vtxInds[l]);
                         Edge edge = edgesList.get(pArray.edgeInds[l]);
@@ -118,7 +119,7 @@ public class EMesh {
         }
 
         for (Polygon poly : other.polys) {
-            LinkedHashSet<Loop> loopsCopy = new LinkedHashSet<>(poly.loops.size());
+            CircularLinkedHashSet<Loop> loopsCopy = new CircularLinkedHashSet<>();
             for (Loop loop : poly.loops) {
                 Vec3f vCopy = vToCopy.get(loop.vtx);
                 Edge eCopy = eToCopy.get(loop.edge);
@@ -157,7 +158,7 @@ public class EMesh {
         }
 
         LinkedHashSet<Edge> newEdges = new LinkedHashSet<>(vInds.size());
-        LinkedHashSet<Loop> newLoops = new LinkedHashSet<>(vInds.size());
+        CircularLinkedHashSet<Loop> newLoops = new CircularLinkedHashSet<>();
         for (int i = 0; i < vInds.size(); i++) {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),

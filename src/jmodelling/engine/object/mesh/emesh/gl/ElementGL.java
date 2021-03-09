@@ -36,7 +36,7 @@ public interface ElementGL {
     public abstract void render(GL2 gl);
 
     public abstract void update(GL2 gl);
-    
+
     public abstract void delete(GL2 gl);
-    
+
 }

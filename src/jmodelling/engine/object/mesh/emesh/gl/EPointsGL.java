@@ -49,12 +49,36 @@ public class EPointsGL implements ElementGL {
 
     @Override
     public void init(GL2 gl) {
+        vbo = new int[2];
 
+        gl.glGenBuffers(vbo.length, vbo, 0);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_STATIC_DRAW);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, clrs.limit() * Float.BYTES, clrs, GL2.GL_STATIC_DRAW);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+
+        vtxs.clear();
+        clrs.clear();
+
+        vtxs = null;
+        clrs = null;
     }
 
     @Override
     public void render(GL2 gl) {
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
 
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
+
+        gl.glDrawArrays(GL2.GL_POINTS, 0, nPoints * 3);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
 
     @Override
@@ -64,7 +88,7 @@ public class EPointsGL implements ElementGL {
 
     @Override
     public void delete(GL2 gl) {
-
+        gl.glDeleteBuffers(vbo.length, vbo, 0);
     }
 
 }

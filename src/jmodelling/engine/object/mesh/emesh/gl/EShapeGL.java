@@ -88,7 +88,21 @@ public class EShapeGL implements ElementGL {
 
     @Override
     public void render(GL2 gl) {
-        
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[0]);
+        gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[1]);
+        gl.glNormalPointer(GL2.GL_FLOAT, 0, 0);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[2]);
+        gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[3]);
+        gl.glColorPointer(2, GL2.GL_FLOAT, 0, 0);
+
+        gl.glDrawArrays(GL2.GL_TRIANGLES, 0, nTris * 3);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
 
     @Override

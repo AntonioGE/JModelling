@@ -126,11 +126,16 @@ public class EMeshGL implements ElementGL {
 
     @Override
     public void render(GL2 gl) {
+        gl.glDepthRange(0.002f, 1.0f);
         for (EShapeGL shape : shapes.values()) {
             shape.render(gl);
         }
+        gl.glDepthRange(0.0f, 1.0f);
+        gl.glDisable(GL2.GL_LIGHTING);
         wireframe.render(gl);
+        gl.glPointSize(3);
         points.render(gl);
+        gl.glEnable(GL2.GL_LIGHTING);
     }
 
     @Override
@@ -141,7 +146,7 @@ public class EMeshGL implements ElementGL {
         wireframe.update(gl);
         points.update(gl);
     }
-    
+
     @Override
     public void delete(GL2 gl) {
         for (EShapeGL shape : shapes.values()) {
@@ -150,7 +155,5 @@ public class EMeshGL implements ElementGL {
         wireframe.delete(gl);
         points.delete(gl);
     }
-
-    
 
 }

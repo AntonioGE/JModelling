@@ -31,6 +31,7 @@ import com.jogamp.opengl.GLProfile;
 import jmodelling.engine.editor.Editor;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.hud.Axis;
+import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.engine.object.mesh.cmesh.CMesh;
 import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.engine.object.mesh.emesh.gl.EMeshGL;
@@ -69,29 +70,33 @@ public class Engine {
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
 
-        for (int i = 0; i < 100; i++) {
-            System.out.print("Starting CMesh->EMesh... ");
-            long before = System.nanoTime();
-            EMesh emesh = new EMesh(mono.cmesh);
-            System.out.println("FINISHED " + (System.nanoTime() - before));
+        System.out.print("Starting CMesh->EMesh... ");
+        long before = System.nanoTime();
+        EMesh emesh = new EMesh(mono.cmesh);
+        System.out.println("FINISHED " + (System.nanoTime() - before));
 
-            System.out.print("Starting Flat Shading... ");
-            before = System.nanoTime();
-            emesh.applyFlatShading();
-            System.out.println("FINISHED " + (System.nanoTime() - before));
+        System.out.print("Starting Flat Shading... ");
+        before = System.nanoTime();
+        //emesh.applyFlatShading();
+        System.out.println("FINISHED " + (System.nanoTime() - before));
 
-            System.out.print("Starting EMesh->CMesh... ");
-            before = System.nanoTime();
-            mono.cmesh = new CMesh(emesh);
-            System.out.println("FINISHED " + (System.nanoTime() - before));
+        System.out.print("Starting EMesh->CMesh... ");
+        before = System.nanoTime();
+        mono.cmesh = new CMesh(emesh);
+        System.out.println("FINISHED " + (System.nanoTime() - before));
 
-            System.out.print("Starting EMesh->EMeshGL... ");
-            before = System.nanoTime();
-            EMeshGL emeshGL = new EMeshGL(emesh);
-            System.out.println("FINISHED " + (System.nanoTime() - before));
-        }
+        System.out.print("Starting EMesh->EMeshGL... ");
+        before = System.nanoTime();
+        EMeshGL emeshGL = new EMeshGL(emesh);
+        System.out.println("FINISHED " + (System.nanoTime() - before));
+        
+        MeshEditableObject meshEditable = new MeshEditableObject("Ediatable", 
+                new Vec3f(-6.0f, 0.0f, 0.0f), mono.cmesh);
+        scene.addObject(meshEditable);
+        
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,

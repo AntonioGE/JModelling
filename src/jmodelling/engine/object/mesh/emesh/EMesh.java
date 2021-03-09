@@ -54,7 +54,8 @@ public class EMesh {
 
     public LinkedHashSet<Material> mats;
 
-    private boolean edited;
+    public boolean resized;
+    public boolean edited;
 
     public EMesh() {
         vtxs = new ArrayList<>();
@@ -64,6 +65,9 @@ public class EMesh {
         polyGroups = new HashMap<>();
 
         mats = new LinkedHashSet<>();
+
+        resized = false;
+        edited = false;
     }
 
     public EMesh(CMesh cmesh) {
@@ -106,6 +110,9 @@ public class EMesh {
                 }
             }
         }
+
+        resized = false;
+        edited = false;
     }
 
     //TODO: Not tested?
@@ -145,6 +152,9 @@ public class EMesh {
             polys.add(polyCopy);
             polyGroups.get(poly.mat).add(polyCopy);
         }
+
+        resized = false;
+        edited = false;
     }
 
     @Override
@@ -154,11 +164,15 @@ public class EMesh {
 
     public void addVertex(Vec3f vtx) {
         vtxs.add(vtx);
+        resized = true;
     }
 
     public void addEdge(int v1, int v2) {
         Edge edge = new Edge(vtxs.get(v1), vtxs.get(v2));
-        edges.put(edge, edge);
+        if (!edges.containsKey(edge)) {
+            edges.put(edge, edge);
+            resized = true;
+        }
     }
 
     public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
@@ -198,6 +212,8 @@ public class EMesh {
             polys.add(poly);
             addMaterial(mat);
             polyGroups.get(mat).add(poly);
+            
+            resized = true;
         }
     }
 

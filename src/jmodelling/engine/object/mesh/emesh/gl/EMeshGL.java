@@ -25,6 +25,7 @@ package jmodelling.engine.object.mesh.emesh.gl;
 
 import com.jogamp.opengl.GL2;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;
@@ -114,7 +115,7 @@ public class EMeshGL implements ElementGL {
         points.clrs.reset();
         return points;
     }
-
+    
     @Override
     public void init(GL2 gl) {
         for (EShapeGL shape : shapes.values()) {

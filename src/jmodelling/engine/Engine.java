@@ -59,6 +59,8 @@ public class Engine {
         //caps.setStencilBits(8);
         //caps.setSampleBuffers(true);
         //caps.setNumSamples(2);
+        caps.setDepthBits(24);
+        //caps.setDoubleBuffered(true);
         final GLProfile glp = caps.getGLProfile();
 
         final boolean createNewDevice = true;
@@ -69,7 +71,9 @@ public class Engine {
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Arceus.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
 
@@ -102,6 +106,7 @@ public class Engine {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,
                         new Vec3f(i * 4.0f, j * 4.0f, 0.0f), mono.cmesh.clone());
                 scene.addObject(obj);
+                obj.sca.set(0.01f, 0.01f, 0.01f);
             }
         }
         scene.selectAll();

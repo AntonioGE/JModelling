@@ -77,6 +77,8 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_RESCALE_NORMAL);
         //gl.glEnable(GL2.GL_NORMALIZE);
 
+        gl.glDepthFunc(GL2.GL_LESS);
+        
         //gl.glEnable(GL2.GL_STENCIL_TEST);
         //gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
         //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);

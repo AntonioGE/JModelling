@@ -33,6 +33,7 @@ import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.hud.Axis;
 import jmodelling.engine.object.mesh.cmesh.CMesh;
 import jmodelling.engine.object.mesh.emesh.EMesh;
+import jmodelling.engine.object.mesh.emesh.gl.EMeshGL;
 import jmodelling.engine.scene.Scene;
 import jmodelling.gui.MainFrame;
 import jmodelling.gui.display.EditorDisplayGL;
@@ -69,15 +70,28 @@ public class Engine {
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
         MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
-        System.out.print("Starting CMesh->EMesh... ");
-        EMesh emesh = new EMesh(mono.cmesh);
-        System.out.println("FINISHED");
-        System.out.print("Starting Flat Shading... ");
-        emesh.applyFlatShading();
-        System.out.println("FINISHED");
-        System.out.print("Starting CMesh->EMesh... ");
-        mono.cmesh = new CMesh(emesh);
-        System.out.println("FINISHED");
+
+        for (int i = 0; i < 100; i++) {
+            System.out.print("Starting CMesh->EMesh... ");
+            long before = System.nanoTime();
+            EMesh emesh = new EMesh(mono.cmesh);
+            System.out.println("FINISHED " + (System.nanoTime() - before));
+
+            System.out.print("Starting Flat Shading... ");
+            before = System.nanoTime();
+            emesh.applyFlatShading();
+            System.out.println("FINISHED " + (System.nanoTime() - before));
+
+            System.out.print("Starting EMesh->CMesh... ");
+            before = System.nanoTime();
+            mono.cmesh = new CMesh(emesh);
+            System.out.println("FINISHED " + (System.nanoTime() - before));
+
+            System.out.print("Starting EMesh->EMeshGL... ");
+            before = System.nanoTime();
+            EMeshGL emeshGL = new EMeshGL(emesh);
+            System.out.println("FINISHED " + (System.nanoTime() - before));
+        }
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,

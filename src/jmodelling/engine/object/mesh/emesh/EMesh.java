@@ -25,6 +25,7 @@ package jmodelling.engine.object.mesh.emesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -49,6 +50,8 @@ public class EMesh {
     public HashMap<Edge, Edge> edges;
     public LinkedHashSet<Polygon> polys;
 
+    public HashMap<Material, LinkedHashSet<Polygon>> polyGroups;
+
     public LinkedHashSet<Material> mats;
 
     private boolean edited;
@@ -57,6 +60,8 @@ public class EMesh {
         vtxs = new ArrayList<>();
         edges = new LinkedHashMap<>();
         polys = new LinkedHashSet<>();
+
+        polyGroups = new HashMap<>();
 
         mats = new LinkedHashSet<>();
     }
@@ -77,9 +82,11 @@ public class EMesh {
         }
 
         mats = CollectionUtils.newLinkedHashSet(cmesh.shapes.size());
-        polys = CollectionUtils.newLinkedHashSet(cmesh.getNumPolygons());
+        polys = CollectionUtils.newLinkedHashSet(cmesh.getNumPolys());
+        polyGroups = CollectionUtils.newHashMap(cmesh.shapes.size());
         for (CShape shape : cmesh.shapes.values()) {
             mats.add(shape.mat);
+            polyGroups.put(shape.mat, CollectionUtils.newLinkedHashSet(cmesh.getNumPolys(shape.mat)));
             for (PolygonArray pArray : shape.polys.values()) {
                 final int numPolys = pArray.getNumPolygons();
                 final int numLoops = pArray.nLoops;
@@ -93,12 +100,15 @@ public class EMesh {
                         Vec2f uv = cmesh.getUV(pArray.uvInds[l]);
                         loops.add(new Loop(vtx, edge, nrm, clr, uv));
                     }
-                    polys.add(new Polygon(loops, shape.mat));
+                    final Polygon poly = new Polygon(loops, shape.mat);
+                    polys.add(poly);
+                    polyGroups.get(shape.mat).add(poly);
                 }
             }
         }
     }
 
+    //TODO: Not tested?
     public EMesh(EMesh other) {
         this();
 
@@ -118,6 +128,11 @@ public class EMesh {
             eToCopy.put(edge, edgeCopy);
         }
 
+        for (Material mat : other.mats) {
+            mats.add(mat);
+            polyGroups.put(mat, new LinkedHashSet<>());
+        }
+
         for (Polygon poly : other.polys) {
             CircularLinkedHashSet<Loop> loopsCopy = new CircularLinkedHashSet<>();
             for (Loop loop : poly.loops) {
@@ -126,7 +141,9 @@ public class EMesh {
                 Loop loopCopy = new Loop(vCopy, eCopy, loop.nrm.clone(), loop.clr.clone(), loop.uv.clone());
                 loopsCopy.add(loopCopy);
             }
-            polys.add(new Polygon(loopsCopy, poly.mat));
+            Polygon polyCopy = new Polygon(loopsCopy, poly.mat);
+            polys.add(polyCopy);
+            polyGroups.get(poly.mat).add(polyCopy);
         }
     }
 
@@ -177,8 +194,20 @@ public class EMesh {
         for (Edge edge : newEdges) {
             edges.put(edge, edge);
         }
-        polys.add(poly);
-        mats.add(mat);
+        if (!polys.contains(poly)) {
+            polys.add(poly);
+            addMaterial(mat);
+            polyGroups.get(mat).add(poly);
+        }
+    }
+
+    public void addMaterial(Material mat) {
+        if (!mats.contains(mat)) {
+            mats.add(mat);
+        }
+        if (!polyGroups.containsKey(mat)) {
+            polyGroups.put(mat, new LinkedHashSet<>());
+        }
     }
 
     public HashMap<Material, Integer> getNumPolysPerMat() {
@@ -240,6 +269,15 @@ public class EMesh {
         return groupedPolys;
     }
 
+    public int getNumTris(Material mat) {
+        LinkedHashSet<Polygon> polysWithMat = polyGroups.get(mat);
+        int nVtxs = 0;
+        for (Polygon poly : polysWithMat) {
+            nVtxs += poly.tris.size();
+        }
+        return nVtxs / 3;
+    }
+
     public void applyFlatShading() {
         polys.forEach((poly) -> {
             Vec3f normal = poly.getNormal();
@@ -248,4 +286,5 @@ public class EMesh {
             });
         });
     }
+
 }

@@ -24,10 +24,12 @@
 package jmodelling.engine.object.mesh.emesh;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.collections.node.CircularLinkedHashSet;
 import jmodelling.utils.collections.node.NodeIterator;
 
@@ -40,11 +42,13 @@ public class Polygon {
     public CircularLinkedHashSet<Loop> loops;
     public Material mat;
 
-    public List<Integer> tris;
+    public List<Loop> tris;
 
     public Polygon(CircularLinkedHashSet<Loop> loops, Material mat) {
         this.loops = loops;
         this.mat = mat;
+        
+        updateTris();
     }
 
     public Vec3f getNormal() {
@@ -72,17 +76,22 @@ public class Polygon {
         return loops.size() == 3;
     }
 
-    public void updateTris() {
+    public final void updateTris() {
         if (isTri()) {
-            tris = new ArrayList<Integer>() {
-                {
-                    add(0);
-                    add(1);
-                    add(2);
-                }
-            };
+            tris = new ArrayList<>(3);
+            for(Loop loop : loops){
+                tris.add(loop);
+            }
         } else {
-            tris = EarClipping.triangulate(getVertices());
+            List<Integer> triInds = EarClipping.triangulate(getVertices());
+            tris = new ArrayList<>(triInds.size());
+            List<Loop> loopArray = new ArrayList<>(loops.size());
+            for(Loop loop : loops){
+                loopArray.add(loop);
+            }
+            for(Integer i : triInds){
+                tris.add(loopArray.get(i));
+            }
         }
     }
 }

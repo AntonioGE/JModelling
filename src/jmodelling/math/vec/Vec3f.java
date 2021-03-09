@@ -214,6 +214,17 @@ public class Vec3f {
     }
 
     /**
+     * Writes the vector data into a <tt>FloatBuffer</tt>
+     *
+     * @param buffer the buffer to write in
+     */
+    public void writeInBuffer(FloatBuffer buffer) {
+        buffer.put(x);
+        buffer.put(y);
+        buffer.put(z);
+    }
+
+    /**
      * Writes the vector data into a array at the offset location
      *
      * @param array array to write in
@@ -743,47 +754,47 @@ public class Vec3f {
 
     /**
      * Inverts a vector.
-     * 
+     *
      * @param src input vector to be inverted
      * @param dst inverted vector
      */
-    public static void invert(Vec3f src, Vec3f dst){
+    public static void invert(Vec3f src, Vec3f dst) {
         dst.x = 1.0f / src.x;
         dst.y = 1.0f / src.y;
         dst.z = 1.0f / src.z;
     }
-    
+
     /**
      * Inverts a vector.
-     * 
+     *
      * @param src input vector to be inverted
      * @return new inverted vector
      */
-    public static Vec3f invert_(Vec3f src){
+    public static Vec3f invert_(Vec3f src) {
         Vec3f dst = new Vec3f();
         invert(src, dst);
         return dst;
     }
-    
+
     /**
      * Inverts this vector.
-     * 
+     *
      * @return this vector inverted
      */
-    public Vec3f invert(){
+    public Vec3f invert() {
         invert(this, this);
         return this;
     }
-    
+
     /**
      * Inverts this vector.
-     * 
+     *
      * @return new vector inverted
      */
-    public Vec3f invert_(){
+    public Vec3f invert_() {
         return invert_(this);
     }
-    
+
     /**
      * Converts a vector of angles from radians to degrees
      *

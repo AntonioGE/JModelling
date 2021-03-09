@@ -26,7 +26,6 @@ package jmodelling.engine.object.mesh.cmesh.gl;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import jmodelling.engine.object.material.Material;

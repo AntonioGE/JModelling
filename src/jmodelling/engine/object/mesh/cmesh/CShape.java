@@ -69,4 +69,12 @@ public class CShape {
         }
         return count;
     }
+    
+    public int getNumPolys(){
+        int count = 0;
+        for(PolygonArray pArray : polys.values()){
+            count += pArray.getNumPolygons();
+        }
+        return count;
+    }
 }

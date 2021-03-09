@@ -66,7 +66,7 @@ public class BoundingBox {
             }
         }
 
-        System.out.println(min.toString() + " " + max.toString());
+        //System.out.println(min.toString() + " " + max.toString());
     }
 
     public BoundingBox(EMesh mesh) {

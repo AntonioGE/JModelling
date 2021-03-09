@@ -30,9 +30,8 @@ import java.nio.FloatBuffer;
  * @author ANTONIO
  */
 public class Vec2f {
-    
+
     public float x, y;
-    
 
     public Vec2f() {
         this.x = 0.0f;
@@ -51,7 +50,7 @@ public class Vec2f {
         this.x = data[0];
         this.y = data[1];
     }
-    
+
     public Vec2f(float[] data, int offset) {
         this.x = data[offset];
         this.y = data[offset + 1];
@@ -91,18 +90,16 @@ public class Vec2f {
         return true;
     }
 
-    
-    
     @Override
     public String toString() {
-        return "[" + x + ", " + y +"]";
+        return "[" + x + ", " + y + "]";
     }
 
     public void print() {
         System.out.println(toString());
     }
-    
-    public void print(String name){
+
+    public void print(String name) {
         System.out.println(name + ": " + toString());
     }
 
@@ -111,8 +108,8 @@ public class Vec2f {
         this.y = other.y;
         return this;
     }
-    
-    public Vec2f set(float x, float y){
+
+    public Vec2f set(float x, float y) {
         this.x = x;
         this.y = y;
         return this;
@@ -121,10 +118,26 @@ public class Vec2f {
     public float[] toArray() {
         return new float[]{x, y};
     }
-    
+
+    /**
+     * Writes the vector data into a <tt>FloatBuffer</tt> at the offset location
+     *
+     * @param buffer the buffer to write in
+     * @param offset the position
+     */
     public void writeInBuffer(FloatBuffer buffer, int offset) {
         buffer.put(offset, x);
         buffer.put(offset + 1, y);
+    }
+
+    /**
+     * Writes the vector data into a <tt>FloatBuffer</tt>
+     *
+     * @param buffer the buffer to write in
+     */
+    public void writeInBuffer(FloatBuffer buffer) {
+        buffer.put(x);
+        buffer.put(y);
     }
 
     /**
@@ -148,7 +161,7 @@ public class Vec2f {
     public void writeInArray(float[] array, int offset) {
         writeInArray(array, offset, this);
     }
-    
+
     public float norm() {
         return (float) Math.sqrt(x * x + y * y);
     }
@@ -185,7 +198,7 @@ public class Vec2f {
     public float dist(Vec2f other) {
         return dist(this, other);
     }
-    
+
     public static void add(Vec2f src1, Vec2f src2, Vec2f dst) {
         dst.x = src1.x + src2.x;
         dst.y = src1.y + src2.y;
@@ -205,27 +218,27 @@ public class Vec2f {
     public Vec2f add_(Vec2f other) {
         return add_(this, other);
     }
-    
-    public static void add(Vec2f src, float x, float y, Vec2f dst){
+
+    public static void add(Vec2f src, float x, float y, Vec2f dst) {
         dst.x = src.x + x;
         dst.y = src.y + y;
     }
-    
-    public static Vec2f add_(Vec2f src, float x, float y){
+
+    public static Vec2f add_(Vec2f src, float x, float y) {
         Vec2f dst = new Vec2f();
         add(src, x, y, dst);
         return dst;
     }
-    
-    public Vec2f add(float x, float y){
+
+    public Vec2f add(float x, float y) {
         add(this, x, y, this);
         return this;
     }
-    
-    public Vec2f add_(float x, float y){
+
+    public Vec2f add_(float x, float y) {
         return add_(this, x, y);
     }
-    
+
     public static void sub(Vec2f src1, Vec2f src2, Vec2f dst) {
         dst.x = src1.x - src2.x;
         dst.y = src1.y - src2.y;
@@ -254,7 +267,6 @@ public class Vec2f {
         return dot(this, other);
     }
 
-    
     //TODO: Create Mat2f class and implement multiplication with Vec2f
     /*
     public static void mul(Mat3f src1, Vec3f src2, Vec3f dst) {
@@ -277,8 +289,7 @@ public class Vec2f {
     public Vec3f mul_(Mat3f src) {
         return mul_(src, this);
     }
-    */
-
+     */
     public static void scale(Vec2f src, float scale, Vec2f dst) {
         dst.x = src.x * scale;
         dst.y = src.y * scale;
@@ -319,65 +330,65 @@ public class Vec2f {
         return negate_(this);
     }
 
-    public static float angle(Vec2f src){
+    public static float angle(Vec2f src) {
         return (float) Math.atan2(src.y, src.x);
     }
-    
-    public float angle(){
+
+    public float angle() {
         return angle(this);
     }
-    
-    public static float angleDeg(Vec2f src){
+
+    public static float angleDeg(Vec2f src) {
         return (float) Math.toDegrees(angle(src));
     }
-    
-    public float angleDeg(){
+
+    public float angleDeg() {
         return angleDeg(this);
     }
-    
+
     /**
      * Proyects one vector onto another
-     * 
+     *
      * @param src vector to be proyected
      * @param dir direction of the proyection
      * @param dst output proyected vector
      */
-    public static void proy(Vec2f src, Vec2f dir, Vec2f dst){
+    public static void proy(Vec2f src, Vec2f dir, Vec2f dst) {
         dst.set(dir).normalize();
         dst.scale(src.dot(dst));
     }
-    
+
     /**
      * Proyects one vector onto another
-     * 
+     *
      * @param src vector to be proyected
      * @param dir direction of the proyection
      * @return new proyected vector
      */
-    public static Vec2f proy_(Vec2f src, Vec2f dir){
+    public static Vec2f proy_(Vec2f src, Vec2f dir) {
         Vec2f dst = new Vec2f();
         proy(src, dir, dst);
         return dst;
     }
-    
+
     /**
      * Proyects this vector onto another
-     * 
+     *
      * @param dir direction of the proyection
      * @return this proyected vector
      */
-    public Vec2f proy(Vec2f dir){
+    public Vec2f proy(Vec2f dir) {
         proy(this.clone(), dir, this);
         return this;
     }
-    
+
     /**
      * Proyects this vector onto another
-     * 
+     *
      * @param dir direction of the proyection
      * @return new proyected vector
      */
-    public Vec2f proy_(Vec2f dir){
+    public Vec2f proy_(Vec2f dir) {
         return proy_(this, dir);
     }
 

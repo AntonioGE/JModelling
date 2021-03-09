@@ -21,29 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.bounds;
+package jmodelling.engine.object.mesh.emesh.gl;
 
-import jmodelling.math.vec.Vec3f;
+import com.jogamp.opengl.GL2;
 
 /**
  *
  * @author ANTONIO
  */
-public class BoundingSphere {
+public interface ElementGL {
+
+    public abstract void init(GL2 gl);
+
+    public abstract void render(GL2 gl);
+
+    public abstract void update(GL2 gl);
     
-    public Vec3f center;
-    public float radius;
-    
-    public BoundingSphere(Vec3f center, float radius){
-        this.center = center;
-        this.radius = radius;
-    }
-    
-    public BoundingSphere(BoundingBox box){
-        this.center = box.max.add_(box.min).scale(0.5f);
-        this.radius = center.dist(box.max);
-        
-        //System.out.println(center.toString() + " :::: " + radius);
-    }
+    public abstract void delete(GL2 gl);
     
 }

@@ -26,79 +26,59 @@ package jmodelling.engine.object.mesh.emesh.gl;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL2;
 import java.nio.FloatBuffer;
-import jmodelling.engine.object.material.Material;
 
 /**
  *
  * @author ANTONIO
  */
-public class EShapeGL implements ElementGL {
+public class EWireGL implements ElementGL {
 
-    public Material mat;
+    public int[] vbo;
 
-    public int[] vbos;
-
-    public int nTris;
+    public int nEdges;
 
     public FloatBuffer vtxs;
-    public FloatBuffer nrms;
     public FloatBuffer clrs;
-    public FloatBuffer uvs;
 
-    public EShapeGL(Material mat, int nTris) {
-        this.mat = mat;
-        this.nTris = nTris;
+    public EWireGL(int nEdges) {
+        this.nEdges = nEdges;
 
-        vtxs = Buffers.newDirectFloatBuffer(nTris * 3 * 3);
-        nrms = Buffers.newDirectFloatBuffer(nTris * 3 * 3);
-        clrs = Buffers.newDirectFloatBuffer(nTris * 3 * 3);
-        uvs = Buffers.newDirectFloatBuffer(nTris * 3 * 2);
+        vtxs = Buffers.newDirectFloatBuffer(nEdges * 3 * 2);
+        clrs = Buffers.newDirectFloatBuffer(nEdges * 3 * 2);
     }
 
     @Override
     public void init(GL2 gl) {
-        vbos = new int[4];
+        vbo = new int[2];
 
-        gl.glGenBuffers(vbos.length, vbos, 0);
+        gl.glGenBuffers(vbo.length, vbo, 0);
 
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[0]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_DYNAMIC_DRAW);
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_STATIC_DRAW);
 
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[1]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, nrms.limit() * Float.BYTES, nrms, GL2.GL_DYNAMIC_DRAW);
-
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[2]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, clrs.limit() * Float.BYTES, clrs, GL2.GL_DYNAMIC_DRAW);
-
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[3]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, uvs.limit() * Float.BYTES, uvs, GL2.GL_DYNAMIC_DRAW);
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, clrs.limit() * Float.BYTES, clrs, GL2.GL_STATIC_DRAW);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 
         vtxs.clear();
-        nrms.clear();
         clrs.clear();
-        uvs.clear();
 
         vtxs = null;
-        nrms = null;
         clrs = null;
-        uvs = null;
     }
 
     @Override
     public void render(GL2 gl) {
-        
     }
 
     @Override
     public void update(GL2 gl) {
-
     }
 
     @Override
     public void delete(GL2 gl) {
-        gl.glDeleteBuffers(vbos.length, vbos, 0);
+        gl.glDeleteBuffers(vbo.length, vbo, 0);
     }
 
 }

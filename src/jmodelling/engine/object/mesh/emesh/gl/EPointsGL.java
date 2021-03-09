@@ -21,29 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.bounds;
+package jmodelling.engine.object.mesh.emesh.gl;
 
-import jmodelling.math.vec.Vec3f;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL2;
+import java.nio.FloatBuffer;
 
 /**
  *
  * @author ANTONIO
  */
-public class BoundingSphere {
-    
-    public Vec3f center;
-    public float radius;
-    
-    public BoundingSphere(Vec3f center, float radius){
-        this.center = center;
-        this.radius = radius;
+public class EPointsGL implements ElementGL {
+
+    public int[] vbo;
+
+    public int nPoints;
+
+    public FloatBuffer vtxs;
+    public FloatBuffer clrs;
+
+    public EPointsGL(int nPoints) {
+        this.nPoints = nPoints;
+
+        vtxs = Buffers.newDirectFloatBuffer(nPoints * 3);
+        clrs = Buffers.newDirectFloatBuffer(nPoints * 3);
     }
-    
-    public BoundingSphere(BoundingBox box){
-        this.center = box.max.add_(box.min).scale(0.5f);
-        this.radius = center.dist(box.max);
-        
-        //System.out.println(center.toString() + " :::: " + radius);
+
+    @Override
+    public void init(GL2 gl) {
+
     }
-    
+
+    @Override
+    public void render(GL2 gl) {
+
+    }
+
+    @Override
+    public void update(GL2 gl) {
+
+    }
+
+    @Override
+    public void delete(GL2 gl) {
+
+    }
+
 }

@@ -192,7 +192,7 @@ public class CMesh {
         return new CMesh(this);
     }
 
-    public int getNumPolygons() {
+    public int getNumPolys() {
         int count = 0;
         for (CShape shape : shapes.values()) {
             for (PolygonArray pArray : shape.polys.values()) {
@@ -202,6 +202,15 @@ public class CMesh {
         return count;
     }
 
+    public int getNumPolys(Material mat){
+        CShape shape = shapes.get(mat);
+        if(shape != null){
+            return shape.getNumPolys();
+        }else{
+            return 0;
+        }
+    }
+    
     public Vec3f getVtx(int index) {
         return new Vec3f(vtxs, index * 3);
     }

@@ -35,6 +35,8 @@ import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
+import jmodelling.engine.object.mesh.MeshEditableObject;
+import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
@@ -45,6 +47,8 @@ import jmodelling.math.vec.Vec3f;
  * @author ANTONIO
  */
 public class View3D extends Editor {
+
+    public static final String NAME = "VIEW3D";
 
     protected Mode mode;
     protected CamArcball cam;
@@ -260,11 +264,12 @@ public class View3D extends Editor {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_TAB:{
-                //toggleMode();
+            /*
+            case KeyEvent.VK_TAB: {
+                setModesInEditors(toggleMode(mode));
                 repaintSameEditors();
                 break;
-            }
+            }*/
             case KeyEvent.VK_SHIFT: {
                 shiftPressed = true;
                 break;
@@ -372,26 +377,55 @@ public class View3D extends Editor {
         return shiftPressed;
     }
 
-    public void changeMode(Mode newMode){
+    public void changeMode(Mode newMode) {
         mode.destroy();
         mode = newMode;
     }
-    
-    public Mode toggleMode(Mode mode){
-        switch(mode.getName()){
-            case EditMode.NAME:{
+
+    //TODO: this code needs refactoring
+    public void setModesInEditors(String modeName) {
+        switch (modeName) {
+            case EditMode.NAME: {
+                Object3D obj = engine.scene.getLastSelectedObject();
+                if (obj != null) {
+                    MeshEditableObject emeshObj = new MeshEditableObject((MeshObject) obj);
+                    engine.scene.setObjectToEdit(emeshObj);
+                    for (EditorDisplayGL panel : engine.getEditorDisplays()) {
+                        if (panel.getEditor().getName().equals(View3D.NAME)) {
+                            View3D editor = (View3D) panel.getEditor();
+                            editor.changeMode(new EditMode(editor, engine, emeshObj));
+                        }
+                    }
+                }
+                break;
+            }
+            case ObjectMode.NAME: {
+                for (EditorDisplayGL panel : engine.getEditorDisplays()) {
+                    if (panel.getEditor().getName().equals(View3D.NAME)) {
+                        View3D editor = (View3D) panel.getEditor();
+                        editor.changeMode(new ObjectMode(editor, engine));
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    /*
+    public Mode toggleMode(Mode mode) {
+        switch (mode.getName()) {
+            case EditMode.NAME: {
                 return new ObjectMode(this, engine);
             }
-            case ObjectMode.NAME:{
+            case ObjectMode.NAME: {
                 return new EditMode(this, engine);
             }
         }
         return new ObjectMode(this, engine);
-    }
-    
+    }*/
     @Override
     public String getName() {
-        return "VIEW3D";
+        return NAME;
     }
 
 }

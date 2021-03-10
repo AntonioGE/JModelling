@@ -62,6 +62,11 @@ public class Scene {
     private Object3D lastSelectedObject;
 
     /**
+     * Object to edit
+     */
+    private Object3D objectToEdit;
+    
+    /**
      * Objects GL updating
      */
     private final IdentitySet<Object3D> objectsToInit;
@@ -94,6 +99,7 @@ public class Scene {
     private void removeObjects(GL2 gl) {
         objectsToDelete.forEach((obj) -> {
             obj.delete(gl);
+            System.out.println("Delete: " + obj.name);
         });
         objectsToDelete.clear();
     }
@@ -278,6 +284,14 @@ public class Scene {
 
     public Collection<Object3D> getHudObjects() {
         return hudObjectsReadOnly.values();
+    }
+    
+    public void setObjectToEdit(Object3D obj){
+        if(objectToEdit != null){
+            objectsToDelete.add(objectToEdit);
+        }
+        objectToEdit = obj;
+        objectsToInit.add(obj);
     }
 
 }

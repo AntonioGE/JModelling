@@ -47,6 +47,10 @@ public class MeshEditableObject extends Object3D {
         this.emeshGL = new EMeshGL(emesh);
     }
 
+    public MeshEditableObject(MeshObject meshObject){
+        this(meshObject.name + " EDIT", meshObject.loc.clone(), meshObject.cmesh);
+    }
+    
     //TODO: move to renderer?
     @Override
     public void renderOpaque(GL2 gl) {

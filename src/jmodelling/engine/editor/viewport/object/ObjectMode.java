@@ -32,8 +32,9 @@ import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
+import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.editor.viewport.object.tools.Grab;
-import jmodelling.engine.editor.viewport.object.tools.Navigate;
+import jmodelling.engine.editor.viewport.object.tools.Select;
 import jmodelling.engine.editor.viewport.object.tools.ObjectTool;
 import jmodelling.engine.editor.viewport.object.tools.Rotate;
 import jmodelling.engine.editor.viewport.object.tools.Scale;
@@ -52,7 +53,7 @@ public class ObjectMode extends Mode {
     public ObjectMode(View3D editor, Engine engine) {
         super(editor, engine);
 
-        tool = new Navigate(editor, this);
+        tool = new Select(editor, this);
     }
 
     @Override
@@ -208,13 +209,25 @@ public class ObjectMode extends Mode {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            setDefaultTool();
-            editor.panel.repaint();
-        } else if (tool != null) {
-            tool.keyPressed(e);
-        } else {
-            changeMode(e);
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_ESCAPE: {
+                setDefaultTool();
+                editor.panel.repaint();
+                break;
+            }
+            case KeyEvent.VK_TAB: {
+                changeMode();
+                editor.repaintSameEditors();
+                break;
+            }
+            default: {
+                if (tool != null) {
+                    tool.keyPressed(e);
+                } else {
+                    changeTool(e);
+                }
+                break;
+            }
         }
     }
 
@@ -238,8 +251,8 @@ public class ObjectMode extends Mode {
             tool.destroy();
         }
     }
-    
-    public void changeMode(KeyEvent e) {
+
+    public void changeTool(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE: {
                 setDefaultTool();
@@ -276,7 +289,7 @@ public class ObjectMode extends Mode {
     }
 
     public void setDefaultTool() {
-        setTool(new Navigate(editor, this));
+        setTool(new Select(editor, this));
     }
 
     @Override
@@ -284,6 +297,11 @@ public class ObjectMode extends Mode {
         return NAME;
     }
 
-    
-    
+    public void changeMode() {
+        if (editor.getScene().getLastSelectedObject() != null) {//TODO: Check if it is mesh?
+            editor.setModesInEditors(EditMode.NAME);
+
+        }
+    }
+
 }

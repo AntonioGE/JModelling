@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object.tools;
+package jmodelling.engine.editor.viewport.edit.tools;
 
 import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
+import jmodelling.engine.editor.viewport.edit.EditMode;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class ObjectTool extends Tool {
+public abstract class EditTool extends Tool{
 
     protected View3D editor;
-    protected ObjectMode mode;
+    protected EditMode mode;
 
-    public ObjectTool(View3D editor, ObjectMode objectMode) {
+    public EditTool(View3D editor, EditMode editMode) {
         this.editor = editor;
-        this.mode = objectMode;
+        this.mode = editMode;
+        
     }
-
 }

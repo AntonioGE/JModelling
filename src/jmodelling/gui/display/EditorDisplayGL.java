@@ -25,7 +25,6 @@ package jmodelling.gui.display;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLSharedContextSetter;
 import com.jogamp.opengl.awt.GLJPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -34,7 +33,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import javax.swing.JPanel;
 import jmodelling.engine.editor.Editor;
 
 /**

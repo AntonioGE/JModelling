@@ -40,11 +40,11 @@ import jmodelling.math.vec.Vec2f;
  *
  * @author ANTONIO
  */
-public class Navigate extends ObjectTool {
+public class Select extends ObjectTool {
 
     protected int lastPressX, lastPressY;
 
-    public Navigate(View3D editor, ObjectMode objectMode) {
+    public Select(View3D editor, ObjectMode objectMode) {
         super(editor, objectMode);
     }
 
@@ -165,7 +165,7 @@ public class Navigate extends ObjectTool {
                 break;
             }
         }
-        mode.changeMode(e);
+        mode.changeTool(e);
     }
 
     @Override

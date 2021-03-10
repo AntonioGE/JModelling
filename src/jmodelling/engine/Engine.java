@@ -28,6 +28,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLCapabilitiesImmutable;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
+import java.util.List;
 import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.object.mesh.MeshObject;
@@ -51,7 +52,7 @@ public class Engine {
     public Scene scene;
 
     public final GLAutoDrawable sharedDrawable;
-
+    
     public Engine(MainFrame frame) {
         this.frame = frame;
 
@@ -121,12 +122,8 @@ public class Engine {
         }
     }
     
-    public void setModeInEditors(Mode mode, Editor editor){
-        for (EditorDisplayGL display : frame.editorDisplays) {
-            if (display.getEditor().getName().equals(editor.getName())) {
-
-            }
-        }
+    public List<EditorDisplayGL> getEditorDisplays(){
+        return frame.editorDisplays;
     }
 
 }

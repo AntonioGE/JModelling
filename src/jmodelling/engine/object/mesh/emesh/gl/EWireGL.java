@@ -76,7 +76,7 @@ public class EWireGL implements ElementGL {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
         gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
         
-        gl.glDrawArrays(GL2.GL_LINES, 0, nEdges * 2 * 3);
+        gl.glDrawArrays(GL2.GL_LINES, 0, nEdges * 2);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }

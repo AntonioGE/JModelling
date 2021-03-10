@@ -76,7 +76,7 @@ public class EPointsGL implements ElementGL {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
         gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
 
-        gl.glDrawArrays(GL2.GL_POINTS, 0, nPoints * 3);
+        gl.glDrawArrays(GL2.GL_POINTS, 0, nPoints);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }

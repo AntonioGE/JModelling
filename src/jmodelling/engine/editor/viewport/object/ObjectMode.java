@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.editor.viewport.object;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -36,6 +37,7 @@ import jmodelling.engine.editor.viewport.object.tools.Navigate;
 import jmodelling.engine.editor.viewport.object.tools.ObjectTool;
 import jmodelling.engine.editor.viewport.object.tools.Rotate;
 import jmodelling.engine.editor.viewport.object.tools.Scale;
+import jmodelling.engine.object.Object3D;
 import jmodelling.gui.display.EditorDisplayGL;
 
 /**
@@ -44,6 +46,7 @@ import jmodelling.gui.display.EditorDisplayGL;
  */
 public class ObjectMode extends Mode {
 
+    public static final String NAME = "OBJECT MODE";
     private Tool tool;
 
     public ObjectMode(View3D editor, Engine engine) {
@@ -68,6 +71,73 @@ public class ObjectMode extends Mode {
 
     @Override
     public void display(GLAutoDrawable glad) {
+        GL2 gl = glad.getGL().getGL2();
+
+        engine.scene.updateGL(gl);
+
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+
+        /**
+         * Render unselected objects
+         */
+        engine.scene.getUnselectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+
+        /**
+         * Render HUD
+         */
+        gl.glDisable(GL2.GL_LIGHTING);
+        engine.scene.getHudObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+
+        /**
+         * Render selected objects outline
+         */
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glDepthMask(false);
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glLineWidth(2);
+
+        final Object3D lastSelected = engine.scene.getLastSelectedObject();
+        gl.glColor3f(0.945f, 0.345f, 0.0f);
+        for (Object3D obj : engine.scene.getSelectedObjects()) {
+            if (obj != lastSelected) {
+                obj.renderWireframe(gl);
+            }
+        }
+        if (lastSelected != null) {
+            gl.glColor3f(1.0f, 0.66f, 0.251f);
+            lastSelected.renderWireframe(gl);
+        }
+
+        /**
+         * Render selected objects
+         */
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glDepthMask(true);
+        gl.glLineWidth(1);
+        engine.scene.getSelectedObjects().forEach((obj) -> {
+            obj.renderOpaque(gl);
+        });
+
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisable(GL2.GL_LIGHTING);
+
         if (tool != null) {
             tool.display(glad);
         }
@@ -162,6 +232,13 @@ public class ObjectMode extends Mode {
         }
     }
 
+    @Override
+    public void destroy() {
+        if (this.tool != null) {
+            tool.destroy();
+        }
+    }
+    
     public void changeMode(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE: {
@@ -202,4 +279,11 @@ public class ObjectMode extends Mode {
         setTool(new Navigate(editor, this));
     }
 
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    
+    
 }

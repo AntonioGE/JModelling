@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
@@ -52,6 +53,10 @@ public class CollectionUtils {
 
     public static <E> LinkedHashSet<E> newLinkedHashSet(int expectedSize) {
         return new LinkedHashSet<>(expectedSizeToCapacity(expectedSize));
+    }
+    
+    public static <E> IdentitySet<E> newIdentitySet(int expectedSize) {
+        return new IdentitySet<>(expectedSizeToCapacity(expectedSize));
     }
 
 }

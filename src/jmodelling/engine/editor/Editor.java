@@ -74,10 +74,10 @@ public abstract class Editor {
 
     public abstract void mouseWheelMoved(MouseWheelEvent e);
 
-    public abstract String getEditorName();
+    public abstract String getName();
 
     public void repaintSameEditors() {
-        engine.updateDisplaysUsingEditor(this);
+        engine.repaintDisplaysUsingEditor(this);
     }
 
     public Engine getEngine() {

@@ -62,6 +62,7 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
         addMouseWheelListener(this);
 
         setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
     }
 
     @Override

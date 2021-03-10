@@ -38,6 +38,7 @@ import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.ListUtils;
+import jmodelling.utils.collections.IdentitySet;
 import jmodelling.utils.collections.node.CircularLinkedHashSet;
 
 /**
@@ -46,6 +47,9 @@ import jmodelling.utils.collections.node.CircularLinkedHashSet;
  */
 public class EMesh {
 
+    /**
+     * Mesh data
+     */
     public ArrayList<Vec3f> vtxs;
     public HashMap<Edge, Edge> edges;
     public LinkedHashSet<Polygon> polys;
@@ -54,8 +58,15 @@ public class EMesh {
 
     public LinkedHashSet<Material> mats;
 
+    /**
+     * Editor data
+     */
     public boolean resized;
     public boolean edited;
+    
+    public IdentitySet<Vec3f> selectedVtxs;
+    public IdentitySet<Vec3f> selectedEdges;
+    public IdentitySet<Vec3f> selectedPolys;
 
     public EMesh() {
         vtxs = new ArrayList<>();
@@ -68,6 +79,9 @@ public class EMesh {
 
         resized = false;
         edited = false;
+        selectedVtxs = new IdentitySet<>();
+        selectedEdges = new IdentitySet<>();
+        selectedPolys = new IdentitySet<>();
     }
 
     public EMesh(CMesh cmesh) {

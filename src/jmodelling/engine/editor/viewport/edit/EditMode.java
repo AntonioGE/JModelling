@@ -37,6 +37,8 @@ import jmodelling.engine.editor.viewport.View3D;
  */
 public class EditMode extends Mode {
 
+    public static final String NAME = "EDIT MODE";
+    
     public EditMode(View3D editor, Engine engine) {
         super(editor, engine);
     }
@@ -116,4 +118,16 @@ public class EditMode extends Mode {
         System.out.println("Hi");
     }
 
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    
+    
 }

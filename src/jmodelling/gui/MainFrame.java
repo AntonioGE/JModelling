@@ -37,6 +37,7 @@ import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.collections.IdentitySet;
 import jmodelling.utils.collections.node.CircularLinkedHashSet;
 import jmodelling.utils.collections.node.CircularLinkedList;
 import jmodelling.utils.collections.node.NodeIterator;
@@ -148,7 +149,6 @@ public class MainFrame extends JFrame {
         for(String s : list){
             System.out.println(s);
         }
-        
         
         System.out.println(Runtime.getRuntime().availableProcessors());
 

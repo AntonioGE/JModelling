@@ -40,8 +40,8 @@ public class IdentitySet<E> extends AbstractSet<E> implements Set<E> {
     private Map<E, Object> map;
     private static final Object PRESENT = new Object();
 
-    public IdentitySet(int size) {
-        this.map = new IdentityHashMap<>(size);
+    public IdentitySet(int initialCapacity) {
+        this.map = new IdentityHashMap<>(initialCapacity);
     }
 
     public IdentitySet(){

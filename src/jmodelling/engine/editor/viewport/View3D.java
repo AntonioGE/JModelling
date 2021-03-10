@@ -31,6 +31,7 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Editor;
+import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
@@ -78,7 +79,7 @@ public class View3D extends Editor {
         //gl.glEnable(GL2.GL_NORMALIZE);
 
         gl.glDepthFunc(GL2.GL_LESS);
-        
+
         //gl.glEnable(GL2.GL_STENCIL_TEST);
         //gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
         //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
@@ -108,77 +109,12 @@ public class View3D extends Editor {
         Mat4f t = TransfMat.translation_(cam.loc.negate_());
         Mat4f mv = rx.mul_(ry).mul(rz).mul(t);
         transf = p.mul_(mv);
-        
+
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadMatrixf(p.toArray(), 0);
-        
+
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadMatrixf(mv.toArray(), 0);
-        
-        engine.scene.updateGL(gl);
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-        /**
-         * Render unselected objects
-         */
-        engine.scene.getUnselectedObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        /**
-         * Render HUD
-         */
-        gl.glDisable(GL2.GL_LIGHTING);
-        engine.scene.getHudObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        /**
-         * Render selected objects outline
-         */
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl.glDepthMask(false);
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glLineWidth(2);
-
-        final Object3D lastSelected = engine.scene.getLastSelectedObject();
-        gl.glColor3f(0.945f, 0.345f, 0.0f);
-        for (Object3D obj : engine.scene.getSelectedObjects()) {
-            if (obj != lastSelected) {
-                obj.renderWireframe(gl);
-            }
-        }
-        if (lastSelected != null) {
-            gl.glColor3f(1.0f, 0.66f, 0.251f);
-            lastSelected.renderWireframe(gl);
-        }
-
-        /**
-         * Render selected objects
-         */
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glDepthMask(true);
-        gl.glLineWidth(1);
-        engine.scene.getSelectedObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisable(GL2.GL_LIGHTING);
 
         mode.display(glad);
     }
@@ -191,7 +127,6 @@ public class View3D extends Editor {
 
         //gl.glLoadIdentity();
         //lighting(gl);
-        
         Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
         Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
@@ -202,7 +137,7 @@ public class View3D extends Editor {
         gl.glLoadMatrixf(transf.toArray(), 0);
 
         lighting(gl);
-        
+
         engine.scene.updateGL(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -325,6 +260,11 @@ public class View3D extends Editor {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_TAB:{
+                //toggleMode();
+                repaintSameEditors();
+                break;
+            }
             case KeyEvent.VK_SHIFT: {
                 shiftPressed = true;
                 break;
@@ -351,38 +291,7 @@ public class View3D extends Editor {
         mode.mouseWheelMoved(e);
     }
 
-    private void lightinOld2(GL2 gl) {
-        gl.glEnable(GL2.GL_LIGHTING);
-        //gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-
-        gl.glEnable(GL2.GL_LIGHT0);
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 1.0f}, 0);
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 1.0f}, 0);
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 1.0f}, 0);
-//
-//        gl.glEnable(GL2.GL_LIGHT1);
-//        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 1.0f}, 0);
-//        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 1.0f}, 0);
-
-    }
-    
     private void lighting(GL2 gl) {
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-
-        gl.glEnable(GL2.GL_LIGHT0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, new float[]{1.0f, 1.0f, 0.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, new float[]{0.3f, 0.3f, 0.3f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, new float[]{0.1f, 0.1f, 0.1f, 0.0f}, 0);
-
-        gl.glEnable(GL2.GL_LIGHT1);
-        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, new float[]{0.5f, 0.5f, 1.0f, 0.0f}, 0);
-        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, new float[]{-1.0f, -1.0f, 0.0f, 0.0f}, 0);
-
-    }
-    private void lightingOld(GL2 gl) {
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, new float[]{1.0f, 1.0f, 1.0f, 0.0f}, 0);
 
@@ -463,8 +372,25 @@ public class View3D extends Editor {
         return shiftPressed;
     }
 
+    public void changeMode(Mode newMode){
+        mode.destroy();
+        mode = newMode;
+    }
+    
+    public Mode toggleMode(Mode mode){
+        switch(mode.getName()){
+            case EditMode.NAME:{
+                return new ObjectMode(this, engine);
+            }
+            case ObjectMode.NAME:{
+                return new EditMode(this, engine);
+            }
+        }
+        return new ObjectMode(this, engine);
+    }
+    
     @Override
-    public String getEditorName() {
+    public String getName() {
         return "VIEW3D";
     }
 

@@ -28,7 +28,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import jmodelling.engine.Engine;
-import jmodelling.gui.display.EditorDisplayGL;
 
 /**
  *
@@ -73,5 +72,9 @@ public abstract class Mode {
     public abstract void keyReleased(KeyEvent e);
 
     public abstract void mouseWheelMoved(MouseWheelEvent e);
+    
+    public abstract void destroy();
+    
+    public abstract String getName();
 
 }

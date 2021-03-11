@@ -24,6 +24,7 @@
 package jmodelling.engine.object.mesh.emesh;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -315,6 +316,14 @@ public class EMesh {
                 loop.nrm = normal;
             });
         });
+    }
+    
+    public void selectVtxs(Collection<Vec3f> vtxsToSelect){
+        for(Vec3f vtx : vtxsToSelect){
+            if(vtxs.contains(vtx)){
+                selectedVtxs.add(vtx);
+            }
+        }
     }
 
 }

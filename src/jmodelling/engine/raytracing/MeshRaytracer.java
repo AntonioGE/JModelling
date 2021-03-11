@@ -53,7 +53,7 @@ import jmodelling.math.vec.Vec4f;
  * @author ANTONIO
  */
 public class MeshRaytracer {
-    
+
     public static boolean rayIntersectsCMeshLocal(Vec3f rayPosLocal,
             Vec3f rayDirLocal,
             MeshObject meshObject,
@@ -119,8 +119,6 @@ public class MeshRaytracer {
             return false;
         }
     }
-
-    
 
     public static boolean rayIntersectsBoundingSphereLocal(Vec3f rayPosLocal,
             Vec3f rayDirLocal,
@@ -240,17 +238,33 @@ public class MeshRaytracer {
     }
 
     public static List<Vec3f> getIntersectingVtxs(Vec2f rayPos,
-            Collection<Vec3f> vtxs, Mat4f objMat, Mat4f camMVP, float minPixelDist) {
+            Collection<Vec3f> vtxs, Mat4f objMat, Mat4f camMVP, float radius) {
 
-        Mat4f transf = objMat.mul_(camMVP);
-        for(Vec3f vtx : vtxs){
+        IdentityHashMap<Vec3f, Float> intersections = new IdentityHashMap<>();
+        Mat4f transf = camMVP.mul_(objMat);
+        for (Vec3f vtx : vtxs) {
             Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
+            if (rayPos.dist(new Vec2f(projVec.x, projVec.y)) < radius) {
+                intersections.put(vtx, projVec.z);
+            }
         }
-        
-        return null;
+
+        TreeSet<Map.Entry<Vec3f, Float>> sortedByDist = new TreeSet<>(new Comparator<Map.Entry<Vec3f, Float>>() {
+            @Override
+            public int compare(Map.Entry<Vec3f, Float> s1, Map.Entry<Vec3f, Float> s2) {
+                return Float.compare(s2.getValue(), s1.getValue());
+            }
+        });
+        sortedByDist.addAll(intersections.entrySet());
+
+        List<Vec3f> sortedList = new ArrayList<>(sortedByDist.size());
+        sortedByDist.forEach((entry) -> {
+            sortedList.add(entry.getKey());
+        });
+
+        return sortedList;
     }
-    
-    
+
     //TODO: Remove this temporary function
     public static Vec3f getClosestIntersectionPoint(Vec3f rayPos, Vec3f rayDir,
             Set<MeshObject> objects) {

@@ -84,9 +84,13 @@ public class MeshEditableObject extends Object3D {
         emeshGL.init(gl);
     }
 
+    //TODO: Change this???
     @Override
     public void update(GL2 gl) {
-        emeshGL.update(gl);
+        emeshGL.delete(gl);
+        emeshGL = new EMeshGL(emesh);
+        emeshGL.init(gl);
+        //emeshGL.update(gl);
     }
 
     @Override

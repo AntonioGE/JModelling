@@ -73,8 +73,8 @@ public class Engine {
         scene.addHudObject(new Axis());
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
-        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
+        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Sphere.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Shape.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");

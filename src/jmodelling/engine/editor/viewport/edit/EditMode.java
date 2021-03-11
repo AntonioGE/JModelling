@@ -33,10 +33,12 @@ import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.edit.tools.EditTool;
+import jmodelling.engine.editor.viewport.edit.tools.Grab;
 import jmodelling.engine.editor.viewport.edit.tools.Select;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.mesh.MeshEditableObject;
+import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.emesh.gl.EShapeGL;
 
 /**
@@ -54,7 +56,7 @@ public class EditMode extends Mode {
 
         this.tool = new Select(editor, this);
         this.obj = obj;
-        
+
     }
 
     @Override
@@ -75,6 +77,10 @@ public class EditMode extends Mode {
     public void display(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
 
+        if (obj.emesh.edited || obj.emesh.resized) {
+            engine.scene.update(obj);
+        }
+
         engine.scene.updateGL(gl);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -86,8 +92,7 @@ public class EditMode extends Mode {
          * Render object to edit
          */
         obj.renderOpaque(gl);
-        
-        
+
         /**
          * Render unselected objects
          */
@@ -276,13 +281,19 @@ public class EditMode extends Mode {
                 setDefaultTool();
                 break;
             }
+
+            case KeyEvent.VK_G: {
+                if (!obj.emesh.selectedVtxs.isEmpty()) {
+                    setTool(new Grab(editor, this));
+                }
+                break;
+            }
         }
     }
 
     public void changeMode() {
+        editor.getScene().setLastSelectedObject(new MeshObject(obj));
         editor.setModesInEditors(ObjectMode.NAME);
     }
 
-    
-    
 }

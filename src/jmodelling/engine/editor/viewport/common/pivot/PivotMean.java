@@ -46,6 +46,7 @@ public class PivotMean extends Pivot{
             mean.add(vtx);
         }
         mean.scale(1.0f / vtxs.size());
+        point = mean;
     }
     
 }

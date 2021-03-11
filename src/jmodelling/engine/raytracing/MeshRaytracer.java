@@ -252,7 +252,7 @@ public class MeshRaytracer {
         TreeSet<Map.Entry<Vec3f, Float>> sortedByDist = new TreeSet<>(new Comparator<Map.Entry<Vec3f, Float>>() {
             @Override
             public int compare(Map.Entry<Vec3f, Float> s1, Map.Entry<Vec3f, Float> s2) {
-                return Float.compare(s2.getValue(), s1.getValue());
+                return Float.compare(s1.getValue(), s2.getValue());
             }
         });
         sortedByDist.addAll(intersections.entrySet());

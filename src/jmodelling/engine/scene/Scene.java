@@ -65,7 +65,7 @@ public class Scene {
      * Object to edit
      */
     private Object3D objectToEdit;
-    
+
     /**
      * Objects GL updating
      */
@@ -115,6 +115,7 @@ public class Scene {
     private void updateObjects(GL2 gl) {
         objectsToUpdate.forEach((obj) -> {
             obj.update(gl);
+            System.out.println("Update: " + obj.name);
         });
         objectsToUpdate.clear();
     }
@@ -235,8 +236,8 @@ public class Scene {
             return objects.size() == selectedObjects.size();
         }
     }
-    
-    public boolean areAllObjectsUnselected(){
+
+    public boolean areAllObjectsUnselected() {
         if (objects.isEmpty()) {
             return false;
         } else {
@@ -246,6 +247,14 @@ public class Scene {
 
     public Object3D getLastSelectedObject() {
         return lastSelectedObject;
+    }
+
+    public void setLastSelectedObject(Object3D obj) {
+        if (lastSelectedObject != null) {
+            removeObject(lastSelectedObject);
+        }
+        addObject(obj);
+        lastSelectedObject = obj;
     }
 
     public boolean isLastObjectSelected() {
@@ -285,9 +294,9 @@ public class Scene {
     public Collection<Object3D> getHudObjects() {
         return hudObjectsReadOnly.values();
     }
-    
-    public void setObjectToEdit(Object3D obj){
-        if(objectToEdit != null){
+
+    public void setObjectToEdit(Object3D obj) {
+        if (objectToEdit != null) {
             objectsToDelete.add(objectToEdit);
         }
         objectToEdit = obj;

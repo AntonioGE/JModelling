@@ -128,6 +128,7 @@ public class Grab extends TransformTool {
     @Override
     public void mouseMoved(MouseEvent e) {
         moveObjects();
+        editor.getScene().update(mode.obj);
         editor.repaintSameEditors();
     }
 

@@ -261,20 +261,20 @@ public class ObjectMode extends Mode {
 
             case KeyEvent.VK_G: {
                 if (editor.getScene().isAnyObjectSelected()) {
-                    tool = new Grab(editor, this);
+                    setTool(new Grab(editor, this));
                 }
                 break;
             }
 
             case KeyEvent.VK_R: {
                 if (editor.getScene().isAnyObjectSelected()) {
-                    tool = new Rotate(editor, this);
+                    setTool(new Rotate(editor, this));
                 }
                 break;
             }
             case KeyEvent.VK_S: {
                 if (editor.getScene().isAnyObjectSelected()) {
-                    tool = new Scale(editor, this);
+                    setTool(new Scale(editor, this));
                 }
                 break;
             }

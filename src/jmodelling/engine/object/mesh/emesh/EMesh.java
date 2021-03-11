@@ -64,7 +64,7 @@ public class EMesh {
      */
     public boolean resized;
     public boolean edited;
-    
+
     public IdentitySet<Vec3f> selectedVtxs;
     public IdentitySet<Vec3f> selectedEdges;
     public IdentitySet<Vec3f> selectedPolys;
@@ -128,6 +128,9 @@ public class EMesh {
 
         resized = false;
         edited = false;
+        selectedVtxs = new IdentitySet<>();
+        selectedEdges = new IdentitySet<>();
+        selectedPolys = new IdentitySet<>();
     }
 
     //TODO: Not tested?
@@ -227,7 +230,7 @@ public class EMesh {
             polys.add(poly);
             addMaterial(mat);
             polyGroups.get(mat).add(poly);
-            
+
             resized = true;
         }
     }
@@ -317,13 +320,38 @@ public class EMesh {
             });
         });
     }
-    
-    public void selectVtxs(Collection<Vec3f> vtxsToSelect){
-        for(Vec3f vtx : vtxsToSelect){
-            if(vtxs.contains(vtx)){
+
+    //TODO: Check for another way of storing the vertex array?
+    public void selectVtxs(Collection<Vec3f> vtxsToSelect) {
+        IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
+        for (Vec3f vtx : vtxs) {
+            vtxsSet.add(vtx);
+        }
+        for (Vec3f vtx : vtxsToSelect) {
+            if (vtxsSet.contains(vtx)) {
                 selectedVtxs.add(vtx);
             }
         }
+    }
+
+    //TODO: Check for another way of storing the vertex array?
+    public void selectVtx(Vec3f vtxToSelect) {
+        IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
+        for (Vec3f vtx : vtxs) {
+            vtxsSet.add(vtx);
+        }
+        if (vtxsSet.contains(vtxToSelect)) {
+            selectedVtxs.add(vtxToSelect);
+        }
+    }
+    
+    public boolean isPolygonSelected(Polygon polygon){
+        for(Loop loop : polygon.loops){
+            if(!selectedVtxs.contains(loop.vtx)){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

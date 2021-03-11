@@ -21,22 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.common.pivot;
-
-import java.util.Collection;
-import jmodelling.math.vec.Vec3f;
+package jmodelling.utils.collections;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class Pivot {
-
-    protected Vec3f point;
-
-    public final Vec3f get(){
-        return point;
-    }
-
-    public abstract void update();
+public class LinkedIdentitySet extends IdentitySet{
+    
 }

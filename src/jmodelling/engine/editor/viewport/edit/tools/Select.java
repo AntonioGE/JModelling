@@ -27,6 +27,7 @@ import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
@@ -76,6 +77,9 @@ public class Select extends EditTool {
                     mode.obj.getModelMatrix(),
                     editor.getTransf(), 0.075f);
             if(!vtxs.isEmpty()){
+                mode.obj.emesh.selectVtx(vtxs.get(0));
+                editor.getScene().update(mode.obj);
+                editor.repaintSameEditors();
                 vtxs.get(0).print();
             }
         }
@@ -109,6 +113,12 @@ public class Select extends EditTool {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            List<Vec3f> list = new ArrayList<>(mode.obj.emesh.vtxs.size());
+            for(Vec3f vtx : mode.obj.emesh.vtxs){
+                list.add(vtx.clone());
+            }
+            //mode.obj.emesh.selectVtxsContains(list);
+            mode.obj.emesh.selectVtxs(list);
             /*
             MeshRaytracer.getIntersectingVtxs(
                     null, 
@@ -116,6 +126,7 @@ public class Select extends EditTool {
                     mode.obj.getModelMatrix(),
                     editor.getTransf(), 0);*/
         }
+        mode.changeTool(e);
     }
 
     @Override

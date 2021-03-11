@@ -70,8 +70,21 @@ public class EMeshGL implements ElementGL {
                 for (Loop loop : poly.tris) {
                     loop.vtx.writeInBuffer(shapeGL.vtxs);
                     loop.nrm.writeInBuffer(shapeGL.nrms);
-                    loop.clr.writeInBuffer(shapeGL.clrs);
+                    //loop.clr.writeInBuffer(shapeGL.clrs);
                     loop.uv.writeInBuffer(shapeGL.uvs);
+                }
+                if(emesh.isPolygonSelected(poly)){
+                    for (Loop loop : poly.tris) {
+                        shapeGL.clrs.put(1.0f);
+                        shapeGL.clrs.put(0.8f);
+                        shapeGL.clrs.put(0.5f);
+                    }
+                }else{
+                    for (Loop loop : poly.tris) {
+                        shapeGL.clrs.put(1.0f);
+                        shapeGL.clrs.put(1.0f);
+                        shapeGL.clrs.put(1.0f);
+                    }
                 }
             }
             shapeGL.vtxs.reset();
@@ -93,9 +106,31 @@ public class EMeshGL implements ElementGL {
             edge.v0.writeInBuffer(wireframe.vtxs);
             edge.v1.writeInBuffer(wireframe.vtxs);
         }
+        
+        for(Edge edge : emesh.edges.values()){
+            if(emesh.selectedVtxs.contains(edge.v0)){
+                wireframe.clrs.put(1.0f);
+                wireframe.clrs.put(0.62f);
+                wireframe.clrs.put(0.0f);
+            }else{
+                wireframe.clrs.put(0.0f);
+                wireframe.clrs.put(0.0f);
+                wireframe.clrs.put(0.0f);
+            }
+            if(emesh.selectedVtxs.contains(edge.v1)){
+                wireframe.clrs.put(1.0f);
+                wireframe.clrs.put(0.62f);
+                wireframe.clrs.put(0.0f);
+            }else{
+                wireframe.clrs.put(0.0f);
+                wireframe.clrs.put(0.0f);
+                wireframe.clrs.put(0.0f);
+            }
+        }
+        /*
         for (int i = 0, size = emesh.edges.size() * 3 * 2; i < size; i++) {
             wireframe.clrs.put(0.0f);
-        }
+        }*/
         wireframe.vtxs.reset();
         wireframe.clrs.reset();
         return wireframe;
@@ -108,9 +143,21 @@ public class EMeshGL implements ElementGL {
         for (Vec3f vtx : emesh.vtxs) {
             vtx.writeInBuffer(points.vtxs);
         }
+        for (Vec3f vtx : emesh.vtxs) {
+            if(emesh.selectedVtxs.contains(vtx)){
+                points.clrs.put(1.0f);
+                points.clrs.put(0.5f);
+                points.clrs.put(0.0f);
+            }else{
+                points.clrs.put(0.0f);
+                points.clrs.put(0.0f);
+                points.clrs.put(0.0f);
+            }
+        }
+        /*
         for (int i = 0, size = emesh.vtxs.size() * 3; i < size; i++) {
             points.clrs.put(0.0f);
-        }
+        }*/
         points.vtxs.reset();
         points.clrs.reset();
         return points;
@@ -127,16 +174,22 @@ public class EMeshGL implements ElementGL {
 
     @Override
     public void render(GL2 gl) {
+        //gl.glDisable(GL2.GL_LIGHTING);
+        gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
         gl.glDepthRange(0.002f, 1.0f);
         for (EShapeGL shape : shapes.values()) {
             shape.render(gl);
         }
         gl.glDepthRange(0.0f, 1.0f);
+        
+        gl.glDepthMask(false);
         gl.glDisable(GL2.GL_LIGHTING);
-        wireframe.render(gl);
         gl.glPointSize(3);
+        wireframe.render(gl);
         points.render(gl);
         gl.glEnable(GL2.GL_LIGHTING);
+        gl.glDepthMask(true);
     }
 
     @Override

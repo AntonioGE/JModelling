@@ -61,7 +61,7 @@ public class AxisSmall extends Object3D {
     public void renderOpaque(GL2 gl) {
         gl.glPushMatrix();
 
-        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+        gl.glMultMatrixf(getModelMatrix().toArray(), 0);
 
         gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);

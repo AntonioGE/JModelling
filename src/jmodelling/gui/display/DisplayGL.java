@@ -49,6 +49,7 @@ import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.engine.object.hud.AxisSmall;
+import jmodelling.engine.raytracing.MeshRaytracer;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
 import jmodelling.math.mat.Mat4f;
@@ -514,7 +515,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     deltaY * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)),
                     0.0f
             );
-            cam.loc.add(trans.mul(cam.getLocalAxis3f()));
+            cam.loc.add(trans.mul(cam.getRotationMatrix3f()));
 
         } else if (SwingUtilities.isRightMouseButton(e)) {
             float sensitivity = 2.0f;
@@ -613,7 +614,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 repaint();
                 break;
             case KeyEvent.VK_R:
-                MeshObject objSelected = Raytracer.getSelectedMeshObject(cam.loc,
+                MeshObject objSelected = MeshRaytracer.getSelectedMeshObject(cam.loc,
                         cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
                         scene.getMeshObjects());
                 if (objSelected != null) {
@@ -621,7 +622,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                     this.objectSelected = objSelected;
                 }
 
-                Vec3f point = Raytracer.getClosestIntersectionPoint(cam.loc,
+                Vec3f point = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
                         cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
                         scene.getMeshObjects());
                 if (point != null) {
@@ -645,7 +646,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 int delta = 10;
                 for (int i = 0; i < getWidth(); i += delta) {
                     for (int j = 0; j < getHeight(); j += delta) {
-                        Vec3f p = Raytracer.getClosestIntersectionPoint(cam.loc,
+                        Vec3f p = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
                                 cam.viewPosToRay(i, j, getWidth(), getHeight()),
                                 scene.getMeshObjects());
                         if (p != null) {
@@ -675,7 +676,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                             final int size = getWidth() / threads.length;
                             for (int i = 0; i < getWidth() / threads.length; i += delta) {
                                 for (int j = 0; j < getHeight(); j += delta) {
-                                    Vec3f p = Raytracer.getClosestIntersectionPoint(cam.loc,
+                                    Vec3f p = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
                                             cam.viewPosToRay(i + id * size, j, getWidth(), getHeight()),
                                             scene.getMeshObjects());
                                     if (p != null) {

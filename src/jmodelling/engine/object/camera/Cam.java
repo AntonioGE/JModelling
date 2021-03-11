@@ -25,6 +25,7 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
+import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -136,6 +137,16 @@ public abstract class Cam extends Object3D {
     public abstract Vec3f viewPosToRayAspect(Vec2f posView, float aspect);
     
     public abstract Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight);
+    
+    public abstract Mat4f getProjectionMatrix(float aspect);
+    
+    public Mat4f getModelViewMatrix(){
+        Mat4f rx = TransfMat.rotationDeg_(-rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(-rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(-rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(loc.negate_());
+        return rx.mul_(ry).mul(rz).mul(t);
+    }
     
     @Override
     public abstract void renderOpaque(GL2 gl);

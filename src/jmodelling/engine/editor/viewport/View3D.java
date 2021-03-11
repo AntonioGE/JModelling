@@ -106,12 +106,8 @@ public class View3D extends Editor {
         gl.glLoadIdentity();
         lighting(gl);
 
-        Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
-        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
-        Mat4f t = TransfMat.translation_(cam.loc.negate_());
-        Mat4f mv = rx.mul_(ry).mul(rz).mul(t);
+        Mat4f p = cam.getProjectionMatrix(panel.getAspect());
+        Mat4f mv = cam.getModelViewMatrix();
         transf = p.mul_(mv);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -339,7 +335,7 @@ public class View3D extends Editor {
                     deltaY * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)),
                     0.0f
             );
-            cam.loc.add(trans.mul(cam.getLocalAxis3f()));
+            cam.loc.add(trans.mul(cam.getRotationMatrix3f()));
 
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             float sensitivity = 2.0f;

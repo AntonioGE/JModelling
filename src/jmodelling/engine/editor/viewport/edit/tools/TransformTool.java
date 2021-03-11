@@ -21,53 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object.tools;
+package jmodelling.engine.editor.viewport.edit.tools;
 
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Set;
 import jmodelling.engine.editor.common.TypedFloat;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
-import jmodelling.engine.object.Object3D;
-import jmodelling.engine.object.transform.Transform;
-import jmodelling.engine.scene.Scene;
+import jmodelling.engine.editor.viewport.common.pivot.Pivot;
+import jmodelling.engine.editor.viewport.common.pivot.PivotMean;
+import jmodelling.engine.editor.viewport.edit.EditMode;
+import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.CollectionUtils;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class TransformTool extends ObjectTool {
+public abstract class TransformTool extends EditTool {
 
     protected final int firstMouseX, firstMouseY;
-    protected HashMap<Object3D, Transform> transforms;
-    protected final Set<Object3D> selectedObjs;
-    protected final Object3D lastSelected;
-    //private Vec3f center; //TODO: Move objects from the mean center
+    protected IdentityHashMap<Vec3f, Vec3f> vtxLocs;
+    protected Pivot pivot;
     protected TypedFloat transfAmount;
+    
 
-    public TransformTool(View3D editor, ObjectMode objectMode) {
-        super(editor, objectMode);
+    public TransformTool(View3D editor, EditMode editMode) {
+        super(editor, editMode);
 
         firstMouseX = editor.getMouseX();
         firstMouseY = editor.getMouseY();
-
-        Scene scene = editor.getScene();
-        selectedObjs = scene.getSelectedObjects();
-        transforms = new HashMap<>(selectedObjs.size());
-        selectedObjs.forEach((obj) -> {
-            transforms.put(obj, obj.getTransform().clone());
-        });
-
-        if (scene.isLastObjectSelected()) {
-            lastSelected = scene.getLastSelectedObject();
-        } else {
-            lastSelected = selectedObjs.iterator().next();
+        
+        Set<Vec3f> selectedVtxs = editMode.obj.emesh.selectedVtxs;
+        vtxLocs = CollectionUtils.newIdentityHashMap(selectedVtxs.size());
+        for(Vec3f vtx : selectedVtxs){
+            vtxLocs.put(vtx, vtx.clone());
         }
 
+        pivot = new PivotMean(selectedVtxs);
         transfAmount = new TypedFloat();
     }
 
-
+    
 }

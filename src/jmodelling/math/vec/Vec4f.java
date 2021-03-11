@@ -202,6 +202,42 @@ public class Vec4f {
     }
 
     /**
+     * Divides the xyz components of the vector by the w component and stores
+     * the result in a Vec3f.
+     * 
+     * @param src vector to be converted
+     * @param dst output converted vector
+     */
+    public static void toVec3f(Vec4f src, Vec3f dst){
+        dst.x = src.x / src.w;
+        dst.y = src.y / src.w;
+        dst.z = src.z / src.w;
+    }
+    
+    /**
+     * Divides the xyz components of the vector by the w component and stores
+     * the result in a new Vec3f.
+     * 
+     * @param src vector to be converted
+     * @return converted vector
+     */
+    public static Vec3f toVec3f_(Vec4f src){
+        Vec3f dst = new Vec3f();
+        toVec3f(src, dst);
+        return dst;
+    }
+    
+    /**
+     * Divides the xyz components of this vector by the w component and stores
+     * the result in a new Vec3f.
+     * 
+     * @return converted vector
+     */
+    public Vec3f toVec3f(){
+        return toVec3f_(this);
+    }
+    
+    /**
      * Creates a float array containing the X, Y, Z, W coordinates of the vector
      *
      * @return the new float array containing the X, Y, Z, W of the vector

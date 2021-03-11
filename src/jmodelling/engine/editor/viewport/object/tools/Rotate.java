@@ -255,7 +255,7 @@ public class Rotate extends TransformTool {
     }
 
     private void rotateObjects() {
-        if (moveAmount.isEmpty()) {
+        if (transfAmount.isEmpty()) {
             Mat3f rot;
             switch (rotationType) {
                 case PLANAR:
@@ -274,11 +274,6 @@ public class Rotate extends TransformTool {
             });
         } else {
             try {
-                float module = Float.valueOf(moveAmount);
-                if (negateMove) {
-                    module = -module;
-                }
-
                 //final Vec3f trans = grabType.axis.scale_(module);
                 selectedObjs.forEach((obj) -> {
                     //obj.loc.set(transforms.get(obj).loc.add_(trans));

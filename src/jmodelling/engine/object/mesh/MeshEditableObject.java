@@ -68,7 +68,7 @@ public class MeshEditableObject extends Object3D {
         }
         gl.glPushMatrix();
 
-        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+        gl.glMultMatrixf(getModelMatrix().toArray(), 0);
         emeshGL.render(gl);
 
         gl.glPopMatrix();

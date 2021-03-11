@@ -57,7 +57,7 @@ public class Axis extends Object3D{
     public void renderOpaque(GL2 gl) {
         gl.glPushMatrix();
 
-        gl.glMultMatrixf(getLocalAxis().toArray(), 0);
+        gl.glMultMatrixf(getModelMatrix().toArray(), 0);
 
         gl.glScalef(scale, scale, scale);
         

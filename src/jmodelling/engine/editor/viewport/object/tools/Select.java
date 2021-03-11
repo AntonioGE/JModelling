@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.mesh.MeshObject;
+import jmodelling.engine.raytracing.MeshRaytracer;
 import jmodelling.engine.raytracing.Raytracer;
 import jmodelling.engine.scene.Scene;
 import jmodelling.math.vec.Vec2f;
@@ -78,7 +79,7 @@ public class Select extends ObjectTool {
 
         if (editor.isShiftPressed()) {
             if (SwingUtilities.isRightMouseButton(e)) {
-                List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
+                List<MeshObject> objsSelected = MeshRaytracer.getIntersectingMeshObjects(
                         editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());
@@ -95,7 +96,7 @@ public class Select extends ObjectTool {
             }
         } else {
             if (SwingUtilities.isRightMouseButton(e)) {
-                final List<MeshObject> objsSelected = Raytracer.getIntersectingMeshObjects(
+                final List<MeshObject> objsSelected = MeshRaytracer.getIntersectingMeshObjects(
                         editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());

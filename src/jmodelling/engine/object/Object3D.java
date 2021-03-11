@@ -121,7 +121,7 @@ public abstract class Object3D {
     
     public abstract String getType();
     
-    public Mat4f getLocalAxis() {
+    public Mat4f getModelMatrix() {
         Mat4f t = TransfMat.translation_(loc);
         Mat4f rx = TransfMat.rotationDeg_(rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
@@ -131,7 +131,7 @@ public abstract class Object3D {
         return t.mul(rz.mul(ry.mul(rx.mul(s))));
     }
 
-    public Mat3f getLocalAxis3f() {
+    public Mat3f getRotationMatrix3f() {
         return TransfMat.eulerDegToMat_(rot);
     }
 

@@ -34,7 +34,7 @@ import jmodelling.engine.editor.viewport.edit.EditMode;
  *
  * @author ANTONIO
  */
-public class Select extends EditTool{
+public class Select extends EditTool {
 
     public Select(View3D editor, EditMode editMode) {
         super(editor, editMode);
@@ -59,10 +59,12 @@ public class Select extends EditTool{
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        
     }
 
     @Override
@@ -110,5 +112,5 @@ public class Select extends EditTool{
     @Override
     public void exitTool() {
     }
-    
+
 }

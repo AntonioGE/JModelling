@@ -47,7 +47,7 @@ public class EditMode extends Mode {
 
     public static final String NAME = "EDIT MODE";
     private Tool tool;
-    private MeshEditableObject obj;
+    public final MeshEditableObject obj;
 
     public EditMode(View3D editor, Engine engine, MeshEditableObject obj) {
         super(editor, engine);
@@ -283,4 +283,6 @@ public class EditMode extends Mode {
         editor.setModesInEditors(ObjectMode.NAME);
     }
 
+    
+    
 }

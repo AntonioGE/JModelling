@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.editor.viewport.object.tools;
+package jmodelling.engine.editor.viewport.edit.tools;
 
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Cursor;
@@ -31,11 +31,10 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.common.TypedFloat;
 import jmodelling.engine.editor.viewport.View3D;
-import jmodelling.engine.editor.viewport.object.ObjectMode;
+import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.hud.InfiniteLine;
 import jmodelling.engine.transform.Transformation;
-import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -60,8 +59,8 @@ public class Grab extends TransformTool {
     }
     private GrabType grabType;
 
-    public Grab(View3D editor, ObjectMode objectMode) {
-        super(editor, objectMode);
+    public Grab(View3D editor, EditMode editMode) {
+        super(editor, editMode);
 
         grabType = GrabType.PLANAR;
 
@@ -98,9 +97,9 @@ public class Grab extends TransformTool {
             exitTool();
             editor.repaintSameEditors();
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            selectedObjs.forEach((obj) -> {
-                obj.loc.set(transforms.get(obj).loc);
-            });
+            for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
+                vtx.set(vtxLocs.get(vtx));
+            }
             exitTool();
             editor.repaintSameEditors();
         }
@@ -204,14 +203,14 @@ public class Grab extends TransformTool {
     }
 
     private Vec3f linearTranslation() {
-        return Transformation.linearTranslation_(transforms.get(lastSelected).loc, grabType.axis,
+        return Transformation.linearTranslation_(pivot.get(), grabType.axis,
                 Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());
     }
 
     private Vec3f planarTranslation() {
-        return Transformation.planarTranslation_(transforms.get(lastSelected).loc,
+        return Transformation.planarTranslation_(pivot.get(),
                 Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 editor.getCam(), editor.getPanel().getAspect());
@@ -226,15 +225,15 @@ public class Grab extends TransformTool {
                 trans = linearTranslation();
             }
 
-            selectedObjs.forEach((obj) -> {
-                obj.loc.set(transforms.get(obj).loc.add_(trans));
-            });
+            for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
+                vtx.set(vtxLocs.get(vtx).add_(trans));
+            }
         } else {
             try {
                 final Vec3f trans = grabType.axis.scale_(transfAmount.getValue());
-                selectedObjs.forEach((obj) -> {
-                    obj.loc.set(transforms.get(obj).loc.add_(trans));
-                });
+                for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
+                    vtx.set(vtxLocs.get(vtx).add_(trans));
+                }
             } catch (NumberFormatException ex) {
 
             }
@@ -245,8 +244,7 @@ public class Grab extends TransformTool {
         if (grabType != grabLinear) {
             grabType = grabLinear;
             editor.getScene().replaceHudObject(new InfiniteLine(
-                    transforms.get(lastSelected).loc,
-                    grabType.axis, grabType.color));
+                    pivot.get(), grabType.axis, grabType.color));
         } else {
             grabType = GrabType.PLANAR;
             editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);

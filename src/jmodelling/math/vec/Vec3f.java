@@ -25,6 +25,7 @@ package jmodelling.math.vec;
 
 import java.nio.FloatBuffer;
 import jmodelling.math.mat.Mat3f;
+import jmodelling.math.mat.Mat4f;
 
 /**
  * 3D float vector
@@ -612,7 +613,7 @@ public class Vec3f {
     public Vec3f mul_(Mat3f src) {
         return mul_(src, this);
     }
-
+    
     /**
      * Performs element-wise (Hadamard product) multiplication of two vectors
      *

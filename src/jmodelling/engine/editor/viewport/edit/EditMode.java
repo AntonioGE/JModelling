@@ -223,6 +223,7 @@ public class EditMode extends Mode {
                 break;
             }
             case KeyEvent.VK_TAB: {
+                System.out.println("TAB EDIT MODE");
                 changeMode();
                 engine.repaintDisplaysUsingEditor(editor);
                 break;

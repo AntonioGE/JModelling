@@ -139,8 +139,12 @@ public class CShapeGL {
 
     public void delete(GL2 gl) {
         //gl.glDeleteVertexArrays(vao.length, vao, 0);
-        gl.glDeleteBuffers(vbos.length, vbos, 0);
-        gl.glDeleteBuffers(ebo.length, ebo, 0);
+        if(vbos != null){
+            gl.glDeleteBuffers(vbos.length, vbos, 0);
+        }
+        if(ebo != null){
+            gl.glDeleteBuffers(ebo.length, ebo, 0);
+        }
     }
 
 }

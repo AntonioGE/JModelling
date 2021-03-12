@@ -33,68 +33,72 @@ import java.nio.IntBuffer;
  * @author ANTONIO
  */
 public class CWireGL {
-    
+
     public int[] ebo;
     public int[] vbo;
-    
+
     public int nElements;
-    
+
     public FloatBuffer vtxs;
-    
+
     public IntBuffer elems;
-    
-    public CWireGL(int nVertices, int nElements){
+
+    public CWireGL(int nVertices, int nElements) {
         this.nElements = nElements;
-        
+
         vtxs = Buffers.newDirectFloatBuffer(nVertices * 3);
-        
+
         elems = Buffers.newDirectIntBuffer(nElements);
     }
-    
-    public CWireGL(float[] vertices, int[] edgeIndices){
+
+    public CWireGL(float[] vertices, int[] edgeIndices) {
         this.nElements = edgeIndices.length;
-        
+
         vtxs = Buffers.newDirectFloatBuffer(vertices);
-        
+
         elems = Buffers.newDirectIntBuffer(edgeIndices);
     }
-    
-    public void init(GL2 gl){
+
+    public void init(GL2 gl) {
         vbo = new int[1];
         ebo = new int[1];
-        
+
         gl.glGenBuffers(vbo.length, vbo, 0);
         gl.glGenBuffers(ebo.length, ebo, 0);
-        
+
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_STATIC_DRAW);
-        
+
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
         gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, elems.limit() * Integer.BYTES, elems, GL2.GL_STATIC_DRAW);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
-        
+
         vtxs.clear();
         elems.clear();
-        
+
         vtxs = null;
         elems = null;
     }
-    
-    public void render(GL2 gl){
+
+    public void render(GL2 gl) {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
         gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
         //gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        
+
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
         gl.glDrawElements(GL2.GL_LINES, nElements, GL2.GL_UNSIGNED_INT, 0);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
-    
-    public void delete(GL2 gl){
-        gl.glDeleteBuffers(vbo.length, vbo, 0);
-        gl.glDeleteBuffers(ebo.length, ebo, 0);
+
+    public void delete(GL2 gl) {
+        if (vbo != null) {
+            gl.glDeleteBuffers(vbo.length, vbo, 0);
+        }
+        if (ebo != null) {
+            gl.glDeleteBuffers(ebo.length, ebo, 0);
+        }
     }
-    
+
 }

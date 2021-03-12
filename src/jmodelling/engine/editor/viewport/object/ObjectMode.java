@@ -216,6 +216,7 @@ public class ObjectMode extends Mode {
                 break;
             }
             case KeyEvent.VK_TAB: {
+                System.out.println("TAB OBJECT MODE");
                 changeMode();
                 editor.repaintSameEditors();
                 break;

@@ -94,8 +94,10 @@ public class Scene {
 
     private void removeObjects(GL2 gl) {
         objectsToDelete.forEach((obj) -> {
+            System.out.print("Deleting '" + obj.name +"'... ");
             obj.delete(gl);
-            System.out.println("Delete: " + obj.name);
+            System.out.println("DONE");
+            
         });
         objectsToDelete.clear();
     }
@@ -122,6 +124,7 @@ public class Scene {
         }
         objects.put(object.name, object);
         objectsToInit.add(object);
+        objectsToDelete.remove(object);
         unselectedObjects.add(object);
         return true;
     }
@@ -134,6 +137,7 @@ public class Scene {
         selectedObjects.remove(object);
         unselectedObjects.remove(object);
         objects.remove(object.name);
+        objectsToInit.remove(object);
         objectsToDelete.add(object);
         return true;
     }
@@ -264,6 +268,7 @@ public class Scene {
         }
         hudObjects.put(object.name, object);
         objectsToInit.add(object);
+        objectsToDelete.remove(object);
         return true;
     }
 
@@ -281,6 +286,7 @@ public class Scene {
 
         hudObjects.remove(object.name);
         objectsToDelete.add(object);
+        objectsToInit.remove(object);
         return true;
     }
 

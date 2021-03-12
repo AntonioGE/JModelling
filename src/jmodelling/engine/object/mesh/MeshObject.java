@@ -56,7 +56,7 @@ public class MeshObject extends Object3D {
     }
     
     public MeshObject(MeshEditableObject emeshObject){
-        super(emeshObject.name.substring(0, emeshObject.name.length()-4), 
+        super(emeshObject.name, 
                 emeshObject.loc.clone(),
                 emeshObject.rot.clone(),
                 emeshObject.sca.clone());

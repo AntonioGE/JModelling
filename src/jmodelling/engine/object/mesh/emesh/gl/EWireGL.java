@@ -67,10 +67,10 @@ public class EWireGL implements ElementGL {
     public void render(GL2 gl) {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
         gl.glVertexPointer(3, GL2.GL_FLOAT, 0, 0);
-        
+
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
         gl.glColorPointer(3, GL2.GL_FLOAT, 0, 0);
-        
+
         gl.glDrawArrays(GL2.GL_LINES, 0, nEdges * 2);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
@@ -83,7 +83,7 @@ public class EWireGL implements ElementGL {
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
         gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, clrs.limit() * Float.BYTES, clrs);
-        
+
         //gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
 
@@ -94,7 +94,9 @@ public class EWireGL implements ElementGL {
 
         vtxs = null;
         clrs = null;
-        gl.glDeleteBuffers(vbo.length, vbo, 0);
+        if (vbo != null) {
+            gl.glDeleteBuffers(vbo.length, vbo, 0);
+        }
     }
 
 }

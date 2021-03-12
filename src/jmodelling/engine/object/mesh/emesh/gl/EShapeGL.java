@@ -141,23 +141,26 @@ public class EShapeGL implements ElementGL {
         nrms = null;
         clrs = null;
         uvs = null;
-        gl.glDeleteBuffers(vbos.length, vbos, 0);
+        
+        if (vbos != null) {
+            gl.glDeleteBuffers(vbos.length, vbos, 0);
+        }
     }
 
-    public void updateVtxs(){
+    public void updateVtxs() {
         updateVtxs = true;
     }
 
-    public void updateNrms(){
+    public void updateNrms() {
         updateNrms = true;
     }
 
-    public void updateClrs(){
+    public void updateClrs() {
         updateClrs = true;
     }
 
-    public void updateUvs(){
+    public void updateUvs() {
         updateUvs = true;
     }
-    
+
 }

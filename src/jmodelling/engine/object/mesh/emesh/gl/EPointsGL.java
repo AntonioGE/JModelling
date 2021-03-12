@@ -90,10 +90,12 @@ public class EPointsGL implements ElementGL {
     public void delete(GL2 gl) {
         vtxs.clear();
         clrs.clear();
-
         vtxs = null;
         clrs = null;
-        gl.glDeleteBuffers(vbo.length, vbo, 0);
+        
+        if (vbo != null) {
+            gl.glDeleteBuffers(vbo.length, vbo, 0);
+        }
     }
 
 }

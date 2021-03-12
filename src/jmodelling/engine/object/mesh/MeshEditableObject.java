@@ -48,7 +48,7 @@ public class MeshEditableObject extends Object3D {
     }
 
     public MeshEditableObject(MeshObject meshObject) {
-        super(meshObject.name + " EDIT", meshObject.loc.clone(), meshObject.rot.clone(), meshObject.sca.clone());
+        super(meshObject.name, meshObject.loc.clone(), meshObject.rot.clone(), meshObject.sca.clone());
 
         this.emesh = new EMesh(meshObject.cmesh);
         this.emeshGL = new EMeshGL(emesh);
@@ -101,7 +101,8 @@ public class MeshEditableObject extends Object3D {
 
     @Override
     public void delete(GL2 gl) {
-        emeshGL.update(gl);
+        //emeshGL.update(gl);
+        emeshGL.delete(gl);
     }
 
     @Override

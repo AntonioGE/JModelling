@@ -34,8 +34,11 @@ import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.hud.InfiniteLine;
+import jmodelling.engine.object.mesh.emesh.Loop;
+import jmodelling.engine.object.mesh.emesh.Polygon;
 import jmodelling.engine.transform.Transformation;
 import jmodelling.math.vec.Vec3f;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
@@ -229,6 +232,20 @@ public class Grab extends TransformTool {
             for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
                 vtx.set(vtxLocs.get(vtx).add_(trans));
             }
+            
+            IdentitySet<Polygon> polysToUpdate = new IdentitySet<>();
+            for(Vec3f vtx : mode.obj.emesh.selectedVtxs){
+                IdentitySet<Polygon> polys = mode.obj.emesh.polysUsingVtx.get(vtx);
+                if(polys != null){
+                    for(Polygon p : polys){
+                        polysToUpdate.add(p);
+                    }
+                }
+            }
+            for(Polygon p : polysToUpdate){
+                p.updateTris();
+            }
+            
         } else {
             try {
                 final Vec3f trans = grabType.axis.scale_(transfAmount.getValue());

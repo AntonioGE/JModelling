@@ -102,10 +102,23 @@ public class EarClipping {
         }
 
         //Add remaining vertices
+        for(Node<VInd> node = vtxs.getFirstNode(); vtxs.size() > 3; ){
+            tris.add(node.item.index);
+            tris.add(node.next.item.index);
+            tris.add(node.next.next.item.index);
+            Node next = node.next;
+            vtxs.remove(node);
+            node = next;
+        }
         for (NodeIterator<VInd> iteVtxs = vtxs.iterator(); iteVtxs.hasNext(); iteVtxs.move()) {
             final Node<VInd> node = iteVtxs.getCurrentNode();
             tris.add(node.item.index);
         }
+        
+        if(tris.size() != (poly.size() - 2) * 3){
+            System.out.println("BAD TRIANGULATION!!!");
+        }
+        
         return tris;
     }
 

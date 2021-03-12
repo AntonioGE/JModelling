@@ -77,11 +77,23 @@ public class Polygon {
     }
 
     public final void updateTris() {
-        if (isTri()) {
+        if (loops.size() == 3) {
             tris = new ArrayList<>(3);
             for(Loop loop : loops){
                 tris.add(loop);
             }
+        } else if(loops.size() == 4){
+            tris = new ArrayList<>(6);
+            List<Loop> loopArray = new ArrayList<>(loops.size());
+            for(Loop loop : loops){
+                loopArray.add(loop);
+            }
+            tris.add(loopArray.get(0));
+            tris.add(loopArray.get(1));
+            tris.add(loopArray.get(3));
+            tris.add(loopArray.get(1));
+            tris.add(loopArray.get(2));
+            tris.add(loopArray.get(3));
         } else {
             List<Integer> triInds = EarClipping.triangulate(getVertices());
             tris = new ArrayList<>(triInds.size());

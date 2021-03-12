@@ -87,10 +87,16 @@ public class MeshEditableObject extends Object3D {
     //TODO: Change this???
     @Override
     public void update(GL2 gl) {
-        emeshGL.delete(gl);
-        emeshGL = new EMeshGL(emesh);
-        emeshGL.init(gl);
-        //emeshGL.update(gl);
+        //emeshGL.genData(emesh);
+        long before = System.nanoTime();
+        emeshGL.updateData(emesh);
+        System.out.println("UPDATE EMESH TIME: " + (System.nanoTime() - before));
+        before = System.nanoTime();
+        emeshGL.update(gl);
+        System.out.println("UPDATE EMESHGL TIME: " + (System.nanoTime() - before));
+        //emeshGL.delete(gl);
+        //emeshGL = new EMeshGL(emesh);
+        //emeshGL.init(gl);
     }
 
     @Override

@@ -45,6 +45,11 @@ public class EShapeGL implements ElementGL {
     public FloatBuffer clrs;
     public FloatBuffer uvs;
 
+    private boolean updateVtxs;
+    private boolean updateNrms;
+    private boolean updateClrs;
+    private boolean updateUvs;
+
     public EShapeGL(Material mat, int nTris) {
         this.mat = mat;
         this.nTris = nTris;
@@ -75,15 +80,6 @@ public class EShapeGL implements ElementGL {
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 
-        vtxs.clear();
-        nrms.clear();
-        clrs.clear();
-        uvs.clear();
-
-        vtxs = null;
-        nrms = null;
-        clrs = null;
-        uvs = null;
     }
 
     @Override
@@ -107,12 +103,61 @@ public class EShapeGL implements ElementGL {
 
     @Override
     public void update(GL2 gl) {
+        if (updateVtxs) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[0]);
+            gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, vtxs.limit() * Float.BYTES, vtxs);
+            updateVtxs = false;
+        }
 
+        if (updateNrms) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[1]);
+            gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, nrms.limit() * Float.BYTES, nrms);
+            updateNrms = false;
+        }
+
+        if (updateClrs) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[2]);
+            gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, clrs.limit() * Float.BYTES, clrs);
+            updateClrs = false;
+        }
+
+        if (updateUvs) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbos[3]);
+            gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, uvs.limit() * Float.BYTES, uvs);
+            updateUvs = false;
+        }
+
+        //gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
 
     @Override
     public void delete(GL2 gl) {
+        vtxs.clear();
+        nrms.clear();
+        clrs.clear();
+        uvs.clear();
+
+        vtxs = null;
+        nrms = null;
+        clrs = null;
+        uvs = null;
         gl.glDeleteBuffers(vbos.length, vbos, 0);
     }
 
+    public void updateVtxs(){
+        updateVtxs = true;
+    }
+
+    public void updateNrms(){
+        updateNrms = true;
+    }
+
+    public void updateClrs(){
+        updateClrs = true;
+    }
+
+    public void updateUvs(){
+        updateUvs = true;
+    }
+    
 }

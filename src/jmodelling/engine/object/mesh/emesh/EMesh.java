@@ -56,6 +56,7 @@ public class EMesh {
     public LinkedHashSet<Polygon> polys;
 
     public HashMap<Material, LinkedHashSet<Polygon>> polyGroups;
+    public IdentityHashMap<Vec3f, IdentitySet<Polygon>> polysUsingVtx;
 
     public LinkedHashSet<Material> mats;
 
@@ -83,6 +84,7 @@ public class EMesh {
         selectedVtxs = new IdentitySet<>();
         selectedEdges = new IdentitySet<>();
         selectedPolys = new IdentitySet<>();
+        polysUsingVtx = new IdentityHashMap<>();
     }
 
     public EMesh(CMesh cmesh) {
@@ -100,6 +102,7 @@ public class EMesh {
             edgesList.add(edge);
         }
 
+        polysUsingVtx = new IdentityHashMap<>();//TODO: Refactor this
         mats = CollectionUtils.newLinkedHashSet(cmesh.shapes.size());
         polys = CollectionUtils.newLinkedHashSet(cmesh.getNumPolys());
         polyGroups = CollectionUtils.newHashMap(cmesh.shapes.size());
@@ -122,6 +125,14 @@ public class EMesh {
                     final Polygon poly = new Polygon(loops, shape.mat);
                     polys.add(poly);
                     polyGroups.get(shape.mat).add(poly);
+
+                    //TODO: refactor this
+                    for (Loop loop : poly.loops) {
+                        if (!polysUsingVtx.containsKey(loop.vtx)) {
+                            polysUsingVtx.put(loop.vtx, new IdentitySet<>());
+                        }
+                        polysUsingVtx.get(loop.vtx).add(poly);
+                    }
                 }
             }
         }
@@ -131,6 +142,7 @@ public class EMesh {
         selectedVtxs = new IdentitySet<>();
         selectedEdges = new IdentitySet<>();
         selectedPolys = new IdentitySet<>();
+        
     }
 
     //TODO: Not tested?
@@ -225,6 +237,12 @@ public class EMesh {
         Polygon poly = new Polygon(newLoops, mat);
         for (Edge edge : newEdges) {
             edges.put(edge, edge);
+        }
+        for (Loop loop : poly.loops) {
+            if (!polysUsingVtx.containsKey(loop.vtx)) {
+                polysUsingVtx.put(loop.vtx, new IdentitySet<>());
+            }
+            polysUsingVtx.get(loop.vtx).add(poly);
         }
         if (!polys.contains(poly)) {
             polys.add(poly);
@@ -344,10 +362,10 @@ public class EMesh {
             selectedVtxs.add(vtxToSelect);
         }
     }
-    
-    public boolean isPolygonSelected(Polygon polygon){
-        for(Loop loop : polygon.loops){
-            if(!selectedVtxs.contains(loop.vtx)){
+
+    public boolean isPolygonSelected(Polygon polygon) {
+        for (Loop loop : polygon.loops) {
+            if (!selectedVtxs.contains(loop.vtx)) {
                 return false;
             }
         }

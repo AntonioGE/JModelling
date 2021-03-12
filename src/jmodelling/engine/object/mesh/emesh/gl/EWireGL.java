@@ -54,18 +54,13 @@ public class EWireGL implements ElementGL {
         gl.glGenBuffers(vbo.length, vbo, 0);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_STATIC_DRAW);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vtxs.limit() * Float.BYTES, vtxs, GL2.GL_DYNAMIC_DRAW);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, clrs.limit() * Float.BYTES, clrs, GL2.GL_STATIC_DRAW);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, clrs.limit() * Float.BYTES, clrs, GL2.GL_DYNAMIC_DRAW);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 
-        vtxs.clear();
-        clrs.clear();
-
-        vtxs = null;
-        clrs = null;
     }
 
     @Override
@@ -83,10 +78,22 @@ public class EWireGL implements ElementGL {
 
     @Override
     public void update(GL2 gl) {
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[0]);
+        gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, vtxs.limit() * Float.BYTES, vtxs);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, vbo[1]);
+        gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, clrs.limit() * Float.BYTES, clrs);
+        
+        //gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
     }
 
     @Override
     public void delete(GL2 gl) {
+        vtxs.clear();
+        clrs.clear();
+
+        vtxs = null;
+        clrs = null;
         gl.glDeleteBuffers(vbo.length, vbo, 0);
     }
 

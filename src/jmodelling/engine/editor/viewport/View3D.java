@@ -81,6 +81,8 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_BLEND);
         gl.glEnable(GL2.GL_RESCALE_NORMAL);
         //gl.glEnable(GL2.GL_NORMALIZE);
+        gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
 
         gl.glDepthFunc(GL2.GL_LESS);
 
@@ -117,6 +119,68 @@ public class View3D extends Editor {
         gl.glLoadMatrixf(mv.toArray(), 0);
 
         mode.display(glad);
+
+        if (engine.scene.getLastSelectedObject() != null) {
+            engine.textRenderer.beginRendering(panel.getWidth(), panel.getHeight());
+            engine.textRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            engine.textRenderer.draw(
+                    "(" + String.valueOf(engine.scene.getSelectedObjects().size()) + ") "
+                    + engine.scene.getLastSelectedObject().name,
+                    60, 10);
+            engine.textRenderer.endRendering();
+        }
+
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+
+        final int sizePixels = 25;
+        final int xOffsetPixels = 25;
+        final int yOffsetPixels = 25;
+        final float scale = (float) sizePixels / panel.getWidth() * 2;
+        final float xOffset = ((float) xOffsetPixels / panel.getWidth()) * 2;
+        final float yOffset = ((float) yOffsetPixels / panel.getHeight()) * 2;
+        gl.glTranslatef(xOffset - 1.0f, yOffset - 1.0f, 0.0f);
+        gl.glScalef(scale, scale, scale);
+
+        gl.glScalef(1.0f, panel.getAspect(), 1.0f);
+
+        gl.glLineWidth(2.0f);
+
+        gl.glRotatef(-cam.rot.x, 1.0f, 0.0f, 0.0f);
+        gl.glRotatef(-cam.rot.y, 0.0f, 1.0f, 0.0f);
+        gl.glRotatef(-cam.rot.z, 0.0f, 0.0f, 1.0f);
+
+        gl.glBegin(GL2.GL_LINES);
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glVertex3f(1.0f, 0.0f, 0.0f);
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glVertex3f(0.0f, 0.0f, 0.0f);
+
+        gl.glColor3f(0.0f, 1.0f, 0.0f);
+        gl.glVertex3f(0.0f, 1.0f, 0.0f);
+        gl.glColor3f(0.0f, 1.0f, 0.0f);
+        gl.glVertex3f(0.0f, 0.0f, 0.0f);
+
+        gl.glColor3f(0.0f, 0.0f, 1.0f);
+        gl.glVertex3f(0.0f, 0.0f, 1.0f);
+        gl.glColor3f(0.0f, 0.0f, 1.0f);
+        gl.glVertex3f(0.0f, 0.0f, 0.0f);
+
+        gl.glEnd();
+
+        gl.glLineWidth(1.0f);
+
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPopMatrix();
+
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPopMatrix();
+
     }
 
     //This display method uses stencil testing
@@ -390,7 +454,7 @@ public class View3D extends Editor {
                 engine.scene.editSelectedObject();
                 Object3D obj = engine.scene.getLastSelectedObject();
                 if (obj != null) {
-                    MeshEditableObject emeshObj = (MeshEditableObject)(obj);
+                    MeshEditableObject emeshObj = (MeshEditableObject) (obj);
                     for (EditorDisplayGL panel : engine.getEditorDisplays()) {
                         if (panel.getEditor().getName().equals(View3D.NAME)) {
                             View3D editor = (View3D) panel.getEditor();
@@ -411,7 +475,8 @@ public class View3D extends Editor {
             }
         }
     }
-/*
+
+    /*
     //TODO: this code needs refactoring
     public void setModesInEditors(String modeName) {
         switch (modeName) {
@@ -440,8 +505,8 @@ public class View3D extends Editor {
             }
         }
     }
-*/
-    /*
+     */
+ /*
     public Mode toggleMode(Mode mode) {
         switch (mode.getName()) {
             case EditMode.NAME: {

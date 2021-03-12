@@ -28,6 +28,8 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLCapabilitiesImmutable;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import java.awt.Font;
 import java.util.List;
 import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.Mode;
@@ -54,6 +56,8 @@ public class Engine {
 
     public final GLAutoDrawable sharedDrawable;
     
+    public final TextRenderer textRenderer;
+    
     public Engine(MainFrame frame) {
         this.frame = frame;
 
@@ -70,6 +74,8 @@ public class Engine {
         sharedDrawable = GLDrawableFactory.getFactory(glp).createDummyAutoDrawable(null, createNewDevice, caps, null);
         sharedDrawable.display();
 
+        textRenderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12), true, false);
+        
         scene = new Scene();
         //scene.addHudObject(new Axis());
         scene.addHudObject(new Grid(16, 1.0f));
@@ -112,7 +118,7 @@ public class Engine {
         */
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                MeshObject obj = new MeshObject("Monito" + i + " " + j,
+                MeshObject obj = new MeshObject("Monito " + i + " " + j,
                         new Vec3f(i * 4.0f, j * 4.0f, 0.0f), mono.cmesh.clone());
                 scene.addObject(obj);
                 //obj.sca.set(0.01f, 0.01f, 0.01f);

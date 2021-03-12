@@ -304,8 +304,8 @@ public class EMeshGL implements ElementGL {
     @Override
     public void render(GL2 gl) {
         //gl.glDisable(GL2.GL_LIGHTING);
-        gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
-        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        //gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
+        //gl.glEnable(GL2.GL_COLOR_MATERIAL);
         gl.glDepthRange(0.002f, 1.0f);
         for (EShapeGL shape : shapes.values()) {
             shape.render(gl);

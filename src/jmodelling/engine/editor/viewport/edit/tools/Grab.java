@@ -34,9 +34,9 @@ import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.hud.InfiniteLine;
-import jmodelling.engine.object.mesh.emesh.Loop;
 import jmodelling.engine.object.mesh.emesh.Polygon;
 import jmodelling.engine.transform.Transformation;
+import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.utils.collections.IdentitySet;
 
@@ -207,14 +207,14 @@ public class Grab extends TransformTool {
     }
 
     private Vec3f linearTranslation() {
-        return Transformation.linearTranslation_(pivot.get(), grabType.axis,
+        return Transformation.linearTranslation_(transformedPivot(), grabType.axis,
                 Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());
     }
 
     private Vec3f planarTranslation() {
-        return Transformation.planarTranslation_(pivot.get(),
+        return Transformation.planarTranslation_(transformedPivot(),
                 Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 editor.getCam(), editor.getPanel().getAspect());
@@ -229,23 +229,25 @@ public class Grab extends TransformTool {
                 trans = linearTranslation();
             }
 
+            trans.had(mode.obj.sca.invert_()).mul(mode.obj.getRotationMatrix3f().transp_());
+
             for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
                 vtx.set(vtxLocs.get(vtx).add_(trans));
             }
-            
+
             IdentitySet<Polygon> polysToUpdate = new IdentitySet<>();
-            for(Vec3f vtx : mode.obj.emesh.selectedVtxs){
+            for (Vec3f vtx : mode.obj.emesh.selectedVtxs) {
                 IdentitySet<Polygon> polys = mode.obj.emesh.polysUsingVtx.get(vtx);
-                if(polys != null){
-                    for(Polygon p : polys){
+                if (polys != null) {
+                    for (Polygon p : polys) {
                         polysToUpdate.add(p);
                     }
                 }
             }
-            for(Polygon p : polysToUpdate){
+            for (Polygon p : polysToUpdate) {
                 p.updateTris();
             }
-            
+
         } else {
             try {
                 final Vec3f trans = grabType.axis.scale_(transfAmount.getValue());
@@ -262,7 +264,7 @@ public class Grab extends TransformTool {
         if (grabType != grabLinear) {
             grabType = grabLinear;
             editor.getScene().replaceHudObject(new InfiniteLine(
-                    pivot.get(), grabType.axis, grabType.color));
+                    transformedPivot(), grabType.axis, grabType.color));
         } else {
             grabType = GrabType.PLANAR;
             editor.getScene().removeHudObject(InfiniteLine.TYPE_NAME);
@@ -276,4 +278,10 @@ public class Grab extends TransformTool {
         editor.getPanel().setCursor(Cursor.getDefaultCursor());
     }
 
+    private Vec3f transformedPivot() {
+        Vec3f transfLoc = pivot.get().clone();
+        transfLoc.mul(mode.obj.getRotationMatrix3f()).had(mode.obj.sca).add(mode.obj.loc);
+        return transfLoc;
+    }
+    
 }

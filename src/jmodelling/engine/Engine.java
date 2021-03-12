@@ -33,6 +33,7 @@ import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.Mode;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.hud.Axis;
+import jmodelling.engine.object.hud.Grid;
 import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.engine.object.mesh.cmesh.CMesh;
 import jmodelling.engine.object.mesh.emesh.EMesh;
@@ -70,16 +71,18 @@ public class Engine {
         sharedDrawable.display();
 
         scene = new Scene();
-        scene.addHudObject(new Axis());
+        //scene.addHudObject(new Axis());
+        scene.addHudObject(new Grid(16, 1.0f));
         //scene.add(new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj"));
         // obj = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\mono.obj");
-        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\monoOriginal.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\ManyMonos.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\plane.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Sphere.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Shape.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Spot.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Arceus.obj");
-        MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
+        //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\cylinder.obj");
         //MeshObject mono = new MeshObject("C:\\Users\\ANTONIO\\Documents\\cosa a borrar\\Beach_HGSS\\Cono.obj");
 
         System.out.print("Starting CMesh->EMesh... ");
@@ -102,10 +105,11 @@ public class Engine {
         EMeshGL emeshGL = new EMeshGL(emesh);
         System.out.println("FINISHED " + (System.nanoTime() - before));
         
+        /*
         MeshEditableObject meshEditable = new MeshEditableObject("Ediatable", 
                 new Vec3f(-6.0f, 0.0f, 0.0f), mono.cmesh);
         scene.addObject(meshEditable);
-        
+        */
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 MeshObject obj = new MeshObject("Monito" + i + " " + j,

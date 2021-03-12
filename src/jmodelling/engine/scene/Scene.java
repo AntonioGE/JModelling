@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.utils.collections.IdentitySet;
 
@@ -60,11 +61,6 @@ public class Scene {
     private final HashSet<Object3D> unselectedObjects;
     private final Set<Object3D> unselectedObjectsReadOnly;
     private Object3D lastSelectedObject;
-
-    /**
-     * Object to edit
-     */
-    private Object3D objectToEdit;
 
     /**
      * Objects GL updating
@@ -135,7 +131,8 @@ public class Scene {
             return false;
         }
 
-        deselectObject(object);
+        selectedObjects.remove(object);
+        unselectedObjects.remove(object);
         objects.remove(object.name);
         objectsToDelete.add(object);
         return true;
@@ -295,12 +292,23 @@ public class Scene {
         return hudObjectsReadOnly.values();
     }
 
-    public void setObjectToEdit(Object3D obj) {
-        if (objectToEdit != null) {
-            objectsToDelete.add(objectToEdit);
+    public void editSelectedObject(){
+        if(lastSelectedObject != null){
+            Object3D old = lastSelectedObject;
+            removeObject(lastSelectedObject);
+            lastSelectedObject = new MeshEditableObject((MeshObject) old);
+            addObject(lastSelectedObject);
         }
-        objectToEdit = obj;
-        objectsToInit.add(obj);
     }
-
+    
+    public void finishEditSelectedObject(){
+        if(lastSelectedObject != null){
+            Object3D old = lastSelectedObject;
+            removeObject(lastSelectedObject);
+            lastSelectedObject = new MeshObject((MeshEditableObject) old);
+            addObject(lastSelectedObject);
+            selectObject(lastSelectedObject);
+        }
+    }
+    
 }

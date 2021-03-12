@@ -387,6 +387,35 @@ public class View3D extends Editor {
     public void setModesInEditors(String modeName) {
         switch (modeName) {
             case EditMode.NAME: {
+                engine.scene.editSelectedObject();
+                Object3D obj = engine.scene.getLastSelectedObject();
+                if (obj != null) {
+                    MeshEditableObject emeshObj = (MeshEditableObject)(obj);
+                    for (EditorDisplayGL panel : engine.getEditorDisplays()) {
+                        if (panel.getEditor().getName().equals(View3D.NAME)) {
+                            View3D editor = (View3D) panel.getEditor();
+                            editor.changeMode(new EditMode(editor, engine, emeshObj));
+                        }
+                    }
+                }
+                break;
+            }
+            case ObjectMode.NAME: {
+                for (EditorDisplayGL panel : engine.getEditorDisplays()) {
+                    if (panel.getEditor().getName().equals(View3D.NAME)) {
+                        View3D editor = (View3D) panel.getEditor();
+                        editor.changeMode(new ObjectMode(editor, engine));
+                    }
+                }
+                break;
+            }
+        }
+    }
+/*
+    //TODO: this code needs refactoring
+    public void setModesInEditors(String modeName) {
+        switch (modeName) {
+            case EditMode.NAME: {
                 Object3D obj = engine.scene.getLastSelectedObject();
                 if (obj != null) {
                     MeshEditableObject emeshObj = new MeshEditableObject((MeshObject) obj);
@@ -411,7 +440,7 @@ public class View3D extends Editor {
             }
         }
     }
-
+*/
     /*
     public Mode toggleMode(Mode mode) {
         switch (mode.getName()) {

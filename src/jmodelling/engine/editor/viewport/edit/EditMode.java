@@ -292,7 +292,8 @@ public class EditMode extends Mode {
     }
 
     public void changeMode() {
-        editor.getScene().setLastSelectedObject(new MeshObject(obj));
+        //editor.getScene().setLastSelectedObject(new MeshObject(obj));
+        editor.getScene().finishEditSelectedObject();
         editor.setModesInEditors(ObjectMode.NAME);
     }
 

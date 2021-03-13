@@ -61,20 +61,20 @@ public class TransfMat {
 
     public static void ortho(float left, float right, float bottom, float top, float zNear, float zFar, Mat4f dst) {
         dst.m00 = 2.0f / (right - left);
-        dst.m01 = 0.0f;
-        dst.m02 = 0.0f;
-        dst.m03 = 0.0f;
         dst.m10 = 0.0f;
-        dst.m11 = 2.0f / (top - bottom);
-        dst.m12 = 0.0f;
-        dst.m13 = 0.0f;
         dst.m20 = 0.0f;
+        dst.m30 = 0.0f;
+        dst.m01 = 0.0f;
+        dst.m11 = 2.0f / (top - bottom);
         dst.m21 = 0.0f;
+        dst.m31 = 0.0f;
+        dst.m02 = 0.0f;
+        dst.m12 = 0.0f;
         dst.m22 = -2.0f / (zFar - zNear);
-        dst.m23 = 0.0f;
-        dst.m30 = -(right + left) / (right - left);
-        dst.m31 = -(top + bottom) / (top - bottom);
-        dst.m32 = -(zFar + zNear) / (zFar - zNear);
+        dst.m32 = 0.0f;
+        dst.m03 = -(right + left) / (right - left);
+        dst.m13 = -(top + bottom) / (top - bottom);
+        dst.m23 = -(zFar + zNear) / (zFar - zNear);
         dst.m33 = 1.0f;
     }
 
@@ -83,7 +83,17 @@ public class TransfMat {
         ortho(left, right, bottom, top, zNear, zFar, dst);
         return dst;
     }
+    
+    public static void ortho_(float scale, float aspect, float zNear, float zFar, Mat4f dst){
+        ortho(-scale * aspect, scale*aspect, -scale, scale, zNear, zFar, dst);
+    }
 
+    public static Mat4f ortho_(float scale, float aspect, float zNear, float zFar){
+        Mat4f dst = new Mat4f();
+        ortho_(scale, aspect, zNear, zFar, dst);
+        return dst;
+    }
+    
     public static void rotation3f(float radians, Vec3f axis, Mat3f dst) {
         final float cos = (float) Math.cos(radians);
         final float sin = (float) Math.sin(radians);

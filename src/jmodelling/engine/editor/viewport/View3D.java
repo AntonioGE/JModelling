@@ -112,6 +112,8 @@ public class View3D extends Editor {
         Mat4f mv = cam.getModelViewMatrix();
         transf = p.mul_(mv);
 
+        p.print();
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadMatrixf(p.toArray(), 0);
 

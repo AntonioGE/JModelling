@@ -37,7 +37,14 @@ import jmodelling.math.vec.Vec3f;
 public class CamArcball extends Cam {
 
     public static enum Type {
-        PERSPECTIVE, ORTHO
+        PERSPECTIVE(new PerspectiveProjection()),
+        ORTHO(new OrthoProjection());
+
+        public final Projection projection;
+
+        private Type(Projection projection) {
+            this.projection = projection;
+        }
     }
     public Type type;
     public float zNear, zFar;
@@ -65,16 +72,6 @@ public class CamArcball extends Cam {
         this.distToTarget = tar.sub_(loc).norm();
         this.fov = fov;
         this.orthoScale = orthoScale;
-    }
-
-    @Override
-    public void renderOpaque(GL2 gl) {
-
-    }
-
-    @Override
-    public void renderWireframe(GL2 gl) {
-
     }
 
     public void orbit(Vec3f dRot) {
@@ -116,35 +113,50 @@ public class CamArcball extends Cam {
 
     @Override
     public Vec3f viewPosToRay(Vec2f posView) {
-        final float tan = (float) Math.tan(Math.toRadians(fov / 2.0f));
-        return new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(getRotationMatrix3f());
+        return type.projection.viewPosToRay(this, posView);
+        //final float tan = (float) Math.tan(Math.toRadians(fov / 2.0f));
+        //return new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(getRotationMatrix3f());
     }
 
     @Override
     public Vec3f viewPosToRayAspect(Vec2f posView, float aspect) {
-        Vec2f posViewAspect = new Vec2f(posView);
-        posViewAspect.x *= aspect;
-        return viewPosToRay(posViewAspect);
+        return type.projection.viewPosToRayAspect(this, posView, aspect);
+        //Vec2f posViewAspect = new Vec2f(posView);
+        //posViewAspect.x *= aspect;
+        //return viewPosToRay(posViewAspect);
     }
 
     @Override
     public Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
-        return viewPosToRay(pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
+        return type.projection.viewPosToRay(this, xMouse, yMouse, screenWidth, screenHeight);
+        //return viewPosToRay(pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
     }
 
     @Override
     public Mat4f getProjectionMatrix(float aspect) {
+        return type.projection.getProjectionMatrix(this, aspect);
+        /*
         switch (type) {
             case PERSPECTIVE: {
                 return TransfMat.perspective_(fov, aspect, 0.1f, 1000.0f);
             }
             case ORTHO: {
-                return TransfMat.ortho_(0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 1000.0f);//TODO: finish this
+                return TransfMat.ortho_(distToTarget, aspect, 0.1f, 1000.0f);//TODO: finish this
             }
             default: {
                 return TransfMat.perspective_(fov, aspect, 0.1f, 1000.0f);
             }
-        }
+        }*/
+    }
+
+    @Override
+    public void renderOpaque(GL2 gl) {
+
+    }
+
+    @Override
+    public void renderWireframe(GL2 gl) {
+
     }
 
     @Override

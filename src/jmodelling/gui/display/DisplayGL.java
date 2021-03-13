@@ -96,7 +96,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
             //new Vec3f(5.99f, -6.7f, 3.85f),
             new Vec3f(0.0f, -5.0f, 0.0f),
             new Vec3f(0.0f, 0.0f, 0.0f),
-            CamArcball.Type.PERSPECTIVE,
+            CamArcball.PERSPECTIVE,
             0.1f,
             1000f,
             60.0f,

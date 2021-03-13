@@ -37,23 +37,16 @@ import jmodelling.math.vec.Vec3f;
  */
 public class CamArcball extends Cam {
 
-    public static enum Type {
-        PERSPECTIVE(new PerspectiveProjection()),
-        ORTHO(new OrthoProjection());
-
-        public final Projection projection;
-
-        private Type(Projection projection) {
-            this.projection = projection;
-        }
-    }
-    public Type type;
+    public static final OrthoType ORTHO = new OrthoType();
+    public static final PerspectiveType PERSPECTIVE = new PerspectiveType();
+    
+    public CamType type;
     public float zNear, zFar;
     public float distToTarget;
     public float fov;
     public float orthoScale;
 
-    public CamArcball(String name, Vec3f loc, Vec3f rot, Type type,
+    public CamArcball(String name, Vec3f loc, Vec3f rot, CamType type,
             float zNear, float zFar, float distToTarget, float fov, float orthoScale) {
         super(name, loc, rot);
         this.type = type;
@@ -64,7 +57,7 @@ public class CamArcball extends Cam {
         this.orthoScale = orthoScale;
     }
 
-    public CamArcball(String name, Vec3f loc, Vec3f tar, Type type,
+    public CamArcball(String name, Vec3f loc, Vec3f tar, CamType type,
             float zNear, float zFar, float fov, float orthoScale) {
         super(name, loc, dirToRot_(tar.sub_(loc)));
         this.type = type;
@@ -112,32 +105,40 @@ public class CamArcball extends Cam {
         this.distToTarget = distToTarget;
     }
     
+    public void zoom(float delta){
+        type.zoom(this, delta);
+    }
+    
     public void toggleType(){
-        if(type == Type.ORTHO){
-            type = Type.PERSPECTIVE;
+        if(type == ORTHO){
+            type = PERSPECTIVE;
         }else{
-            type = Type.ORTHO;
+            type = ORTHO;
         }
+    }
+    
+    public void setType(CamType newType){
+        this.type = newType;
     }
 
     @Override
     public Ray viewPosToRay(Vec2f posView) {
-        return type.projection.viewPosToRay(this, posView);
+        return type.viewPosToRay(this, posView);
     }
 
     @Override
     public Ray viewPosToRayAspect(Vec2f posView, float aspect) {
-        return type.projection.viewPosToRayAspect(this, posView, aspect);
+        return type.viewPosToRayAspect(this, posView, aspect);
     }
 
     @Override
     public Ray viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
-        return type.projection.viewPosToRay(this, xMouse, yMouse, screenWidth, screenHeight);
+        return type.viewPosToRay(this, xMouse, yMouse, screenWidth, screenHeight);
     }
 
     @Override
     public Mat4f getProjectionMatrix(float aspect) {
-        return type.projection.getProjectionMatrix(this, aspect);
+        return type.getProjectionMatrix(this, aspect);
     }
 
     @Override

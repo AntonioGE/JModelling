@@ -25,26 +25,28 @@ package jmodelling.engine.object.camera;
 
 import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat4f;
-import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
-import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class PerspectiveProjection extends Projection{
-
-    @Override
-    public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
-        final float tan = (float) Math.tan(Math.toRadians(cam.fov / 2.0f));
-        final Vec3f dir = new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(cam.getRotationMatrix3f());
-        return new Ray(cam.loc.clone(), dir);
+public abstract class CamType {
+    
+    public abstract Ray viewPosToRay(CamArcball cam, Vec2f posView);
+    
+    public abstract Mat4f getProjectionMatrix(CamArcball cam, float aspect);
+    
+    public abstract void zoom(CamArcball cam, float delta);
+    
+    public Ray viewPosToRayAspect(CamArcball cam, Vec2f posView, float aspect) {
+        Vec2f posViewAspect = new Vec2f(posView);
+        posViewAspect.x *= aspect;
+        return viewPosToRay(cam, posViewAspect);
     }
 
-    @Override
-    public Mat4f getProjectionMatrix(CamArcball cam, float aspect) {
-        return TransfMat.perspective_(cam.fov, aspect, cam.zNear, cam.zFar);
+    public Ray viewPosToRay(CamArcball cam, int xMouse, int yMouse, int screenWidth, int screenHeight) {
+        return viewPosToRay(cam, Cam.pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
     }
     
 }

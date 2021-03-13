@@ -34,7 +34,7 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class OrthoProjection extends Projection {
+public class OrthoType extends CamType {
 
     @Override
     public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
@@ -45,6 +45,11 @@ public class OrthoProjection extends Projection {
     @Override
     public Mat4f getProjectionMatrix(CamArcball cam, float aspect) {
         return TransfMat.ortho_(cam.distToTarget, aspect, cam.zNear, cam.zFar);
+    }
+
+    @Override
+    public void zoom(CamArcball cam, float delta) {
+        cam.orthoScale *= delta;
     }
 
 }

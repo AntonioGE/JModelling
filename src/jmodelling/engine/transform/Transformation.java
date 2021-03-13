@@ -80,8 +80,8 @@ public class Transformation {
     /**
      * Converts a vector from world coordinates to view screen coordinates
      *
-     * @param head coordinates of the vector's head
-     * @param tail coordinates of the vector's tail
+     * @param head world coordinates of the vector's head
+     * @param tail world coordinates of the vector's tail
      * @param camTransf camera transformation matrix
      * @param dst output vector in view coordinates
      */
@@ -93,8 +93,8 @@ public class Transformation {
     /**
      * Converts a vector from world coordinates to view screen coordinates
      *
-     * @param head coordinates of the vector's head
-     * @param tail coordinates of the vector's tail
+     * @param head world coordinates of the vector's head
+     * @param tail world coordinates of the vector's tail
      * @param camTransf camera transformation matrix
      * @return vector in view coordinates
      */

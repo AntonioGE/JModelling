@@ -36,10 +36,8 @@ import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditableObject;
-import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.mat.Mat4f;
-import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -80,15 +78,11 @@ public class View3D extends Editor {
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glEnable(GL2.GL_BLEND);
         gl.glEnable(GL2.GL_RESCALE_NORMAL);
-        //gl.glEnable(GL2.GL_NORMALIZE);
         gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
 
         gl.glDepthFunc(GL2.GL_LESS);
 
-        //gl.glEnable(GL2.GL_STENCIL_TEST);
-        //gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, 0xFF);
-        //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
         engine.scene.updateGL(gl);
 
         mode.init(glad);
@@ -112,8 +106,6 @@ public class View3D extends Editor {
         Mat4f mv = cam.getModelViewMatrix();
         transf = p.mul_(mv);
 
-        p.print();
-        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadMatrixf(p.toArray(), 0);
 
@@ -183,93 +175,6 @@ public class View3D extends Editor {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glPopMatrix();
 
-    }
-
-    //This display method uses stencil testing
-    public void displayOld(GLAutoDrawable glad) {
-        GL2 gl = glad.getGL().getGL2();
-
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_STENCIL_BUFFER_BIT);
-
-        //gl.glLoadIdentity();
-        //lighting(gl);
-        Mat4f p = TransfMat.perspective_(cam.fov, panel.getAspect(), 0.1f, 1000.0f);
-        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
-        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
-        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
-        Mat4f t = TransfMat.translation_(cam.loc.negate_());
-        transf = p.mul_(rx).mul(ry).mul(rz).mul(t);
-
-        gl.glLoadMatrixf(transf.toArray(), 0);
-
-        lighting(gl);
-
-        engine.scene.updateGL(gl);
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-        /**
-         * Render selected objects
-         */
-        //gl.glClearStencil(0);
-        //gl.glClear(GL2.GL_STENCIL_BUFFER_BIT);
-        gl.glEnable(GL2.GL_STENCIL_TEST);
-        gl.glStencilFunc(GL2.GL_ALWAYS, 1, -1);
-        gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
-        engine.scene.getSelectedObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-        gl.glStencilFunc(GL2.GL_NOTEQUAL, 1, -1);
-        //gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_REPLACE);
-        gl.glLineWidth(2);
-        //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);//TODO: This slows down
-        gl.glDisable(GL2.GL_LIGHTING);
-        gl.glColor3f(1.0f, 0.66f, 0.251f);
-        engine.scene.getSelectedObjects().forEach((obj) -> {
-            //obj.renderOpaque(gl);//TODO render only edges!!
-            obj.renderWireframe(gl);
-        });
-
-        gl.glLineWidth(1);
-        //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);//TODO: This slows down
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glDisable(GL2.GL_STENCIL_TEST);
-
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-        /**
-         * Render unselected objects
-         */
-        engine.scene.getUnselectedObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        /**
-         * Render HUD
-         */
-        gl.glDisable(GL2.GL_LIGHTING);
-        engine.scene.getHudObjects().forEach((obj) -> {
-            obj.renderOpaque(gl);
-        });
-
-        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-
-        mode.display(glad);
     }
 
     @Override
@@ -478,48 +383,6 @@ public class View3D extends Editor {
         }
     }
 
-    /*
-    //TODO: this code needs refactoring
-    public void setModesInEditors(String modeName) {
-        switch (modeName) {
-            case EditMode.NAME: {
-                Object3D obj = engine.scene.getLastSelectedObject();
-                if (obj != null) {
-                    MeshEditableObject emeshObj = new MeshEditableObject((MeshObject) obj);
-                    engine.scene.setObjectToEdit(emeshObj);
-                    for (EditorDisplayGL panel : engine.getEditorDisplays()) {
-                        if (panel.getEditor().getName().equals(View3D.NAME)) {
-                            View3D editor = (View3D) panel.getEditor();
-                            editor.changeMode(new EditMode(editor, engine, emeshObj));
-                        }
-                    }
-                }
-                break;
-            }
-            case ObjectMode.NAME: {
-                for (EditorDisplayGL panel : engine.getEditorDisplays()) {
-                    if (panel.getEditor().getName().equals(View3D.NAME)) {
-                        View3D editor = (View3D) panel.getEditor();
-                        editor.changeMode(new ObjectMode(editor, engine));
-                    }
-                }
-                break;
-            }
-        }
-    }
-     */
- /*
-    public Mode toggleMode(Mode mode) {
-        switch (mode.getName()) {
-            case EditMode.NAME: {
-                return new ObjectMode(this, engine);
-            }
-            case ObjectMode.NAME: {
-                return new EditMode(this, engine);
-            }
-        }
-        return new ObjectMode(this, engine);
-    }*/
     @Override
     public String getName() {
         return NAME;

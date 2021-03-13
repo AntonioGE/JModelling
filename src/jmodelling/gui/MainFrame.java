@@ -150,6 +150,10 @@ public class MainFrame extends JFrame {
             System.out.println(s);
         }
         
+        Vec3f vect = new Vec3f();
+        vect.normalize().print();
+        System.out.println((0.0f * vect.x));
+        
         System.out.println(Runtime.getRuntime().availableProcessors());
 
         java.awt.EventQueue.invokeLater(new Runnable() {

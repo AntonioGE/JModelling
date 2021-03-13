@@ -481,7 +481,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
         lastMouseY = e.getY();
 
         if (SwingUtilities.isLeftMouseButton(e)) {
-            cam.viewPosToRay(e.getX(), e.getY(), getWidth(), getHeight()).print("Ray");
+            cam.viewPosToRay(e.getX(), e.getY(), getWidth(), getHeight()).dir.print("Ray");
         }
 
     }
@@ -615,7 +615,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 break;
             case KeyEvent.VK_R:
                 MeshObject objSelected = MeshRaytracer.getSelectedMeshObject(cam.loc,
-                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()).dir,
                         scene.getMeshObjects());
                 if (objSelected != null) {
                     System.out.println(objSelected.name);
@@ -623,7 +623,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 }
 
                 Vec3f point = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
-                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()),
+                        cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()).dir,
                         scene.getMeshObjects());
                 if (point != null) {
                     points.add(point);
@@ -647,7 +647,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 for (int i = 0; i < getWidth(); i += delta) {
                     for (int j = 0; j < getHeight(); j += delta) {
                         Vec3f p = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
-                                cam.viewPosToRay(i, j, getWidth(), getHeight()),
+                                cam.viewPosToRay(i, j, getWidth(), getHeight()).dir,
                                 scene.getMeshObjects());
                         if (p != null) {
                             //points.add(p);
@@ -677,7 +677,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                             for (int i = 0; i < getWidth() / threads.length; i += delta) {
                                 for (int j = 0; j < getHeight(); j += delta) {
                                     Vec3f p = MeshRaytracer.getClosestIntersectionPoint(cam.loc,
-                                            cam.viewPosToRay(i + id * size, j, getWidth(), getHeight()),
+                                            cam.viewPosToRay(i + id * size, j, getWidth(), getHeight()).dir,
                                             scene.getMeshObjects());
                                     if (p != null) {
                                         newPoints.add(p);
@@ -750,7 +750,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
                 }
                  */
 
-                Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight());
+                Vec3f a = cam.viewPosToRay(mouseX, mouseY, getWidth(), getHeight()).dir;
                 Vec3f p = a.scale(cam.distToTarget).add(cam.loc);
 
                 lines.add(p);

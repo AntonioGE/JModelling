@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.object.camera;
 
+import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -33,17 +34,17 @@ import jmodelling.math.vec.Vec3f;
  */
 public abstract class Projection {
     
-    public abstract Vec3f viewPosToRay(CamArcball cam, Vec2f posView);
+    public abstract Ray viewPosToRay(CamArcball cam, Vec2f posView);
     
     public abstract Mat4f getProjectionMatrix(CamArcball cam, float aspect);
     
-    public Vec3f viewPosToRayAspect(CamArcball cam, Vec2f posView, float aspect) {
+    public Ray viewPosToRayAspect(CamArcball cam, Vec2f posView, float aspect) {
         Vec2f posViewAspect = new Vec2f(posView);
         posViewAspect.x *= aspect;
         return viewPosToRay(cam, posViewAspect);
     }
 
-    public Vec3f viewPosToRay(CamArcball cam, int xMouse, int yMouse, int screenWidth, int screenHeight) {
+    public Ray viewPosToRay(CamArcball cam, int xMouse, int yMouse, int screenWidth, int screenHeight) {
         return viewPosToRay(cam, Cam.pixelToViewAspect(xMouse, yMouse, screenWidth, screenHeight));
     }
     

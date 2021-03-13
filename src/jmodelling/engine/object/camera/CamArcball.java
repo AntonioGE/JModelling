@@ -25,6 +25,7 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.bounds.BoundingSphere;
+import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -110,19 +111,27 @@ public class CamArcball extends Cam {
         //Set new distance to target
         this.distToTarget = distToTarget;
     }
+    
+    public void toggleType(){
+        if(type == Type.ORTHO){
+            type = Type.PERSPECTIVE;
+        }else{
+            type = Type.ORTHO;
+        }
+    }
 
     @Override
-    public Vec3f viewPosToRay(Vec2f posView) {
+    public Ray viewPosToRay(Vec2f posView) {
         return type.projection.viewPosToRay(this, posView);
     }
 
     @Override
-    public Vec3f viewPosToRayAspect(Vec2f posView, float aspect) {
+    public Ray viewPosToRayAspect(Vec2f posView, float aspect) {
         return type.projection.viewPosToRayAspect(this, posView, aspect);
     }
 
     @Override
-    public Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
+    public Ray viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight) {
         return type.projection.viewPosToRay(this, xMouse, yMouse, screenWidth, screenHeight);
     }
 

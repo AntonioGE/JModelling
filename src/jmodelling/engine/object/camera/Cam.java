@@ -25,6 +25,7 @@ package jmodelling.engine.object.camera;
 
 import com.jogamp.opengl.GL2;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -125,7 +126,7 @@ public abstract class Cam extends Object3D {
                 -((float) yMouse / (screenHeight / 2) - 1.0f));
     }
 
-    public abstract Vec3f viewPosToRay(Vec2f posView);
+    public abstract Ray viewPosToRay(Vec2f posView);
     
     /**
      * Converts a point in 2D view coordinates into a ray applying the aspect ratio
@@ -134,9 +135,9 @@ public abstract class Cam extends Object3D {
      * @param aspect aspect ratio of the screen
      * @return ray
      */
-    public abstract Vec3f viewPosToRayAspect(Vec2f posView, float aspect);
+    public abstract Ray viewPosToRayAspect(Vec2f posView, float aspect);
     
-    public abstract Vec3f viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight);
+    public abstract Ray viewPosToRay(int xMouse, int yMouse, int screenWidth, int screenHeight);
     
     public abstract Mat4f getProjectionMatrix(float aspect);
     

@@ -25,7 +25,6 @@ package jmodelling.math.vec;
 
 import java.nio.FloatBuffer;
 import jmodelling.math.mat.Mat3f;
-import jmodelling.math.mat.Mat4f;
 
 /**
  * 3D float vector
@@ -1141,14 +1140,31 @@ public class Vec3f {
         dst.scale(t).add(linePos);
     }
 
-    /*
-    public static void proy(Vec3f src1Pos, Vec3f src1Dir, Vec3f src2Pos, Vec3f src2Dir, Vec3f dstPos, Vec3f dstDir){
-        
-        Vec3f tail = proy_(src1Pos.sub_(src2Pos), src2Dir);
-        Vec3f head = proy_(src1Pos.add_(src1Dir), src2Dir);
-        
-        dstPos.set(tail.add(head))
-        
-        
-    }*/
+    /**
+     * Checks if all the coordinates of the vector are finite.
+     * 
+     * @param src vector to be evaluated
+     * @return 
+     */
+    public static boolean isFinite(Vec3f src){
+        if(!Float.isFinite(src.x)){
+            return false;
+        }
+        if(!Float.isFinite(src.y)){
+            return false;
+        }
+        if(!Float.isFinite(src.z)){
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Checks if all the coordinates of this vector are finite.
+     * 
+     * @return 
+     */
+    public boolean isFinite(){
+        return isFinite(this);
+    }
 }

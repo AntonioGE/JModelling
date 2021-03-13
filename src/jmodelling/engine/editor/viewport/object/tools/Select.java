@@ -80,7 +80,6 @@ public class Select extends ObjectTool {
         if (editor.isShiftPressed()) {
             if (SwingUtilities.isRightMouseButton(e)) {
                 List<MeshObject> objsSelected = MeshRaytracer.getIntersectingMeshObjects(
-                        editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());
 
@@ -97,7 +96,6 @@ public class Select extends ObjectTool {
         } else {
             if (SwingUtilities.isRightMouseButton(e)) {
                 final List<MeshObject> objsSelected = MeshRaytracer.getIntersectingMeshObjects(
-                        editor.getCam().loc,
                         editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                         editor.getScene().getMeshObjects());
                 

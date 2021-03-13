@@ -210,6 +210,11 @@ public class MeshRaytracer {
 
         return sortedList;
     }
+    
+    public static List<MeshObject> getIntersectingMeshObjects(Ray ray,
+            Set<MeshObject> objects) { 
+        return getIntersectingMeshObjects(ray.loc, ray.dir, objects);
+    }
 
     public static List<Vec3f> getIntersectingVtxs(Vec3f rayPosLocal, Vec3f rayDirLocal,
             Collection<Vec3f> vtxs, float minDist) {

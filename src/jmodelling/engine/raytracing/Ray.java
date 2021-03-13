@@ -21,30 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.object.camera;
+package jmodelling.engine.raytracing;
 
-import jmodelling.engine.raytracing.Ray;
-import jmodelling.math.mat.Mat3f;
-import jmodelling.math.mat.Mat4f;
-import jmodelling.math.transf.TransfMat;
-import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**
  *
  * @author ANTONIO
  */
-public class OrthoProjection extends Projection {
+public class Ray {
 
-    @Override
-    public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
-        Vec3f loc = new Vec3f(posView.x, posView.y, 0.0f).mul(cam.getRotationMatrix3f()).scale(cam.distToTarget).add(cam.loc);
-        return new Ray(loc, cam.getDir());//TODO: change this
-    }
+    public Vec3f loc;
+    public Vec3f dir;
 
-    @Override
-    public Mat4f getProjectionMatrix(CamArcball cam, float aspect) {
-        return TransfMat.ortho_(cam.distToTarget, aspect, cam.zNear, cam.zFar);
+    public Ray(Vec3f loc, Vec3f dir) {
+        this.loc = loc;
+        this.dir = dir;
+
     }
 
 }

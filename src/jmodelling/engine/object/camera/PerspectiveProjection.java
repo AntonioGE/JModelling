@@ -23,6 +23,7 @@
  */
 package jmodelling.engine.object.camera;
 
+import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat4f;
 import jmodelling.math.transf.TransfMat;
 import jmodelling.math.vec.Vec2f;
@@ -35,9 +36,10 @@ import jmodelling.math.vec.Vec3f;
 public class PerspectiveProjection extends Projection{
 
     @Override
-    public Vec3f viewPosToRay(CamArcball cam, Vec2f posView) {
+    public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
         final float tan = (float) Math.tan(Math.toRadians(cam.fov / 2.0f));
-        return new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(cam.getRotationMatrix3f());
+        final Vec3f dir = new Vec3f(posView.x * tan, posView.y * tan, -1.0f).normalize().mul(cam.getRotationMatrix3f());
+        return new Ray(cam.loc.clone(), dir);
     }
 
     @Override

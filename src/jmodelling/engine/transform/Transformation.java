@@ -24,6 +24,7 @@
 package jmodelling.engine.transform;
 
 import jmodelling.engine.object.camera.Cam;
+import jmodelling.engine.raytracing.Ray;
 import jmodelling.math.mat.Mat3f;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
@@ -136,8 +137,8 @@ public class Transformation {
         p1Proy.x *= aspect;
 
         //Generate rays from view coordinates to world coordinates
-        Vec3f a = cam.viewPosToRay(p0Proy);
-        Vec3f c = cam.viewPosToRay(p1Proy);
+        Vec3f a = cam.viewPosToRay(p0Proy).dir;
+        Vec3f c = cam.viewPosToRay(p1Proy).dir;
         Vec3f b = dir;
 
         //Calculate the translation value
@@ -178,6 +179,94 @@ public class Transformation {
     }
 
     /**
+     * Converts a translation along a 3D vector from view coordinates to world
+     * coordinates
+     *
+     * @param src initial position of the point to be translated
+     * @param dir direction of the translation
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param dst output Vec3f representing the translation
+     */
+    public static void linearTranslation2(Vec3f src, Vec3f dir,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, Cam cam, float aspect,
+            Vec3f dst) {
+
+        //Convert the translation direction from world to view coordinates
+        Vec2f dir2dTail = worldToView_(src, camTransf);
+        Vec2f dir2dHead = worldToView_(src.add_(dir).scale(1.0f), camTransf);//TODO: Study how set the 1.0f value
+        Vec2f dir2d = dir2dHead.sub_(dir2dTail).normalize();
+
+        //Project the view points onto the translation line in view coordinates
+        Vec2f p0Proy = p0.sub_(dir2dTail).proy(dir2d).add(dir2dTail);
+        Vec2f p1Proy = p1.sub_(dir2dTail).proy(dir2d).add(dir2dTail);
+
+        //Apply the aspect ratio to the projected points
+        p0Proy.x *= aspect;
+        p1Proy.x *= aspect;
+
+        //Generate rays from view coordinates to world coordinates
+        Ray aRay = cam.viewPosToRay(p0Proy);
+        Ray cRay = cam.viewPosToRay(p1Proy);
+        Vec3f distFocus = aRay.loc.sub_(cRay.loc);
+
+        Vec3f a = aRay.dir;
+        Vec3f c = cRay.dir;
+        Vec3f b = dir;
+        Vec3f d = distFocus.normalize_();
+
+        float A = Vec3f.dist(src, aRay.loc);
+        float B;
+        float D = distFocus.norm();
+
+        //Calculate the translation value
+        if (d.isFinite()) {//4 sided polygon
+            B = ((a.y * c.x - a.x * c.y) * A + (d.y * c.x - d.x * c.y) * D) / (b.x * c.y - b.y * c.x);
+            if (!Float.isFinite(B)) {
+                B = ((a.y * c.z - a.z * c.y) * A + (d.y * c.z - d.z * c.y) * D) / (b.z * c.y - b.y * c.z);
+                if (!Float.isFinite(B)) {
+                    B = ((a.x * c.z - a.z * c.x) * A + (d.x * c.z - d.z * c.x) * D) / (b.z * c.x - b.x * c.z);
+                }
+            }
+        } else {//3 sided polygon
+            B = (a.y * c.x - a.x * c.y) / (b.x * c.y - b.y * c.x) * A;
+            if (!Float.isFinite(B)) {
+                B = (a.y * c.z - a.z * c.y) / (b.z * c.y - b.y * c.z) * A;
+                if (!Float.isFinite(B)) {
+                    B = (a.x * c.z - a.z * c.x) / (b.z * c.x - b.x * c.z) * A;
+                }
+            }
+        }
+
+        dst.set(dir).scale(B);
+    }
+
+    /**
+     * Converts a translation along a 3D vector from view coordinates to world
+     * coordinates
+     *
+     * @param src initial position of the point to be translated
+     * @param dir direction of the translation
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param camTransf camera transformation matrix
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @return Vec3f representing the translation
+     */
+    public static Vec3f linearTranslation2_(Vec3f src, Vec3f dir,
+            Vec2f p0, Vec2f p1,
+            Mat4f camTransf, Cam cam, float aspect) {
+        Vec3f dst = new Vec3f();
+        linearTranslation2(src, dir, p0, p1, camTransf, cam, aspect, dst);
+        return dst;
+    }
+
+    /**
      * Converts a translation from view coordinates to a translation in a plane
      * perpendicular to the camera direction in world coordinates
      *
@@ -188,6 +277,35 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @param dst output vector representing the translation
      */
+    public static void planarTranslation(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Cam cam, float aspect,
+            Vec3f dst) {
+
+        //Get camera direction
+        Vec3f dir = cam.getDir();
+
+        //Calculate the distance from the camera to the plane of translation
+        float dist = src.projPointOnLine_(cam.loc, dir).sub(cam.loc).norm();
+
+        //Generate rays for the initial point and final point
+        Vec3f ray0 = cam.viewPosToRayAspect(p0, aspect).dir;
+        Vec3f ray1 = cam.viewPosToRayAspect(p1, aspect).dir;
+
+        //Calculate the translations for both points
+        Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0));
+        Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1));
+
+        //Calculate the translation as the difference between the points
+        dst.set(t1.sub_(t0).scale(dist));
+
+        //Alternate method
+        //Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0)).sub(dir).scale(dist);
+        //Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1)).sub(dir).scale(dist);
+        //dst.set(t1.sub_(t0));
+    }
+
+    /*
     public static void planarTranslation(Vec3f src,
             Vec2f p0, Vec2f p1,
             Cam cam, float aspect,
@@ -214,8 +332,7 @@ public class Transformation {
         //Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0)).sub(dir).scale(dist);
         //Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1)).sub(dir).scale(dist);
         //dst.set(t1.sub_(t0));
-    }
-
+    }*/
     /**
      * Converts a translation from view coordinates to a translation in a plane
      * perpendicular to the camera direction in world coordinates

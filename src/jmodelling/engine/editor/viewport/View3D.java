@@ -63,7 +63,7 @@ public class View3D extends Editor {
 
         cam = new CamArcball("",
                 new Vec3f(0.0f, -5.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f),
-                CamArcball.Type.PERSPECTIVE, 0.1f, 1000f, 60.0f, 1.0f);
+                CamArcball.Type.ORTHO, 0.1f, 1000f, 60.0f, 1.0f);
 
         mode = new ObjectMode(this, engine);
     }
@@ -239,6 +239,11 @@ public class View3D extends Editor {
             }*/
             case KeyEvent.VK_SHIFT: {
                 shiftPressed = true;
+                break;
+            }
+            case KeyEvent.VK_NUMPAD5:{
+                cam.toggleType();
+                panel.repaint();
                 break;
             }
         }

@@ -39,7 +39,7 @@ public class CamArcball extends Cam {
 
     public static final OrthoType ORTHO = new OrthoType();
     public static final PerspectiveType PERSPECTIVE = new PerspectiveType();
-    
+
     public CamType type;
     public float zNear, zFar;
     public float distToTarget;
@@ -47,25 +47,25 @@ public class CamArcball extends Cam {
     public float orthoScale;
 
     public CamArcball(String name, Vec3f loc, Vec3f rot, CamType type,
-            float zNear, float zFar, float distToTarget, float fov, float orthoScale) {
+            float zNear, float zFar, float distToTarget, float fov) {
         super(name, loc, rot);
         this.type = type;
         this.zNear = zNear;
         this.zFar = zFar;
         this.distToTarget = distToTarget;
         this.fov = fov;
-        this.orthoScale = orthoScale;
+        this.orthoScale = distToTarget;
     }
 
     public CamArcball(String name, Vec3f loc, Vec3f tar, CamType type,
-            float zNear, float zFar, float fov, float orthoScale) {
+            float zNear, float zFar, float fov) {
         super(name, loc, dirToRot_(tar.sub_(loc)));
         this.type = type;
         this.zNear = zNear;
         this.zFar = zFar;
         this.distToTarget = tar.sub_(loc).norm();
         this.fov = fov;
-        this.orthoScale = orthoScale;
+        this.orthoScale = distToTarget;
     }
 
     public void orbit(Vec3f dRot) {
@@ -77,6 +77,10 @@ public class CamArcball extends Cam {
 
         //Rotate camera position around target
         loc = tar.add(getDir().negate().scale(distToTarget));
+    }
+
+    public void translate(Vec2f deltaView) {
+        type.translate(this, deltaView);
     }
 
     public static void locRotToTarget(Vec3f loc, Vec3f rot, float distToTarget, Vec3f tar) {
@@ -104,20 +108,23 @@ public class CamArcball extends Cam {
         //Set new distance to target
         this.distToTarget = distToTarget;
     }
-    
-    public void zoom(float delta){
+
+    public void zoom(float delta) {
         type.zoom(this, delta);
     }
-    
-    public void toggleType(){
-        if(type == ORTHO){
+
+    public void toggleType() {
+        if (type == ORTHO) {
             type = PERSPECTIVE;
-        }else{
+            loc = getTar().add(getDir().negate().scale(orthoScale));
+            distToTarget = orthoScale;
+        } else {
             type = ORTHO;
+            orthoScale = distToTarget;
         }
     }
-    
-    public void setType(CamType newType){
+
+    public void setType(CamType newType) {
         this.type = newType;
     }
 
@@ -139,6 +146,11 @@ public class CamArcball extends Cam {
     @Override
     public Mat4f getProjectionMatrix(float aspect) {
         return type.getProjectionMatrix(this, aspect);
+    }
+
+    @Override
+    public Mat4f getModelViewMatrix() {
+        return type.getModelViewMatrix(this);
     }
 
     @Override

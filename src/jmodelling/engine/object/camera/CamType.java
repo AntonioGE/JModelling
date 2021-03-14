@@ -37,7 +37,11 @@ public abstract class CamType {
     
     public abstract Mat4f getProjectionMatrix(CamArcball cam, float aspect);
     
+    public abstract Mat4f getModelViewMatrix(CamArcball cam);
+    
     public abstract void zoom(CamArcball cam, float delta);
+    
+    public abstract void translate(CamArcball cam, Vec2f deltaView);
     
     public Ray viewPosToRayAspect(CamArcball cam, Vec2f posView, float aspect) {
         Vec2f posViewAspect = new Vec2f(posView);

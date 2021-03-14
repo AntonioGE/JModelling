@@ -38,6 +38,7 @@ import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.gui.display.EditorDisplayGL;
 import jmodelling.math.mat.Mat4f;
+import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**
@@ -63,7 +64,7 @@ public class View3D extends Editor {
 
         cam = new CamArcball("",
                 new Vec3f(0.0f, -5.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f),
-                CamArcball.ORTHO, 0.1f, 1000f, 60.0f, 1.0f);
+                CamArcball.ORTHO, 0.1f, 1000f, 60.0f);
 
         mode = new ObjectMode(this, engine);
     }
@@ -81,7 +82,7 @@ public class View3D extends Editor {
         gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
 
-        gl.glDepthFunc(GL2.GL_LESS);
+        gl.glDepthFunc(GL2.GL_LEQUAL);
 
         engine.scene.updateGL(gl);
 
@@ -292,9 +293,11 @@ public class View3D extends Editor {
     public void zoomCamera(MouseWheelEvent e) {
         float delta = 1.2f;
         if (e.getWheelRotation() > 0) {
-            cam.moveTowardsTarget(cam.distToTarget * delta);
+            //cam.moveTowardsTarget(cam.distToTarget * delta);
+            cam.zoom(delta);
         } else {
-            cam.moveTowardsTarget(cam.distToTarget / delta);
+            cam.zoom(1.0f / delta);
+            //cam.moveTowardsTarget(cam.distToTarget / delta);
         }
         panel.repaint();
     }
@@ -306,12 +309,14 @@ public class View3D extends Editor {
             lastPressX = e.getX();
             lastPressY = e.getY();
 
+            cam.translate(new Vec2f(deltaX * panel.getAspect(), deltaY));
+            /*
             Vec3f trans = new Vec3f(
                     deltaX * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)) * panel.getAspect(),
                     deltaY * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)),
                     0.0f
             );
-            cam.loc.add(trans.mul(cam.getRotationMatrix3f()));
+            cam.loc.add(trans.mul(cam.getRotationMatrix3f()));*/
 
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             float sensitivity = 2.0f;

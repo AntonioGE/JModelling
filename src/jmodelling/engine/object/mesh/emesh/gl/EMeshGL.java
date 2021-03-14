@@ -306,7 +306,8 @@ public class EMeshGL implements ElementGL {
         //gl.glDisable(GL2.GL_LIGHTING);
         //gl.glColorMaterial(GL2.GL_FRONT, GL2.GL_DIFFUSE);
         //gl.glEnable(GL2.GL_COLOR_MATERIAL);
-        gl.glDepthRange(0.002f, 1.0f);
+        gl.glDepthRange(0.002f, 1.0f);//Use this for Perspective camera
+        //gl.glDepthRange(0.00001f, 1.0f);//Use this for Ortho camera
         for (EShapeGL shape : shapes.values()) {
             shape.render(gl);
         }

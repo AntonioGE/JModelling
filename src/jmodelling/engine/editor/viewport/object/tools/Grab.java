@@ -204,7 +204,7 @@ public class Grab extends TransformTool {
     }
 
     private Vec3f linearTranslation() {
-        return Transformation.linearTranslation2_(transforms.get(lastSelected).loc, grabType.axis,
+        return Transformation.linearTranslation_(transforms.get(lastSelected).loc, grabType.axis,
                 Cam.pixelToView(firstMouseX, firstMouseY, editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 Cam.pixelToView(editor.getPanel().getMouseX(), editor.getPanel().getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()),
                 editor.getTransf(), editor.getCam(), editor.getPanel().getAspect());

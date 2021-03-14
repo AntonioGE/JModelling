@@ -141,13 +141,16 @@ public abstract class Cam extends Object3D {
     
     public abstract Mat4f getProjectionMatrix(float aspect);
     
+    public abstract Mat4f getModelViewMatrix();
+    
+    /*
     public Mat4f getModelViewMatrix(){
         Mat4f rx = TransfMat.rotationDeg_(-rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
         Mat4f ry = TransfMat.rotationDeg_(-rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
         Mat4f rz = TransfMat.rotationDeg_(-rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
         Mat4f t = TransfMat.translation_(loc.negate_());
         return rx.mul_(ry).mul(rz).mul(t);
-    }
+    }*/
     
     @Override
     public abstract void renderOpaque(GL2 gl);

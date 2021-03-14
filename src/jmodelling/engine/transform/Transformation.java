@@ -118,7 +118,8 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @param dst output Vec3f representing the translation
      */
-    public static void linearTranslation(Vec3f src, Vec3f dir,
+    @Deprecated
+    public static void linearTranslationOld(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect,
             Vec3f dst) {
@@ -170,11 +171,12 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @return Vec3f representing the translation
      */
-    public static Vec3f linearTranslation_(Vec3f src, Vec3f dir,
+    @Deprecated
+    public static Vec3f linearTranslationOld_(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect) {
         Vec3f dst = new Vec3f();
-        linearTranslation(src, dir, p0, p1, camTransf, cam, aspect, dst);
+        linearTranslationOld(src, dir, p0, p1, camTransf, cam, aspect, dst);
         return dst;
     }
 
@@ -191,7 +193,7 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @param dst output Vec3f representing the translation
      */
-    public static void linearTranslation2(Vec3f src, Vec3f dir,
+    public static void linearTranslation(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect,
             Vec3f dst) {
@@ -258,11 +260,11 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @return Vec3f representing the translation
      */
-    public static Vec3f linearTranslation2_(Vec3f src, Vec3f dir,
+    public static Vec3f linearTranslation_(Vec3f src, Vec3f dir,
             Vec2f p0, Vec2f p1,
             Mat4f camTransf, Cam cam, float aspect) {
         Vec3f dst = new Vec3f();
-        linearTranslation2(src, dir, p0, p1, camTransf, cam, aspect, dst);
+        linearTranslation(src, dir, p0, p1, camTransf, cam, aspect, dst);
         return dst;
     }
 
@@ -277,7 +279,8 @@ public class Transformation {
      * @param aspect screen aspect ratio
      * @param dst output vector representing the translation
      */
-    public static void planarTranslation(Vec3f src,
+    @Deprecated
+    public static void planarTranslationOld(Vec3f src,
             Vec2f p0, Vec2f p1,
             Cam cam, float aspect,
             Vec3f dst) {
@@ -305,7 +308,38 @@ public class Transformation {
         //dst.set(t1.sub_(t0));
     }
 
-    /*
+    
+    /**
+     * Converts a translation from view coordinates to a translation in a plane
+     * perpendicular to the camera direction in world coordinates
+     *
+     * @param src initial position of the point to be translated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @return new vector representing the translation
+     */
+    @Deprecated
+    public static Vec3f planarTranslationOld_(Vec3f src,
+            Vec2f p0, Vec2f p1,
+            Cam cam, float aspect) {
+        Vec3f dst = new Vec3f();
+        planarTranslationOld(src, p0, p1, cam, aspect, dst);
+        return dst;
+    }
+
+    /**
+     * Converts a translation from view coordinates to a translation in a plane
+     * perpendicular to the camera direction in world coordinates
+     *
+     * @param src initial position of the point to be translated
+     * @param p0 initial position of point in view coordinates
+     * @param p1 final position of point in view coordinates
+     * @param cam camera
+     * @param aspect screen aspect ratio
+     * @param dst output vector representing the translation
+     */
     public static void planarTranslation(Vec3f src,
             Vec2f p0, Vec2f p1,
             Cam cam, float aspect,
@@ -318,21 +352,17 @@ public class Transformation {
         float dist = src.projPointOnLine_(cam.loc, dir).sub(cam.loc).norm();
 
         //Generate rays for the initial point and final point
-        Vec3f ray0 = cam.viewPosToRayAspect(p0, aspect);
-        Vec3f ray1 = cam.viewPosToRayAspect(p1, aspect);
+        Ray ray0 = cam.viewPosToRayAspect(p0, aspect);
+        Ray ray1 = cam.viewPosToRayAspect(p1, aspect);
 
         //Calculate the translations for both points
-        Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0));
-        Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1));
+        Vec3f t0 = ray0.dir.scale_(1.0f / dir.dot(ray0.dir));
+        Vec3f t1 = ray1.dir.scale_(1.0f / dir.dot(ray1.dir));
 
         //Calculate the translation as the difference between the points
-        dst.set(t1.sub_(t0).scale(dist));
-
-        //Alternate method
-        //Vec3f t0 = ray0.scale_(1.0f / dir.dot(ray0)).sub(dir).scale(dist);
-        //Vec3f t1 = ray1.scale_(1.0f / dir.dot(ray1)).sub(dir).scale(dist);
-        //dst.set(t1.sub_(t0));
-    }*/
+        dst.set(t1.sub_(t0).scale(dist).add(ray1.loc.sub(ray0.loc)));
+    }
+    
     /**
      * Converts a translation from view coordinates to a translation in a plane
      * perpendicular to the camera direction in world coordinates
@@ -351,7 +381,7 @@ public class Transformation {
         planarTranslation(src, p0, p1, cam, aspect, dst);
         return dst;
     }
-
+    
     /**
      * Converts a rotation from view coordinates to a rotation around some axis
      * in world coordinates

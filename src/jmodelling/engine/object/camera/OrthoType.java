@@ -38,13 +38,13 @@ public class OrthoType extends CamType {
 
     @Override
     public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
-        Vec3f loc = new Vec3f(posView.x, posView.y, 0.0f).mul(cam.getRotationMatrix3f()).scale(cam.distToTarget).add(cam.loc);
+        Vec3f loc = new Vec3f(posView.x, posView.y, 0.0f).mul(cam.getRotationMatrix3f()).scale(cam.orthoScale).add(cam.loc);
         return new Ray(loc, cam.getDir());//TODO: change this
     }
 
     @Override
     public Mat4f getProjectionMatrix(CamArcball cam, float aspect) {
-        return TransfMat.ortho_(cam.distToTarget, aspect, cam.zNear, cam.zFar);
+        return TransfMat.ortho_(cam.orthoScale, aspect, cam.zNear, cam.zFar);
     }
 
     @Override
@@ -52,4 +52,31 @@ public class OrthoType extends CamType {
         cam.orthoScale *= delta;
     }
 
+    @Override
+    public Mat4f getModelViewMatrix(CamArcball cam) {
+        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        
+        float offset = (cam.zFar - cam.zNear) / 2.0f;
+        Vec3f newLoc = cam.loc.add_(cam.getDir().negate().scale(offset));
+        newLoc.print();
+        Mat4f t = TransfMat.translation_(newLoc.negate_());
+        
+        return rx.mul_(ry).mul(rz).mul(t);
+    }
+
+    @Override
+    public void translate(CamArcball cam, Vec2f deltaView) {
+        Vec3f trans = new Vec3f(
+                deltaView.x * cam.orthoScale,
+                deltaView.y * cam.orthoScale,
+                0.0f
+        );
+        cam.loc.add(trans.mul(cam.getRotationMatrix3f()));
+    }
+
+    
+    
+    
 }

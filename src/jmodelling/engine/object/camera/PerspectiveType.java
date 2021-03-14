@@ -33,7 +33,7 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class PerspectiveType extends CamType{
+public class PerspectiveType extends CamType {
 
     @Override
     public Ray viewPosToRay(CamArcball cam, Vec2f posView) {
@@ -51,14 +51,33 @@ public class PerspectiveType extends CamType{
     public void zoom(CamArcball cam, float delta) {
         //Get target position before rotation
         Vec3f tar = cam.getTar();
-        
+
         //Update distance to target
-        cam.distToTarget*=delta;
-        
+        cam.distToTarget *= delta;
+
         //Move camera location
         cam.loc = tar.add(cam.getDir().negate().scale(cam.distToTarget));
     }
- 
+
+    @Override
+    public Mat4f getModelViewMatrix(CamArcball cam) {
+        Mat4f rx = TransfMat.rotationDeg_(-cam.rot.x, new Vec3f(1.0f, 0.0f, 0.0f));
+        Mat4f ry = TransfMat.rotationDeg_(-cam.rot.y, new Vec3f(0.0f, 1.0f, 0.0f));
+        Mat4f rz = TransfMat.rotationDeg_(-cam.rot.z, new Vec3f(0.0f, 0.0f, 1.0f));
+        Mat4f t = TransfMat.translation_(cam.loc.negate_());
+        return rx.mul_(ry).mul(rz).mul(t);
+    }
+
+    @Override
+    public void translate(CamArcball cam, Vec2f deltaView) {
+        Vec3f trans = new Vec3f(
+                deltaView.x * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)),
+                deltaView.y * cam.distToTarget * (float) Math.tan(Math.toRadians(cam.fov / 2.0f)),
+                0.0f
+        );
+        cam.loc.add(trans.mul(cam.getRotationMatrix3f()));
+    }
     
     
+
 }

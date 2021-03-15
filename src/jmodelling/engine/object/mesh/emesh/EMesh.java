@@ -142,7 +142,7 @@ public class EMesh {
         selectedVtxs = new IdentitySet<>();
         selectedEdges = new IdentitySet<>();
         selectedPolys = new IdentitySet<>();
-        
+
     }
 
     //TODO: Not tested?
@@ -361,6 +361,18 @@ public class EMesh {
         if (vtxsSet.contains(vtxToSelect)) {
             selectedVtxs.add(vtxToSelect);
         }
+    }
+
+    public void deselectVtx(Vec3f vtxToDeselect) {
+        selectedVtxs.remove(vtxToDeselect);
+    }
+    
+    public void deselectAllVtxs(){
+        selectedVtxs.clear();
+    }
+    
+    public boolean isVtxSelected(Vec3f vtx){
+        return selectedVtxs.contains(vtx);
     }
 
     public boolean isPolygonSelected(Polygon polygon) {

@@ -39,6 +39,8 @@ import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.cmesh.CShape;
 import jmodelling.engine.object.mesh.cmesh.PolygonArray;
+import jmodelling.engine.object.mesh.emesh.EMesh;
+import jmodelling.engine.object.mesh.emesh.Polygon;
 import static jmodelling.engine.raytracing.Raytracer.rayIntersectsSphere;
 import static jmodelling.engine.raytracing.Raytracer.rayIntersectsTriangle;
 import static jmodelling.engine.raytracing.Raytracer.rayPointDistance;
@@ -47,6 +49,7 @@ import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.math.vec.Vec4f;
+import jmodelling.utils.collections.IdentitySet;
 
 /**
  *
@@ -141,6 +144,11 @@ public class MeshRaytracer {
         return rayDir.mul_(transfInv).had(obj.sca.invert_()).normalize();
     }
 
+    private static Ray rayToLocal(Ray ray, Object3D obj, Mat3f transfInv) {
+        return new Ray(ray.loc.sub_(obj.loc).mul(transfInv).had(obj.sca.invert_()),
+                ray.dir.mul_(transfInv).had(obj.sca.invert_()).normalize());
+    }
+
     public static MeshObject getSelectedMeshObject(Vec3f rayPos, Vec3f rayDir,
             Set<MeshObject> objects) {
 
@@ -210,9 +218,9 @@ public class MeshRaytracer {
 
         return sortedList;
     }
-    
+
     public static List<MeshObject> getIntersectingMeshObjects(Ray ray,
-            Set<MeshObject> objects) { 
+            Set<MeshObject> objects) {
         return getIntersectingMeshObjects(ray.loc, ray.dir, objects);
     }
 
@@ -250,6 +258,143 @@ public class MeshRaytracer {
         for (Vec3f vtx : vtxs) {
             Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
             if (rayPos.dist(new Vec2f(projVec.x, projVec.y)) < radius) {
+                intersections.put(vtx, projVec.z);
+            }
+        }
+
+        TreeSet<Map.Entry<Vec3f, Float>> sortedByDist = new TreeSet<>(new Comparator<Map.Entry<Vec3f, Float>>() {
+            @Override
+            public int compare(Map.Entry<Vec3f, Float> s1, Map.Entry<Vec3f, Float> s2) {
+                return Float.compare(s1.getValue(), s2.getValue());
+            }
+        });
+        sortedByDist.addAll(intersections.entrySet());
+
+        List<Vec3f> sortedList = new ArrayList<>(sortedByDist.size());
+        sortedByDist.forEach((entry) -> {
+            sortedList.add(entry.getKey());
+        });
+
+        return sortedList;
+    }
+
+    public static List<Vec3f> rayEMeshIntersectionsLocal(Ray rayLocal,
+            EMesh emesh) {
+
+        TreeSet<Vec3f> intersections = new TreeSet<>(new Comparator<Vec3f>() {
+            @Override
+            public int compare(Vec3f o1, Vec3f o2) {
+                return Float.compare(rayLocal.loc.dist(o1), rayLocal.loc.dist(o2));
+            }
+        });
+
+        for (Polygon poly : emesh.polys) {
+            for (int i = 0; i < poly.tris.size(); i += 3) {
+                Vec3f intersection = new Vec3f();
+                if (Raytracer.rayIntersectsTriangle(rayLocal.loc, rayLocal.dir,
+                        poly.tris.get(i).vtx, poly.tris.get(i + 1).vtx,
+                        poly.tris.get(i + 2).vtx, 0.0001f, intersection)) {
+                    intersections.add(intersection);
+                }
+            }
+        }
+
+        List<Vec3f> sortedList = new ArrayList<>(intersections.size());
+        for (Vec3f v : intersections) {
+            sortedList.add(v);
+        }
+        return sortedList;
+    }
+
+    public static List<Vec3f> rayEMeshIntersections(Ray ray,
+            MeshEditableObject obj) {
+        Mat3f transf = obj.getRotationMatrix3f();
+        Mat3f transfInv = transf.transp_();
+
+        Ray rayLocal = rayToLocal(ray, obj, transfInv);
+
+        return rayEMeshIntersectionsLocal(rayLocal, obj.emesh);
+    }
+
+    public static Vec3f getIntersectingVtxSolidLocal(Ray rayLocal, Vec2f rayView,
+            MeshEditableObject obj, Mat4f camMVP,
+            float radius, float minDist) {
+
+        IdentityHashMap<Vec3f, Float> closeVtxs = new IdentityHashMap<>();
+        Mat4f transf = camMVP.mul_(obj.getModelMatrix());
+        for (Vec3f vtx : obj.emesh.vtxs) {
+            Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
+            float dist = rayView.dist(new Vec2f(projVec.x, projVec.y));
+            if (dist < radius) {
+                closeVtxs.put(vtx, dist);
+            }
+        }
+
+        if (closeVtxs.size() > 0) {
+            TreeSet<Vec3f> sortedVtxs = new TreeSet<>(new Comparator<Vec3f>() {
+                @Override
+                public int compare(Vec3f o1, Vec3f o2) {
+                    return Float.compare(closeVtxs.get(o1), closeVtxs.get(o2));
+                }
+            });
+            for (Vec3f vtx : closeVtxs.keySet()) {
+                sortedVtxs.add(vtx);
+                vtx.print();
+            }
+
+            for (Vec3f vtx : sortedVtxs) {
+                Ray ray = Ray.newRayTwoPoints(rayLocal.loc, vtx);
+                List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
+                if (inters.size() > 0) {
+                    vtx.print("vtx");
+                    inters.get(0).print("Itersection");
+                    if (inters.get(0).dist(vtx) < minDist) {
+                        return vtx;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Vec3f getIntersectingVtxSolid(Ray ray, Vec2f rayView,
+            MeshEditableObject obj, Mat4f camMVP,
+            float radius, float minDist) {
+
+        Mat3f transf = obj.getRotationMatrix3f();
+        Mat3f transfInv = transf.transp_();
+        Ray rayLocal = rayToLocal(ray, obj, transfInv);
+
+        return getIntersectingVtxSolidLocal(rayLocal, rayView, obj, camMVP, radius, minDist);
+    }
+
+    /*
+    public static List<Vec3f> getIntersectingVtxsSolid(Ray rayLocal, Vec2f rayView,
+            MeshEditableObject obj, Mat4f camMVP, float smallRadius, float bigRadius) {
+
+        IdentityHashMap<Vec3f, Float> intersections = new IdentityHashMap<>();
+        Mat4f transf = camMVP.mul_(obj.getModelMatrix());
+        for (Vec3f vtx : obj.emesh.vtxs) {
+            Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
+            if (rayView.dist(new Vec2f(projVec.x, projVec.y)) < smallRadius) {
+                Ray ray = Ray.newRayTwoPoints(rayLocal.loc, vtx);
+                List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
+                if(inters.size() > 0){
+                    
+                }
+                intersections.put(vtx, projVec.z);
+            }
+        }
+    }*/
+    public static List<Vec3f> getIntersectingVtxsSolid(Vec2f rayPos,
+            Collection<Vec3f> vtxs, Mat4f objMat, Mat4f camMVP,
+            float smallRadius, float bigRadius) {
+
+        IdentityHashMap<Vec3f, Float> intersections = new IdentityHashMap<>();
+        Mat4f transf = camMVP.mul_(objMat);
+        for (Vec3f vtx : vtxs) {
+            Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
+            if (rayPos.dist(new Vec2f(projVec.x, projVec.y)) < smallRadius) {
                 intersections.put(vtx, projVec.z);
             }
         }

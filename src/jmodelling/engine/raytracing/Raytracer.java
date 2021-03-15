@@ -67,6 +67,41 @@ public class Raytracer {
         }
     }
 
+    //Möller–Trumbore intersection algorithm
+    public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
+            Vec3f rayVector,
+            Vec3f vertex0, Vec3f vertex1, Vec3f vertex2, float borderOffset,
+            Vec3f outIntersectionPoint) {
+        final float EPSILON = 0.0000001f;
+        Vec3f edge1 = vertex1.sub_(vertex0);
+        Vec3f edge2 = vertex2.sub_(vertex0);
+        Vec3f h = rayVector.cross_(edge2);
+        float a, f, u, v;
+        a = edge1.dot(h);
+        if (a > -EPSILON && a < EPSILON) {
+            return false;    // This ray is parallel to this triangle.
+        }
+        f = 1.0f / a;
+        Vec3f s = rayOrigin.sub_(vertex0);
+        u = f * (s.dot(h));
+        if (u < -borderOffset || u > 1.0f + borderOffset) {
+            return false;
+        }
+        Vec3f q = s.cross_(edge1);
+        v = f * rayVector.dot(q);
+        if (v < -borderOffset || u + v > 1.0f + borderOffset) {
+            return false;
+        }
+        // At this stage we can compute t to find out where the intersection point is on the line.
+        float t = f * edge2.dot(q);
+        if (t > EPSILON) { // ray intersection
+            outIntersectionPoint.set(rayVector).scale(t).add(rayOrigin);
+            return true;
+        } else { // This means that there is a line intersection but not a ray intersection.
+            return false;
+        }
+    }
+
     public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
             Vec3f rayVector,
             float[] vCoords, int offset,

@@ -28,6 +28,8 @@ import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.List;
 import jmodelling.engine.Engine;
 import jmodelling.engine.editor.Tool;
 import jmodelling.engine.editor.viewport.Mode;
@@ -40,6 +42,8 @@ import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.emesh.gl.EShapeGL;
+import jmodelling.engine.raytracing.MeshRaytracer;
+import jmodelling.math.vec.Vec3f;
 
 /**
  *
@@ -51,6 +55,9 @@ public class EditMode extends Mode {
     private Tool tool;
     public final MeshEditableObject obj;
 
+    List<Vec3f> points = new ArrayList<>();
+    
+    
     public EditMode(View3D editor, Engine engine, MeshEditableObject obj) {
         super(editor, engine);
 
@@ -148,6 +155,12 @@ public class EditMode extends Mode {
         gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
         gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
         gl.glDisable(GL2.GL_LIGHTING);
+        
+        gl.glBegin(GL2.GL_POINTS);
+        for(Vec3f p : points){
+            gl.glVertex3f(p.x, p.y, p.z);
+        }
+        gl.glEnd();
 
     }
 
@@ -225,6 +238,14 @@ public class EditMode extends Mode {
             case KeyEvent.VK_TAB: {
                 System.out.println("TAB EDIT MODE");
                 changeMode();
+                engine.repaintDisplaysUsingEditor(editor);
+                break;
+            }
+            case KeyEvent.VK_SPACE: {
+                List<Vec3f> inters = MeshRaytracer.rayEMeshIntersections(editor.getCam().viewPosToRay(editor.getMouseX(), editor.getMouseY(), editor.getPanel().getWidth(), editor.getPanel().getHeight()), obj);
+                if(!inters.isEmpty()){
+                    points.add(inters.get(0));
+                }
                 engine.repaintDisplaysUsingEditor(editor);
                 break;
             }

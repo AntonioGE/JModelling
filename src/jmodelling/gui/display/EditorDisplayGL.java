@@ -42,7 +42,8 @@ import jmodelling.engine.editor.Editor;
 public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseListener, MouseMotionListener, KeyListener, MouseWheelListener {
 
     private Editor editor;
-
+    private Thread animation;
+    
     protected int lastPressX, lastPressY;
     protected int mouseX, mouseY;
 
@@ -178,5 +179,5 @@ public class EditorDisplayGL extends GLJPanel implements GLEventListener, MouseL
     public Editor getEditor() {
         return editor;
     }
-
+    
 }

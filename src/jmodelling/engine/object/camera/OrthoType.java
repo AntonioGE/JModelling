@@ -60,7 +60,6 @@ public class OrthoType extends CamType {
         
         float offset = (cam.zFar - cam.zNear) / 2.0f;
         Vec3f newLoc = cam.loc.add_(cam.getDir().negate().scale(offset));
-        newLoc.print();
         Mat4f t = TransfMat.translation_(newLoc.negate_());
         
         return rx.mul_(ry).mul(rz).mul(t);

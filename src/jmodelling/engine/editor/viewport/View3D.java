@@ -34,6 +34,7 @@ import jmodelling.engine.editor.Editor;
 import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.editor.viewport.object.ObjectMode;
 import jmodelling.engine.object.Object3D;
+import jmodelling.engine.object.camera.Cam;
 import jmodelling.engine.object.camera.CamArcball;
 import jmodelling.engine.object.mesh.MeshEditableObject;
 import jmodelling.gui.display.EditorDisplayGL;
@@ -242,7 +243,17 @@ public class View3D extends Editor {
                 shiftPressed = true;
                 break;
             }
-            case KeyEvent.VK_NUMPAD5:{
+            case KeyEvent.VK_NUMPAD1: {
+                cam.rotateAroundTarget(new Vec3f(90.0f, 0.0f, 0.0f));
+                panel.repaint();
+                break;
+            }
+            case KeyEvent.VK_NUMPAD7: {
+                cam.rotateAroundTarget(new Vec3f(0.0f, 0.0f, 0.0f));
+                panel.repaint();
+                break;
+            }
+            case KeyEvent.VK_NUMPAD5: {
                 cam.toggleType();
                 panel.repaint();
                 break;

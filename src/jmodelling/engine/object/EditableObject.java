@@ -21,27 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.raytracing;
-
-import jmodelling.math.vec.Vec3f;
+package jmodelling.engine.object;
 
 /**
  *
  * @author ANTONIO
  */
-public class Ray {
-
-    public Vec3f loc;
-    public Vec3f dir;
-
-    public Ray(Vec3f loc, Vec3f dir) {
-        this.loc = loc;
-        this.dir = dir;
-
-    }
+public abstract class EditableObject extends Object3D{
     
-    public static Ray newRayTwoPoints(Vec3f p0, Vec3f p1){
-        return new Ray(p0.clone(), p1.sub_(p0).normalize());
-    }
-
 }

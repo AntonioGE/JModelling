@@ -79,6 +79,17 @@ public class CamArcball extends Cam {
         loc = tar.add(getDir().negate().scale(distToTarget));
     }
 
+    public void rotateAroundTarget(Vec3f newRot) {
+        //Get target position before rotation
+        Vec3f tar = getTar();
+        
+        //Set rotation angles
+        rot.set(newRot);
+        
+        //Rotate camera position around target
+        loc = tar.add(getDir().negate().scale(distToTarget));
+    }
+
     public void translate(Vec2f deltaView) {
         type.translate(this, deltaView);
     }

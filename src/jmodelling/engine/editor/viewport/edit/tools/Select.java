@@ -65,22 +65,36 @@ public class Select extends EditTool {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(SwingUtilities.isRightMouseButton(e)){
-            List<Vec3f> vtxs = MeshRaytracer.getIntersectingVtxs(
+        if (SwingUtilities.isRightMouseButton(e)) {
+            Vec3f vtx = MeshRaytracer.getIntersectingVtxSolid(
+                    editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
                     Cam.pixelToView(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
-                    mode.obj.emesh.vtxs, 
-                    mode.obj.getModelMatrix(),
-                    editor.getTransf(), 0.075f);
-            if(!vtxs.isEmpty()){
-                mode.obj.emesh.selectVtx(vtxs.get(0));
-                editor.getScene().update(mode.obj);
-                editor.repaintSameEditors();
-                vtxs.get(0).print();
+                    mode.obj,
+                    editor.getTransf(),
+                    0.1f, 0.005f);
+            if (vtx != null) {
+                if (editor.isShiftPressed()) {
+                    if (mode.obj.emesh.isVtxSelected(vtx)) {
+                        mode.obj.emesh.deselectVtx(vtx);
+                        editor.getScene().update(mode.obj);
+                        editor.repaintSameEditors();
+                    } else {
+                        mode.obj.emesh.selectVtx(vtx);
+                        editor.getScene().update(mode.obj);
+                        editor.repaintSameEditors();
+                    }
+                } else {
+                    mode.obj.emesh.deselectAllVtxs();
+                    mode.obj.emesh.selectVtx(vtx);
+                    editor.getScene().update(mode.obj);
+                    editor.repaintSameEditors();
+
+                }
             }
         }
     }
@@ -112,9 +126,9 @@ public class Select extends EditTool {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             List<Vec3f> list = new ArrayList<>(mode.obj.emesh.vtxs.size());
-            for(Vec3f vtx : mode.obj.emesh.vtxs){
+            for (Vec3f vtx : mode.obj.emesh.vtxs) {
                 list.add(vtx.clone());
             }
             //mode.obj.emesh.selectVtxsContains(list);

@@ -29,6 +29,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -149,6 +150,7 @@ public class DisplayGL extends GLJPanel implements GLEventListener, MouseListene
     private float firstDist = 0.0f;
 
     private MeshObject mesh3;
+    private FPSAnimator anim;
 
     public DisplayGL() {
         super(generateCapabilities());

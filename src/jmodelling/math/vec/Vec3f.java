@@ -1167,4 +1167,19 @@ public class Vec3f {
     public boolean isFinite(){
         return isFinite(this);
     }
+    
+    /**
+     * Calculates the mean of a list of vectors
+     * 
+     * @param srcs list of vector
+     * @return mean of the vector list
+     */
+    public static Vec3f mean(Vec3f... srcs){
+        Vec3f dst = new Vec3f();
+        for(Vec3f v : srcs){
+            dst.add(v);
+        }
+        dst.scale(1.0f / srcs.length);
+        return dst;
+    }
 }

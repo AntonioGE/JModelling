@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import jmodelling.engine.object.material.Material;
@@ -206,8 +207,8 @@ public class EMesh {
         resized = true;
     }
 
-    public void addEdge(int v1, int v2) {
-        Edge edge = new Edge(vtxs.get(v1), vtxs.get(v2));
+    public void addEdge(Vec3f v0, Vec3f v1) {
+        Edge edge = new Edge(v0, v1);
         edges.add(edge);
         resized = true;
     }
@@ -349,10 +350,7 @@ public class EMesh {
 
     //TODO: Check for another way of storing the vertex array?
     public void selectVtxs(Collection<Vec3f> vtxsToSelect) {
-        IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
-        for (Vec3f vtx : vtxs) {
-            vtxsSet.add(vtx);
-        }
+        Set<Vec3f> vtxsSet = getVtxsSet();
         for (Vec3f vtx : vtxsToSelect) {
             if (vtxsSet.contains(vtx)) {
                 selectedVtxs.add(vtx);
@@ -362,11 +360,7 @@ public class EMesh {
 
     //TODO: Check for another way of storing the vertex array?
     public void selectVtx(Vec3f vtxToSelect) {
-        IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
-        for (Vec3f vtx : vtxs) {
-            vtxsSet.add(vtx);
-        }
-        if (vtxsSet.contains(vtxToSelect)) {
+        if (getVtxsSet().contains(vtxToSelect)) {
             selectedVtxs.add(vtxToSelect);
         }
         
@@ -398,6 +392,14 @@ public class EMesh {
         return true;
     }
 
+    public Set<Vec3f> getVtxsSet(){
+        IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
+        for (Vec3f vtx : vtxs) {
+            vtxsSet.add(vtx);
+        }
+        return vtxsSet;
+    }
+    
     private IdentityHashMap<Vec3f, IdentitySet<Edge>> genEdgesUsingVtx() {
         IdentityHashMap<Vec3f, IdentitySet<Edge>> edgesUsingVtx = CollectionUtils.newIdentityHashMap(vtxs.size());
         for (Edge edge : edges) {

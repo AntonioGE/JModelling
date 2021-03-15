@@ -175,8 +175,8 @@ public class MainFrame extends JFrame {
         loops.add(new Loop(edges.get(0).v0, edges.get(0)));
         loops.add(new Loop(edges.get(1).v1, edges.get(1)));
         loops.add(new Loop(edges.get(2).v0, edges.get(2)));
-        Polygon poly = new Polygon(loops, null);
-        System.out.println(poly.size());
+        //Polygon poly = new Polygon(loops, null);
+        //System.out.println(poly.size());
         
         Loop l0 = new Loop(edges.get(0).v0, edges.get(0));
         Loop l1 = new Loop(edges.get(1).v1, edges.get(1));

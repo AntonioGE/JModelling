@@ -73,7 +73,7 @@ public class CMesh {
         HashMap<Edge, Integer> edgeInds = new HashMap<>(mesh.edges.size());
         edges = new int[mesh.edges.size() * 2];
         int edgeIndex = 0;
-        for (Edge edge : mesh.edges.values()) {
+        for (Edge edge : mesh.edges) {
             edgeInds.put(edge, edgeIndex);
             edges[edgeIndex * 2] = vtxInds.get(edge.v0);
             edges[edgeIndex * 2 + 1] = vtxInds.get(edge.v1);

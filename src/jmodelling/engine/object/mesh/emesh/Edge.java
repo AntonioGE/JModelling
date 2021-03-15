@@ -49,7 +49,8 @@ public class Edge {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+        //return Objects.hashCode(this.v0) ^ Objects.hashCode(this.v1);
+        return System.identityHashCode(v0) ^ System.identityHashCode(v1);
     }
 
     @Override
@@ -67,5 +68,9 @@ public class Edge {
 
         return ((this.v0 == other.v0) && (this.v1 == other.v1))
                 || ((this.v0 == other.v1) && (this.v1 == other.v0));
+    }
+
+    public Vec3f[] getVtxs() {
+        return new Vec3f[]{v0, v1};
     }
 }

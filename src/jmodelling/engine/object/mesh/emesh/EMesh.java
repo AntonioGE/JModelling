@@ -31,6 +31,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.cmesh.CMesh;
 import jmodelling.engine.object.mesh.cmesh.CShape;
@@ -52,13 +53,18 @@ public class EMesh {
      * Mesh data
      */
     public ArrayList<Vec3f> vtxs;
-    public HashMap<Edge, Edge> edges;
+    public LinkedHashSet<Edge> edges;
     public LinkedHashSet<Polygon> polys;
+    public LinkedHashSet<Material> mats;
 
+    /**
+     * Utility data
+     */
     public HashMap<Material, LinkedHashSet<Polygon>> polyGroups;
     public IdentityHashMap<Vec3f, IdentitySet<Polygon>> polysUsingVtx;
 
-    public LinkedHashSet<Material> mats;
+    private IdentityHashMap<Vec3f, IdentitySet<Edge>> edgesUsingVtx;
+    private HashMap<Edge, IdentitySet<Polygon>> polysUsingEdge;
 
     /**
      * Editor data
@@ -72,7 +78,7 @@ public class EMesh {
 
     public EMesh() {
         vtxs = new ArrayList<>();
-        edges = new LinkedHashMap<>();
+        edges = new LinkedHashSet<>();
         polys = new LinkedHashSet<>();
 
         polyGroups = new HashMap<>();
@@ -85,6 +91,8 @@ public class EMesh {
         selectedEdges = new IdentitySet<>();
         selectedPolys = new IdentitySet<>();
         polysUsingVtx = new IdentityHashMap<>();
+        edgesUsingVtx = new IdentityHashMap<>();
+        polysUsingEdge = new HashMap<>();
     }
 
     public EMesh(CMesh cmesh) {
@@ -95,10 +103,10 @@ public class EMesh {
 
         //The edges list is used for accessing the edges by index
         ArrayList<Edge> edgesList = new ArrayList<>(cmesh.edges.length / 2);
-        edges = CollectionUtils.newHashMap(cmesh.edges.length / 2);
+        edges = CollectionUtils.newLinkedHashSet(cmesh.edges.length / 2);
         for (int i = 0; i < cmesh.edges.length; i += 2) {
             final Edge edge = new Edge(vtxs.get(cmesh.edges[i]), vtxs.get(cmesh.edges[i + 1]));
-            edges.put(edge, edge);
+            edges.add(edge);
             edgesList.add(edge);
         }
 
@@ -143,6 +151,7 @@ public class EMesh {
         selectedEdges = new IdentitySet<>();
         selectedPolys = new IdentitySet<>();
 
+        genUtilityData();//TODO: Remove this
     }
 
     //TODO: Not tested?
@@ -157,11 +166,11 @@ public class EMesh {
         }
 
         IdentityHashMap<Edge, Edge> eToCopy = CollectionUtils.newIdentityHashMap(other.edges.size());
-        for (Edge edge : other.edges.keySet()) {
+        for (Edge edge : other.edges) {
             Vec3f v0Copy = vToCopy.get(edge.v0);
             Vec3f v1Copy = vToCopy.get(edge.v1);
             Edge edgeCopy = new Edge(v0Copy, v1Copy);
-            edges.put(edgeCopy, edgeCopy);
+            edges.add(edgeCopy);
             eToCopy.put(edge, edgeCopy);
         }
 
@@ -199,10 +208,8 @@ public class EMesh {
 
     public void addEdge(int v1, int v2) {
         Edge edge = new Edge(vtxs.get(v1), vtxs.get(v2));
-        if (!edges.containsKey(edge)) {
-            edges.put(edge, edge);
-            resized = true;
-        }
+        edges.add(edge);
+        resized = true;
     }
 
     public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
@@ -224,9 +231,10 @@ public class EMesh {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
+            /*
             if (edges.containsKey(edge)) {
                 edge = edges.get(edges.get(edge));
-            }
+            }*/
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
                     edge, nrms.get(i), clrs.get(i), uvs.get(i));
 
@@ -236,7 +244,7 @@ public class EMesh {
 
         Polygon poly = new Polygon(newLoops, mat);
         for (Edge edge : newEdges) {
-            edges.put(edge, edge);
+            edges.add(edge);
         }
         for (Loop loop : poly.loops) {
             if (!polysUsingVtx.containsKey(loop.vtx)) {
@@ -361,17 +369,23 @@ public class EMesh {
         if (vtxsSet.contains(vtxToSelect)) {
             selectedVtxs.add(vtxToSelect);
         }
+        
+        //TODO: Remove this
+        Set<Edge> edges = edgesUsingVtx.get(vtxToSelect);
+        if(edges != null){
+            System.out.println("Vertex conected to " + edges.size() + " edges");
+        }
     }
 
     public void deselectVtx(Vec3f vtxToDeselect) {
         selectedVtxs.remove(vtxToDeselect);
     }
-    
-    public void deselectAllVtxs(){
+
+    public void deselectAllVtxs() {
         selectedVtxs.clear();
     }
-    
-    public boolean isVtxSelected(Vec3f vtx){
+
+    public boolean isVtxSelected(Vec3f vtx) {
         return selectedVtxs.contains(vtx);
     }
 
@@ -382,6 +396,41 @@ public class EMesh {
             }
         }
         return true;
+    }
+
+    private IdentityHashMap<Vec3f, IdentitySet<Edge>> genEdgesUsingVtx() {
+        IdentityHashMap<Vec3f, IdentitySet<Edge>> edgesUsingVtx = CollectionUtils.newIdentityHashMap(vtxs.size());
+        for (Edge edge : edges) {
+            for (Vec3f vtx : edge.getVtxs()) {
+                IdentitySet<Edge> edgeSet = edgesUsingVtx.get(vtx);
+                if (edgeSet == null) {
+                    edgeSet = new IdentitySet<>();
+                    edgesUsingVtx.put(vtx, edgeSet);
+                }
+                edgeSet.add(edge);
+            }
+        }
+        return edgesUsingVtx;
+    }
+
+    private HashMap<Edge, IdentitySet<Polygon>> genPolysUsingEdge() {
+        HashMap<Edge, IdentitySet<Polygon>> polysUsingEdge = CollectionUtils.newHashMap(edges.size());
+        for (Polygon poly : polys) {
+            for (Loop loop : poly.loops) {
+                IdentitySet<Polygon> polySet = polysUsingEdge.get(loop.edge);
+                if (polySet == null) {
+                    polySet = CollectionUtils.newIdentitySet(4);
+                    polysUsingEdge.put(loop.edge, polySet);
+                }
+                polySet.add(poly);
+            }
+        }
+        return polysUsingEdge;
+    }
+
+    private void genUtilityData() {
+        edgesUsingVtx = genEdgesUsingVtx();
+        polysUsingEdge = genPolysUsingEdge();
     }
 
 }

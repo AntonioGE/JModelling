@@ -339,15 +339,12 @@ public class MeshRaytracer {
             });
             for (Vec3f vtx : closeVtxs.keySet()) {
                 sortedVtxs.add(vtx);
-                vtx.print();
             }
 
             for (Vec3f vtx : sortedVtxs) {
                 Ray ray = Ray.newRayTwoPoints(rayLocal.loc, vtx);
                 List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
                 if (inters.size() > 0) {
-                    vtx.print("vtx");
-                    inters.get(0).print("Itersection");
                     if (inters.get(0).dist(vtx) < minDist) {
                         return vtx;
                     }

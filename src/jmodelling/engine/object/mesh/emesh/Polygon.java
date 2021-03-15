@@ -45,12 +45,43 @@ public class Polygon {
     public List<Loop> tris;
 
     public Polygon(CircularLinkedHashSet<Loop> loops, Material mat) {
+        if(loops.size() < 3){
+            throw new IllegalArgumentException();
+        }
         this.loops = loops;
         this.mat = mat;
         
         updateTris();
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for(Loop loop : loops){
+            hash ^= System.identityHashCode(loop.vtx);
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final Polygon other = (Polygon) obj;
+        if(this.loops.size() == other.loops.size()){
+            return this.loops.containsAll(other.loops.getSet());
+        }
+        return false;
+    }
+    
     public Vec3f getNormal() {
         Vec3f normal = new Vec3f();
 
@@ -74,6 +105,10 @@ public class Polygon {
 
     public boolean isTri() {
         return loops.size() == 3;
+    }
+    
+    public int size(){
+        return loops.size();
     }
 
     public final void updateTris() {

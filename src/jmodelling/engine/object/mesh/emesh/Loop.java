@@ -61,15 +61,17 @@ public class Loop {
 
     @Override
     public int hashCode() {
+        return System.identityHashCode(vtx);
+        /*
         int hash = 7;
         hash = 67 * hash + Objects.hashCode(this.vtx);
         hash = 67 * hash + Objects.hashCode(this.edge);
         hash = 67 * hash + Objects.hashCode(this.nrm);
         hash = 67 * hash + Objects.hashCode(this.clr);
         hash = 67 * hash + Objects.hashCode(this.uv);
-        return hash;
+        return hash;*/
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -82,6 +84,8 @@ public class Loop {
             return false;
         }
         final Loop other = (Loop) obj;
+        return this.vtx == other.vtx;
+        /*
         if (!Objects.equals(this.vtx, other.vtx)) {
             return false;
         }
@@ -97,6 +101,6 @@ public class Loop {
         if (!Objects.equals(this.uv, other.uv)) {
             return false;
         }
-        return true;
+        return true;*/
     }
 }

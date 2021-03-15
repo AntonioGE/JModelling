@@ -29,4 +29,7 @@ package jmodelling.utils.collections;
  */
 public class LinkedIdentitySet extends IdentitySet{
     
+    
+    
+    
 }

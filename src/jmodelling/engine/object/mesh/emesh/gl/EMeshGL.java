@@ -174,12 +174,12 @@ public class EMeshGL implements ElementGL {
 
         wireframe.vtxs.mark();
         wireframe.clrs.mark();
-        for (Edge edge : emesh.edges.values()) {
+        for (Edge edge : emesh.edges) {
             edge.v0.writeInBuffer(wireframe.vtxs);
             edge.v1.writeInBuffer(wireframe.vtxs);
         }
         
-        for(Edge edge : emesh.edges.values()){
+        for(Edge edge : emesh.edges){
             if(emesh.selectedVtxs.contains(edge.v0)){
                 wireframe.clrs.put(1.0f);
                 wireframe.clrs.put(0.62f);
@@ -211,12 +211,12 @@ public class EMeshGL implements ElementGL {
     public static final void updateWireframe(EMesh emesh, EWireGL wireframe){
         wireframe.vtxs.mark();
         wireframe.clrs.mark();
-        for (Edge edge : emesh.edges.values()) {
+        for (Edge edge : emesh.edges) {
             edge.v0.writeInBuffer(wireframe.vtxs);
             edge.v1.writeInBuffer(wireframe.vtxs);
         }
         
-        for(Edge edge : emesh.edges.values()){
+        for(Edge edge : emesh.edges){
             if(emesh.selectedVtxs.contains(edge.v0)){
                 wireframe.clrs.put(1.0f);
                 wireframe.clrs.put(0.62f);

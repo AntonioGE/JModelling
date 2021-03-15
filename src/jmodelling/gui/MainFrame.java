@@ -28,11 +28,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import jmodelling.engine.Engine;
 import jmodelling.engine.editor.viewport.View3D;
+import jmodelling.engine.object.mesh.emesh.Edge;
+import jmodelling.engine.object.mesh.emesh.Loop;
+import jmodelling.engine.object.mesh.emesh.Polygon;
 import jmodelling.engine.object.mesh.utils.triangulator.EarClipping;
 import jmodelling.gui.display.DisplayGL;
 import jmodelling.gui.display.EditorDisplayGL;
@@ -153,6 +157,35 @@ public class MainFrame extends JFrame {
         Vec3f vect = new Vec3f();
         vect.normalize().print();
         System.out.println((0.0f * vect.x));
+        
+        LinkedHashSet<Polygon> polys = new LinkedHashSet<>();
+        List<Edge> edges = new ArrayList<>();
+        CircularLinkedHashSet<Loop> loops = new CircularLinkedHashSet<>();
+        List<Vec3f> vs = new ArrayList<Vec3f>(){{
+            add(new Vec3f(0.0f, 0.0f, 0.0f));
+            add(new Vec3f(1.0f, 0.0f, 0.0f));
+            add(new Vec3f(2.0f, 0.0f, 0.0f));
+            add(new Vec3f(3.0f, 0.0f, 0.0f));
+        }};
+        edges.add(new Edge(vs.get(0), vs.get(1)));
+        edges.add(new Edge(vs.get(1), vs.get(2)));
+        edges.add(new Edge(vs.get(2), vs.get(3)));
+        edges.add(new Edge(vs.get(3), vs.get(0)));
+        
+        loops.add(new Loop(edges.get(0).v0, edges.get(0)));
+        loops.add(new Loop(edges.get(1).v1, edges.get(1)));
+        loops.add(new Loop(edges.get(2).v0, edges.get(2)));
+        Polygon poly = new Polygon(loops, null);
+        System.out.println(poly.size());
+        
+        Loop l0 = new Loop(edges.get(0).v0, edges.get(0));
+        Loop l1 = new Loop(edges.get(1).v1, edges.get(1));
+        Loop l2 = new Loop(edges.get(2).v0, edges.get(2));
+        l0.nrm = new Vec3f(1, 3, 4);
+        l1.nrm = new Vec3f(1, 3, 8);
+        l2.nrm = new Vec3f(1, 3, 1);
+        
+        System.out.println(l1.equals(l2));
         
         System.out.println(Runtime.getRuntime().availableProcessors());
 

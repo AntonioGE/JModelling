@@ -23,8 +23,10 @@
  */
 package jmodelling.utils.collections.node;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  *
@@ -78,6 +80,18 @@ public class CircularLinkedHashSet<E> extends CircularLinkedList<E> {
     
     public void remove(E e) {
         unlink(map.get(e));
+    }
+    
+    public boolean containsAll(Set<E> set){
+        return map.keySet().containsAll(set);
+    }
+    
+    public boolean contains(E e){
+        return map.containsKey(e);
+    }
+    
+    public Set<E> getSet(){
+        return Collections.unmodifiableSet(map.keySet());
     }
     
     public class CircularIterator extends CircularLinkedList.CircularIterator {

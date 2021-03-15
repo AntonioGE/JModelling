@@ -187,6 +187,9 @@ public class MainFrame extends JFrame {
         
         System.out.println(l1.equals(l2));
         
+        IdentitySet<Vec3f> identitySet = new IdentitySet<>(vs);
+       
+        
         System.out.println(Runtime.getRuntime().availableProcessors());
 
         java.awt.EventQueue.invokeLater(new Runnable() {

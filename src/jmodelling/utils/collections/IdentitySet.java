@@ -48,6 +48,11 @@ public class IdentitySet<E> extends AbstractSet<E> implements Set<E> {
         this(16);
     }
     
+    public IdentitySet(Collection<? extends E> c){
+        map = new IdentityHashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
+        addAll(c);
+    }
+    
     @Override
     public int size() {
         return map.size();
@@ -93,15 +98,21 @@ public class IdentitySet<E> extends AbstractSet<E> implements Set<E> {
         return c.stream().noneMatch((o) -> (!contains(o)));
     }
 
-    /*
+    
     @Override
-    public boolean addAll(Collection<E> c) {
+    public boolean addAll(Collection<? extends E> c) {
+        for(E o : c){
+            add(o);
+        }
+        return true;
+        /*
         boolean changed = false;
         for (E o : c) {
             changed = changed || add(o);
         }
-        return changed;
-
+        return changed;*/
+    }
+    /*
     //Not tested
     @Override
     public boolean retainAll(Collection c) {

@@ -43,6 +43,7 @@ import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.ListUtils;
 import jmodelling.utils.collections.IdentitySet;
 import jmodelling.utils.collections.node.CircularLinkedHashSet;
+import jmodelling.utils.collections.node.LinkedIdentitySet;
 
 /**
  *
@@ -53,7 +54,7 @@ public class EMesh {
     /**
      * Mesh data
      */
-    public ArrayList<Vec3f> vtxs;
+    public LinkedIdentitySet<Vec3f> vtxs;
     public LinkedHashSet<Edge> edges;
     public LinkedHashSet<Polygon> polys;
     public LinkedHashSet<Material> mats;
@@ -78,7 +79,7 @@ public class EMesh {
     public IdentitySet<Vec3f> selectedPolys;
 
     public EMesh() {
-        vtxs = new ArrayList<>();
+        vtxs = new LinkedIdentitySet<>();
         edges = new LinkedHashSet<>();
         polys = new LinkedHashSet<>();
 
@@ -97,16 +98,19 @@ public class EMesh {
     }
 
     public EMesh(CMesh cmesh) {
-        vtxs = new ArrayList<>(cmesh.vtxs.length / 3);
+        ArrayList<Vec3f> vtxsList = new ArrayList(cmesh.vtxs.length / 3);
+        vtxs = new LinkedIdentitySet<>();
         for (int i = 0; i < cmesh.vtxs.length; i += 3) {
-            vtxs.add(new Vec3f(cmesh.vtxs, i));
+            Vec3f vtx = new Vec3f(cmesh.vtxs, i);
+            vtxs.add(vtx);
+            vtxsList.add(vtx);
         }
 
         //The edges list is used for accessing the edges by index
         ArrayList<Edge> edgesList = new ArrayList<>(cmesh.edges.length / 2);
         edges = CollectionUtils.newLinkedHashSet(cmesh.edges.length / 2);
         for (int i = 0; i < cmesh.edges.length; i += 2) {
-            final Edge edge = new Edge(vtxs.get(cmesh.edges[i]), vtxs.get(cmesh.edges[i + 1]));
+            final Edge edge = new Edge(vtxsList.get(cmesh.edges[i]), vtxsList.get(cmesh.edges[i + 1]));
             edges.add(edge);
             edgesList.add(edge);
         }
@@ -124,7 +128,7 @@ public class EMesh {
                 for (int i = 0, l = 0; i < numPolys; i++) {
                     CircularLinkedHashSet<Loop> loops = new CircularLinkedHashSet();
                     for (int j = 0; j < numLoops; j++, l++) {
-                        Vec3f vtx = vtxs.get(pArray.vtxInds[l]);
+                        Vec3f vtx = vtxsList.get(pArray.vtxInds[l]);
                         Edge edge = edgesList.get(pArray.edgeInds[l]);
                         Vec3f nrm = cmesh.getNrm(pArray.nrmInds[l]);
                         Vec3f clr = cmesh.getClr(pArray.clrInds[l]);
@@ -213,6 +217,54 @@ public class EMesh {
         resized = true;
     }
 
+    public void addNewPolygon(Material mat, Collection<Vec3f> polyVtxs, Collection<Vec2f> uvs, Collection<Vec3f> nrms, Collection<Vec3f> clrs) {
+        if (!CollectionUtils.areSameSize(polyVtxs, uvs, nrms, clrs)) {
+            throw new IllegalArgumentException();
+        }
+
+        if (!this.vtxs.containsAll(polyVtxs)) {
+            throw new IllegalArgumentException();
+        }
+
+        if (CollectionUtils.hasDuplicates(polyVtxs)) {
+            throw new IllegalArgumentException();
+        }
+
+        LinkedHashSet<Edge> newEdges = CollectionUtils.newLinkedHashSet(polyVtxs.size());
+        CircularLinkedHashSet<Loop> newLoops = new CircularLinkedHashSet<>();
+        ArrayList<Vec3f> vtxList = new ArrayList<>(polyVtxs);
+        ArrayList<Vec3f> nrmList = new ArrayList<>(nrms);
+        ArrayList<Vec3f> clrList = new ArrayList<>(clrs);
+        ArrayList<Vec2f> uvList = new ArrayList<>(uvs);
+        for (int i = 0; i < vtxList.size(); i++) {
+            Edge edge = new Edge(vtxList.get(i), vtxList.get((i + 1) % vtxList.size()));
+            Loop loop = new Loop(vtxList.get(i), edge, nrmList.get(i), clrList.get(i), uvList.get(i));
+
+            newEdges.add(edge);
+            newLoops.add(loop);
+        }
+
+        Polygon poly = new Polygon(newLoops, mat);
+        if (!polys.contains(poly)) {
+            for (Edge edge : newEdges) {
+                edges.add(edge);
+            }
+            for (Loop loop : poly.loops) {
+                if (!polysUsingVtx.containsKey(loop.vtx)) {
+                    polysUsingVtx.put(loop.vtx, new IdentitySet<>());
+                }
+                polysUsingVtx.get(loop.vtx).add(poly);
+            }
+
+            polys.add(poly);
+            addMaterial(mat);
+            polyGroups.get(mat).add(poly);
+
+            resized = true;
+        }
+    }
+
+    /*
     public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
         if (!ListUtils.areSameSize(vInds, uvs, nrms, clrs)) {
             throw new IllegalArgumentException();
@@ -232,10 +284,7 @@ public class EMesh {
             Edge edge = new Edge(
                     vtxs.get(vInds.get(i)),
                     vtxs.get(vInds.get((i + 1) % vInds.size())));
-            /*
-            if (edges.containsKey(edge)) {
-                edge = edges.get(edges.get(edge));
-            }*/
+            
             Loop loop = new Loop(vtxs.get(vInds.get(i)),
                     edge, nrms.get(i), clrs.get(i), uvs.get(i));
 
@@ -260,8 +309,7 @@ public class EMesh {
 
             resized = true;
         }
-    }
-
+    }*/
     public void addMaterial(Material mat) {
         if (!mats.contains(mat)) {
             mats.add(mat);
@@ -363,10 +411,10 @@ public class EMesh {
         if (getVtxsSet().contains(vtxToSelect)) {
             selectedVtxs.add(vtxToSelect);
         }
-        
+
         //TODO: Remove this
         Set<Edge> edges = edgesUsingVtx.get(vtxToSelect);
-        if(edges != null){
+        if (edges != null) {
             System.out.println("Vertex conected to " + edges.size() + " edges");
         }
     }
@@ -392,14 +440,14 @@ public class EMesh {
         return true;
     }
 
-    public Set<Vec3f> getVtxsSet(){
+    public Set<Vec3f> getVtxsSet() {
         IdentitySet<Vec3f> vtxsSet = CollectionUtils.newIdentitySet(vtxs.size());
         for (Vec3f vtx : vtxs) {
             vtxsSet.add(vtx);
         }
         return vtxsSet;
     }
-    
+
     private IdentityHashMap<Vec3f, IdentitySet<Edge>> genEdgesUsingVtx() {
         IdentityHashMap<Vec3f, IdentitySet<Edge>> edgesUsingVtx = CollectionUtils.newIdentityHashMap(vtxs.size());
         for (Edge edge : edges) {

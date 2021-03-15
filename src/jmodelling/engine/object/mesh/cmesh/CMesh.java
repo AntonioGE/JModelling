@@ -63,10 +63,11 @@ public class CMesh {
         //Create a identity hash map for storing the vertices and their indices
         IdentityHashMap<Vec3f, Integer> vtxInds = new IdentityHashMap<>(mesh.vtxs.size());
         vtxs = new float[mesh.vtxs.size() * 3];
-        for (int i = 0; i < mesh.vtxs.size(); i++) {
-            Vec3f vtx = mesh.vtxs.get(i);
-            vtx.writeInArray(vtxs, i * 3);
-            vtxInds.put(vtx, i);
+        int vInd = 0;
+        for(Vec3f vtx : mesh.vtxs){
+            vtx.writeInArray(vtxs, vInd * 3);
+            vtxInds.put(vtx, vInd);
+            vInd++;
         }
 
         //Create a hash map for the edges and their indices

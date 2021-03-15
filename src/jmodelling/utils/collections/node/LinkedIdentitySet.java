@@ -23,6 +23,7 @@
  */
 package jmodelling.utils.collections.node;
 
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -38,6 +39,10 @@ public class LinkedIdentitySet<E> implements Iterable<E>{
     protected Node<E> last;
     protected int size = 0;
     protected IdentityHashMap<E, Node<E>> map;
+
+    public LinkedIdentitySet() {
+        map = new IdentityHashMap<>();
+    }
 
     void linkFirst(E e) {
         final Node<E> f = first;
@@ -130,6 +135,15 @@ public class LinkedIdentitySet<E> implements Iterable<E>{
 
     public boolean contains(Object o) {
         return map.containsKey(o);
+    }
+    
+    public boolean containsAll(Collection<E> o){
+        for(E e : o){
+            if(!contains(e)){
+                return false;
+            }
+        }
+        return true;
     }
 
     public Iterator<E> iterator() {

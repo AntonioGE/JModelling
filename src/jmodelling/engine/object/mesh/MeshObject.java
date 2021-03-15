@@ -26,6 +26,7 @@ package jmodelling.engine.object.mesh;
 import com.jogamp.opengl.GL2;
 import java.io.IOException;
 import java.util.HashMap;
+import jmodelling.engine.formats.obj.ObjReaderOld;
 import jmodelling.engine.formats.obj.ObjReader;
 import jmodelling.engine.object.Object3D;
 import jmodelling.engine.object.bounds.BoundingBox;
@@ -73,9 +74,9 @@ public class MeshObject extends Object3D {
         try {
             meshes = ObjReader.readObj(objPath);
             //this.cmesh = new CMesh(meshes.get("Cylinder"));
-            //this.cmesh = new CMesh(meshes.get("Suzanne"));
+            this.cmesh = new CMesh(meshes.get("Suzanne"));
             //this.cmesh = new CMesh(meshes.get("Sphere"));
-            this.cmesh = new CMesh(meshes.get("Cone"));
+            //this.cmesh = new CMesh(meshes.get("Cone"));
             //this.cmesh = new CMesh(meshes.get("spot"));
             //this.cmesh = new CMesh(meshes.get("Arceus"));
             //this.cmesh = new CMesh(meshes.get("Plane"));

@@ -27,8 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import jmodelling.engine.object.material.Material;
 import jmodelling.engine.object.mesh.emesh.EMesh;
 import jmodelling.math.vec.Vec2f;
@@ -38,8 +41,8 @@ import jmodelling.math.vec.Vec3f;
  *
  * @author ANTONIO
  */
-public class ObjReader {
-    
+public class ObjReaderOld {
+
     private static class Object3D {
 
         public String name;
@@ -93,7 +96,7 @@ public class ObjReader {
         }
 
     }
-    
+
     public static HashMap<String, EMesh> readObj(String path) throws IOException {
 
         HashMap<String, Object3D> objects = new HashMap();
@@ -150,29 +153,30 @@ public class ObjReader {
 
         return meshes;
     }
-    
+
     private static EMesh objectToMesh(Object3D o, ArrayList<Float[]> vCoords, 
             ArrayList<Float[]> tCoords, ArrayList<Float[]> nCoords){
-        
         EMesh mesh = new EMesh();
-        HashMap<Integer, Vec3f> vtxsAdded = new HashMap<>();
+        
+        HashMap<Integer, Integer> vIndsAdded = new HashMap<>();
+        int nextIndex = 0;
         for(Shape shape : o.shapes.values()){
             Material mat = new Material(shape.matName);
             for(Face face : shape.faces){
-                List<Vec3f> vtxs = new ArrayList<>(face.vtxs.size());
+                List<Integer> vInds = new ArrayList<>(face.vtxs.size());
                 List<Vec2f> uvs = new ArrayList<>(face.vtxs.size());
                 List<Vec3f> nrms = new ArrayList<>(face.vtxs.size());
                 List<Vec3f> clrs = new ArrayList<>(face.vtxs.size());
                 for(VertexIndx v : face.vtxs){
                     //Vertex coordinates
-                    if(!vtxsAdded.keySet().contains(v.vInd)){
+                    if(!vIndsAdded.keySet().contains(v.vInd)){
                         Float[] coords = vCoords.get(v.vInd);
-                        Vec3f vtx = new Vec3f(coords[0], coords[1], coords[2]);
-                        mesh.addVertex(vtx);
-                        vtxs.add(vtx);
-                        vtxsAdded.put(v.vInd, vtx);
+                        mesh.addVertex(new Vec3f(coords[0], coords[1], coords[2]));
+                        vInds.add(nextIndex);
+                        vIndsAdded.put(v.vInd, nextIndex);
+                        nextIndex++;
                     }else{
-                        vtxs.add(vtxsAdded.get(v.vInd));
+                        vInds.add(vIndsAdded.get(v.vInd));
                     }
                     
                     //Texture coordinates
@@ -194,7 +198,7 @@ public class ObjReader {
                     //Colors
                     clrs.add(new Vec3f(1.0f, 1.0f, 1.0f));
                 }
-                mesh.addNewPolygon(mat, vtxs, uvs, nrms, clrs);
+                //mesh.addNewPolygon(mat, vInds, uvs, nrms, clrs);
             }
         }
         return mesh;
@@ -300,4 +304,46 @@ public class ObjReader {
 
         shape.faces.add(face);
     }
+
+    private static void readFace(String[] sLine, ArrayList<Integer[]> vInds,
+            ArrayList<Integer[]> tInds, ArrayList<Integer[]> nInds) {
+        if (sLine.length < 4) {
+            vInds.add(null);
+            tInds.add(null);
+            nInds.add(null);
+        } else {
+            try {
+                final int indices = sLine.length - 1;
+                Integer[] vInd = new Integer[indices];
+                Integer[] tInd = new Integer[indices];
+                Integer[] nInd = new Integer[indices];
+                for (int i = 0; i < indices; i++) {
+                    String[] sFace = sLine[i + 1].split("/");
+                    vInd[i] = Integer.valueOf(sFace[0]) - 1;
+                    if (tInd != null) {
+                        try {
+                            tInd[i] = Integer.valueOf(sFace[1]) - 1;
+                        } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                            tInd = null;
+                        }
+                    }
+                    if (nInd != null) {
+                        try {
+                            nInd[i] = Integer.valueOf(sFace[2]) - 1;
+                        } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                            nInd = null;
+                        }
+                    }
+                }
+                vInds.add(vInd);
+                tInds.add(tInd);
+                nInds.add(nInd);
+            } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                vInds.add(null);
+                tInds.add(null);
+                nInds.add(null);
+            }
+        }
+    }
+
 }

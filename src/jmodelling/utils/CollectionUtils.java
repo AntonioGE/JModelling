@@ -23,6 +23,7 @@
  */
 package jmodelling.utils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -59,4 +60,19 @@ public class CollectionUtils {
         return new IdentitySet<>(expectedSizeToCapacity(expectedSize));
     }
 
+    public static boolean areSameSize(Collection<?>... collections){
+        int size = collections[0].size();
+        for(Collection collection : collections){
+            if(collection.size() != size){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static boolean hasDuplicates(Collection<?> collection){
+        IdentitySet<?> set = new IdentitySet<>(collection);
+        return collection.size() != set.size();
+    }
+    
 }

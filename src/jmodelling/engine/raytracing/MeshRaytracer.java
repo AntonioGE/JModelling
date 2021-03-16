@@ -378,12 +378,10 @@ public class MeshRaytracer {
             projVtxs.put(vtx, new Vec2f(projVec.x / projVec.w, projVec.y / projVec.w));
         }
 
-        System.out.println("-------");
         IdentityHashMap<Edge, Float> closeEdges = new IdentityHashMap<>();
         for (Edge edge : obj.emesh.edges) {
             float dist = rayView.distToSegment(projVtxs.get(edge.v0), projVtxs.get(edge.v1));
             if (dist < radius) {
-                projVtxs.get(edge.v0).print();
                 closeEdges.put(edge, dist);
             }
         }
@@ -405,7 +403,7 @@ public class MeshRaytracer {
                 if (inters.size() > 0) {
                     if (inters.get(0).dist(edge.v0) < minDist) {
                         return edge;
-                    }
+                    } 
                 }
             }
         }
@@ -415,7 +413,7 @@ public class MeshRaytracer {
     public static Edge getEdgeSolid(Ray ray, Vec2f rayView,
             MeshEditableObject obj, Mat4f camMVP,
             float radius, float minDist) {
-        
+
         Mat3f transf = obj.getRotationMatrix3f();
         Mat3f transfInv = transf.transp_();
         Ray rayLocal = rayToLocal(ray, obj, transfInv);

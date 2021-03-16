@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -362,7 +363,7 @@ public class EMesh {
 
     //TODO: Check for another way of storing the vertex array?
     public void selectVtx(Vec3f vtxToSelect) {
-        if(vtxs.contains(vtxToSelect)){
+        if (vtxs.contains(vtxToSelect)) {
             selectedVtxs.add(vtxToSelect);
         }
 
@@ -392,6 +393,50 @@ public class EMesh {
             }
         }
         return true;
+    }
+
+    private Edge getOppositeEdge(Edge edge, Vec3f vtx) {
+        IdentitySet<Polygon> edgePolys = polysUsingEdge.get(edge);
+        //Check if the edge belongs to 1 or 2 polygons
+        if (edgePolys != null && (/*edgePolys.size() == 1 ||*/edgePolys.size() == 2)) {
+            IdentitySet<Edge> vtxEdges = edgesUsingVtx.get(vtx);
+            //Check if the vertex is used in 4 edges
+            if (vtxEdges != null && vtxEdges.size() == 4) {
+                vtxEdges = new IdentitySet<>(edgesUsingVtx.get(vtx));
+                vtxEdges.remove(edge);
+
+                for (Polygon poly : edgePolys) {
+                    for (Loop loop : poly.loops) {
+                        vtxEdges.remove(loop.edge);
+                    }
+                }
+
+                if (vtxEdges.size() == 1) {
+                    return (Edge) vtxEdges.iterator().next();
+                }
+            }
+        }
+        return null;
+    }
+
+    public void selectVtxRing(Edge firstEdge) {
+        Edge edge = firstEdge;
+        Vec3f v = edge.v0;
+
+        IdentitySet<Vec3f> vtxsToSelect = new IdentitySet<>();
+        do {
+            vtxsToSelect.add(v);
+            v = edge.getOther(v);
+            edge = getOppositeEdge(edge, v);
+        } while (edge != null && edge != firstEdge);
+        edge = firstEdge;
+        v = edge.v1;
+        do {
+            vtxsToSelect.add(v);
+            v = edge.getOther(v);
+            edge = getOppositeEdge(edge, v);
+        } while (edge != null && edge != firstEdge);
+        selectedVtxs.addAll(vtxsToSelect);
     }
 
     public Set<Vec3f> getVtxsSet() {

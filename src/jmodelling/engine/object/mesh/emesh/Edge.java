@@ -73,4 +73,12 @@ public class Edge {
     public Vec3f[] getVtxs() {
         return new Vec3f[]{v0, v1};
     }
+    
+    public Vec3f getOther(Vec3f v){
+        if(v == v0){
+            return v1;
+        }else{
+            return v0;
+        }
+    }
 }

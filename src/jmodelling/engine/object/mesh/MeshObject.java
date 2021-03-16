@@ -74,8 +74,8 @@ public class MeshObject extends Object3D {
         try {
             meshes = ObjReader.readObj(objPath);
             //this.cmesh = new CMesh(meshes.get("Cylinder"));
-            this.cmesh = new CMesh(meshes.get("Suzanne"));
-            //this.cmesh = new CMesh(meshes.get("Sphere"));
+            //this.cmesh = new CMesh(meshes.get("Suzanne"));
+            this.cmesh = new CMesh(meshes.get("Sphere"));
             //this.cmesh = new CMesh(meshes.get("Cone"));
             //this.cmesh = new CMesh(meshes.get("spot"));
             //this.cmesh = new CMesh(meshes.get("Arceus"));

@@ -71,7 +71,8 @@ public class Raytracer {
     //Möller–Trumbore intersection algorithm
     public static boolean rayIntersectsTriangle(Vec3f rayOrigin,
             Vec3f rayVector,
-            Vec3f vertex0, Vec3f vertex1, Vec3f vertex2, float borderOffset,
+            Vec3f vertex0, Vec3f vertex1, Vec3f vertex2, 
+            float borderOffset,
             Vec3f outIntersectionPoint) {
         final float EPSILON = 0.0000001f;
         Vec3f edge1 = vertex1.sub_(vertex0);

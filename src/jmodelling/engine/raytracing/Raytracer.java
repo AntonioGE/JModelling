@@ -24,6 +24,7 @@
 package jmodelling.engine.raytracing;
 
 import java.nio.FloatBuffer;
+import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 
 /**

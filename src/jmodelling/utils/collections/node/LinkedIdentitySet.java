@@ -109,7 +109,7 @@ public class LinkedIdentitySet<E> implements Iterable<E>{
     }
 
     public boolean add(E e) {
-        if (e != null) {
+        if(e != null && !contains(e)){
             linkLast(e);
             return true;
         }

@@ -98,6 +98,7 @@ public class EMesh {
     }
 
     public EMesh(CMesh cmesh) {
+        //The vertex list is used for accessing the vertices by index
         ArrayList<Vec3f> vtxsList = new ArrayList(cmesh.vtxs.length / 3);
         vtxs = new LinkedIdentitySet<>();
         for (int i = 0; i < cmesh.vtxs.length; i += 3) {
@@ -264,52 +265,6 @@ public class EMesh {
         }
     }
 
-    /*
-    public void addNewPolygon(Material mat, List<Integer> vInds, List<Vec2f> uvs, List<Vec3f> nrms, List<Vec3f> clrs) {
-        if (!ListUtils.areSameSize(vInds, uvs, nrms, clrs)) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!ListUtils.areIndicesInRange(vtxs, vInds)) {
-            throw new IllegalArgumentException();
-        }
-
-        if (ListUtils.hasDuplicatedValues(vInds)) {
-            throw new IllegalArgumentException();
-        }
-
-        LinkedHashSet<Edge> newEdges = CollectionUtils.newLinkedHashSet(vInds.size());
-        CircularLinkedHashSet<Loop> newLoops = new CircularLinkedHashSet<>();
-        for (int i = 0; i < vInds.size(); i++) {
-            Edge edge = new Edge(
-                    vtxs.get(vInds.get(i)),
-                    vtxs.get(vInds.get((i + 1) % vInds.size())));
-            
-            Loop loop = new Loop(vtxs.get(vInds.get(i)),
-                    edge, nrms.get(i), clrs.get(i), uvs.get(i));
-
-            newEdges.add(edge);
-            newLoops.add(loop);
-        }
-
-        Polygon poly = new Polygon(newLoops, mat);
-        for (Edge edge : newEdges) {
-            edges.add(edge);
-        }
-        for (Loop loop : poly.loops) {
-            if (!polysUsingVtx.containsKey(loop.vtx)) {
-                polysUsingVtx.put(loop.vtx, new IdentitySet<>());
-            }
-            polysUsingVtx.get(loop.vtx).add(poly);
-        }
-        if (!polys.contains(poly)) {
-            polys.add(poly);
-            addMaterial(mat);
-            polyGroups.get(mat).add(poly);
-
-            resized = true;
-        }
-    }*/
     public void addMaterial(Material mat) {
         if (!mats.contains(mat)) {
             mats.add(mat);
@@ -398,9 +353,8 @@ public class EMesh {
 
     //TODO: Check for another way of storing the vertex array?
     public void selectVtxs(Collection<Vec3f> vtxsToSelect) {
-        Set<Vec3f> vtxsSet = getVtxsSet();
         for (Vec3f vtx : vtxsToSelect) {
-            if (vtxsSet.contains(vtx)) {
+            if (vtxs.contains(vtx)) {
                 selectedVtxs.add(vtx);
             }
         }
@@ -408,7 +362,7 @@ public class EMesh {
 
     //TODO: Check for another way of storing the vertex array?
     public void selectVtx(Vec3f vtxToSelect) {
-        if (getVtxsSet().contains(vtxToSelect)) {
+        if(vtxs.contains(vtxToSelect)){
             selectedVtxs.add(vtxToSelect);
         }
 

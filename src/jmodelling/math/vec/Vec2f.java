@@ -165,6 +165,15 @@ public class Vec2f {
     public float norm() {
         return (float) Math.sqrt(x * x + y * y);
     }
+    
+    /**
+     * Returns the squared norm of the vector
+     * 
+     * @return squared norm of this vector
+     */
+    public float norm2(){
+        return x * x + y * y;
+    }
 
     public static void normalize(Vec2f src, Vec2f dst) {
         float invNorm = 1.0f / src.norm();
@@ -390,6 +399,34 @@ public class Vec2f {
      */
     public Vec2f proy_(Vec2f dir) {
         return proy_(this, dir);
+    }
+    
+    /**
+     * Calculates the shortest distance between a point and a line segment.
+     * 
+     * @param l0 first point of the line segment
+     * @param l1 second point of the line segment
+     * @param p point
+     * @return shortest distance
+     */
+    private static float distToSegment(Vec2f l0, Vec2f l1, Vec2f p) {
+        final float length2 = l1.sub_(l0).norm2();
+        if (length2 * length2 < 0.0001f) {// v == w case
+            return p.dist(l0);
+        } 
+        final float t = (float) Math.max(0.0f, Math.min(1.0f, p.sub_(l0).dot(l1.sub_(l0)) / length2));
+        return p.dist(l1.sub(l0).scale(t).add(l0));
+    }
+    
+    /**
+     * Calculates the shortest distance between this point and a line segment.
+     * 
+     * @param l0 first point of the line segment
+     * @param l1 second point of the line segment
+     * @return shortest distance
+     */
+    public float distToSegment(Vec2f l0, Vec2f l1){
+        return distToSegment(l0, l1, this);
     }
 
 }

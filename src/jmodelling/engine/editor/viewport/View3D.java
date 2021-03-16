@@ -253,7 +253,8 @@ public class View3D extends Editor {
                 panel.repaint();
                 break;
             }
-            case KeyEvent.VK_NUMPAD5: {
+            case KeyEvent.VK_NUMPAD5:
+            case KeyEvent.VK_CLEAR: {
                 cam.toggleType();
                 panel.repaint();
                 break;

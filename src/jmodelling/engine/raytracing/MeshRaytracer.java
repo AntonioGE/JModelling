@@ -40,6 +40,7 @@ import jmodelling.engine.object.mesh.MeshObject;
 import jmodelling.engine.object.mesh.cmesh.CShape;
 import jmodelling.engine.object.mesh.cmesh.PolygonArray;
 import jmodelling.engine.object.mesh.emesh.EMesh;
+import jmodelling.engine.object.mesh.emesh.Edge;
 import jmodelling.engine.object.mesh.emesh.Polygon;
 import static jmodelling.engine.raytracing.Raytracer.rayIntersectsSphere;
 import static jmodelling.engine.raytracing.Raytracer.rayIntersectsTriangle;
@@ -49,6 +50,7 @@ import jmodelling.math.mat.Mat4f;
 import jmodelling.math.vec.Vec2f;
 import jmodelling.math.vec.Vec3f;
 import jmodelling.math.vec.Vec4f;
+import jmodelling.utils.CollectionUtils;
 import jmodelling.utils.collections.IdentitySet;
 
 /**
@@ -316,7 +318,7 @@ public class MeshRaytracer {
         return rayEMeshIntersectionsLocal(rayLocal, obj.emesh);
     }
 
-    public static Vec3f getIntersectingVtxSolidLocal(Ray rayLocal, Vec2f rayView,
+    public static Vec3f getVtxSolidLocal(Ray rayLocal, Vec2f rayView,
             MeshEditableObject obj, Mat4f camMVP,
             float radius, float minDist) {
 
@@ -354,7 +356,7 @@ public class MeshRaytracer {
         return null;
     }
 
-    public static Vec3f getIntersectingVtxSolid(Ray ray, Vec2f rayView,
+    public static Vec3f getVtxSolid(Ray ray, Vec2f rayView,
             MeshEditableObject obj, Mat4f camMVP,
             float radius, float minDist) {
 
@@ -362,54 +364,63 @@ public class MeshRaytracer {
         Mat3f transfInv = transf.transp_();
         Ray rayLocal = rayToLocal(ray, obj, transfInv);
 
-        return getIntersectingVtxSolidLocal(rayLocal, rayView, obj, camMVP, radius, minDist);
+        return getVtxSolidLocal(rayLocal, rayView, obj, camMVP, radius, minDist);
     }
 
-    /*
-    public static List<Vec3f> getIntersectingVtxsSolid(Ray rayLocal, Vec2f rayView,
-            MeshEditableObject obj, Mat4f camMVP, float smallRadius, float bigRadius) {
+    public static Edge getEdgeSolidLocal(Ray rayLocal, Vec2f rayView,
+            MeshEditableObject obj, Mat4f camMVP,
+            float radius, float minDist) {
 
-        IdentityHashMap<Vec3f, Float> intersections = new IdentityHashMap<>();
+        IdentityHashMap<Vec3f, Vec2f> projVtxs = CollectionUtils.newIdentityHashMap(obj.emesh.vtxs.size());
         Mat4f transf = camMVP.mul_(obj.getModelMatrix());
         for (Vec3f vtx : obj.emesh.vtxs) {
-            Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
-            if (rayView.dist(new Vec2f(projVec.x, projVec.y)) < smallRadius) {
-                Ray ray = Ray.newRayTwoPoints(rayLocal.loc, vtx);
-                List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
-                if(inters.size() > 0){
-                    
+            Vec4f projVec = new Vec4f(vtx, 1.0f).mul(transf);
+            projVtxs.put(vtx, new Vec2f(projVec.x / projVec.w, projVec.y / projVec.w));
+        }
+
+        System.out.println("-------");
+        IdentityHashMap<Edge, Float> closeEdges = new IdentityHashMap<>();
+        for (Edge edge : obj.emesh.edges) {
+            float dist = rayView.distToSegment(projVtxs.get(edge.v0), projVtxs.get(edge.v1));
+            if (dist < radius) {
+                projVtxs.get(edge.v0).print();
+                closeEdges.put(edge, dist);
+            }
+        }
+
+        if (closeEdges.size() > 0) {
+            TreeSet<Edge> sortedEdges = new TreeSet<>(new Comparator<Edge>() {
+                @Override
+                public int compare(Edge o1, Edge o2) {
+                    return Float.compare(closeEdges.get(o1), closeEdges.get(o2));
                 }
-                intersections.put(vtx, projVec.z);
+            });
+            for (Edge edge : closeEdges.keySet()) {
+                sortedEdges.add(edge);
+            }
+
+            for (Edge edge : sortedEdges) {
+                Ray ray = Ray.newRayTwoPoints(rayLocal.loc, edge.v0);
+                List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
+                if (inters.size() > 0) {
+                    if (inters.get(0).dist(edge.v0) < minDist) {
+                        return edge;
+                    }
+                }
             }
         }
-    }*/
-    public static List<Vec3f> getIntersectingVtxsSolid(Vec2f rayPos,
-            Collection<Vec3f> vtxs, Mat4f objMat, Mat4f camMVP,
-            float smallRadius, float bigRadius) {
+        return null;
+    }
 
-        IdentityHashMap<Vec3f, Float> intersections = new IdentityHashMap<>();
-        Mat4f transf = camMVP.mul_(objMat);
-        for (Vec3f vtx : vtxs) {
-            Vec3f projVec = new Vec4f(vtx, 1.0f).mul(transf).toVec3f();
-            if (rayPos.dist(new Vec2f(projVec.x, projVec.y)) < smallRadius) {
-                intersections.put(vtx, projVec.z);
-            }
-        }
+    public static Edge getEdgeSolid(Ray ray, Vec2f rayView,
+            MeshEditableObject obj, Mat4f camMVP,
+            float radius, float minDist) {
+        
+        Mat3f transf = obj.getRotationMatrix3f();
+        Mat3f transfInv = transf.transp_();
+        Ray rayLocal = rayToLocal(ray, obj, transfInv);
 
-        TreeSet<Map.Entry<Vec3f, Float>> sortedByDist = new TreeSet<>(new Comparator<Map.Entry<Vec3f, Float>>() {
-            @Override
-            public int compare(Map.Entry<Vec3f, Float> s1, Map.Entry<Vec3f, Float> s2) {
-                return Float.compare(s1.getValue(), s2.getValue());
-            }
-        });
-        sortedByDist.addAll(intersections.entrySet());
-
-        List<Vec3f> sortedList = new ArrayList<>(sortedByDist.size());
-        sortedByDist.forEach((entry) -> {
-            sortedList.add(entry.getKey());
-        });
-
-        return sortedList;
+        return getEdgeSolidLocal(rayLocal, rayView, obj, camMVP, radius, minDist);
     }
 
     //TODO: Remove this temporary function

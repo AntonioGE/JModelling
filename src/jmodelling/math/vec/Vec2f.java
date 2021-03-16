@@ -411,11 +411,11 @@ public class Vec2f {
      */
     private static float distToSegment(Vec2f l0, Vec2f l1, Vec2f p) {
         final float length2 = l1.sub_(l0).norm2();
-        if (length2 * length2 < 0.0001f) {// v == w case
+        if (length2 * length2 < 0.0001f) {// l0 == l1 case
             return p.dist(l0);
         } 
         final float t = (float) Math.max(0.0f, Math.min(1.0f, p.sub_(l0).dot(l1.sub_(l0)) / length2));
-        return p.dist(l1.sub(l0).scale(t).add(l0));
+        return p.dist(l1.sub_(l0).scale(t).add(l0));
     }
     
     /**

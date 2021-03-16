@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 import jmodelling.engine.editor.viewport.View3D;
 import jmodelling.engine.editor.viewport.edit.EditMode;
 import jmodelling.engine.object.camera.Cam;
+import jmodelling.engine.object.mesh.emesh.Edge;
 import jmodelling.engine.raytracing.MeshRaytracer;
 import jmodelling.math.vec.Vec3f;
 
@@ -71,7 +72,22 @@ public class Select extends EditTool {
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            Vec3f vtx = MeshRaytracer.getIntersectingVtxSolid(
+            Edge edge = MeshRaytracer.getEdgeSolid(
+                    editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
+                    Cam.pixelToView(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
+                    mode.obj,
+                    editor.getTransf(),
+                    0.1f, 0.005f);
+            if (edge != null) {
+                mode.obj.emesh.selectVtx(edge.v0);
+                mode.obj.emesh.selectVtx(edge.v1);
+                editor.getScene().update(mode.obj);
+                editor.repaintSameEditors();
+            }
+        }
+        /*
+        if (SwingUtilities.isRightMouseButton(e)) {
+            Vec3f vtx = MeshRaytracer.getVtxSolid(
                     editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
                     Cam.pixelToView(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
                     mode.obj,
@@ -96,7 +112,7 @@ public class Select extends EditTool {
 
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -126,19 +142,19 @@ public class Select extends EditTool {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            List<Vec3f> list = new ArrayList<>(mode.obj.emesh.vtxs.size());
-            for (Vec3f vtx : mode.obj.emesh.vtxs) {
-                list.add(vtx.clone());
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE: {
+                List<Vec3f> list = new ArrayList<>(mode.obj.emesh.vtxs.size());
+                for (Vec3f vtx : mode.obj.emesh.vtxs) {
+                    list.add(vtx.clone());
+                }
+                mode.obj.emesh.selectVtxs(list);
+                break;
             }
-            //mode.obj.emesh.selectVtxsContains(list);
-            mode.obj.emesh.selectVtxs(list);
-            /*
-            MeshRaytracer.getIntersectingVtxs(
-                    null, 
-                    mode.obj.emesh.vtxs, 
-                    mode.obj.getModelMatrix(),
-                    editor.getTransf(), 0);*/
+            case KeyEvent.VK_Q: {
+
+                break;
+            }
         }
         mode.changeTool(e);
     }

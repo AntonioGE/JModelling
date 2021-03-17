@@ -77,11 +77,11 @@ public class Select extends EditTool {
                     Cam.pixelToView(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
                     mode.obj,
                     editor.getTransf(),
-                    0.025f, 0.005f);
+                    0.05f, 0.005f);
             if (edge != null) {
                 //mode.obj.emesh.selectVtx(edge.v0);
                 //mode.obj.emesh.selectVtx(edge.v1);
-                mode.obj.emesh.selectVtxRing(edge);
+                mode.obj.emesh.selectEdgeLine(edge);
                 editor.getScene().update(mode.obj);
                 editor.repaintSameEditors();
             }

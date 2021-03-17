@@ -367,6 +367,7 @@ public class MeshRaytracer {
         return getVtxSolidLocal(rayLocal, rayView, obj, camMVP, radius, minDist);
     }
 
+    //TODO: This method is not 100% reliable. It has to be improved
     public static Edge getEdgeSolidLocal(Ray rayLocal, Vec2f rayView,
             MeshEditableObject obj, Mat4f camMVP,
             float radius, float minDist) {
@@ -400,6 +401,9 @@ public class MeshRaytracer {
             for (Edge edge : sortedEdges) {
                 Ray ray = Ray.newRayTwoPoints(rayLocal.loc, edge.v0);
                 List<Vec3f> inters = rayEMeshIntersectionsLocal(ray, obj.emesh);
+                for(Vec3f v : inters){
+                    v.print("INTER");
+                }
                 if (inters.size() > 0) {
                     if (inters.get(0).dist(edge.v0) < minDist) {
                         return edge;

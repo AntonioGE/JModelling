@@ -419,23 +419,24 @@ public class EMesh {
         return null;
     }
 
-    public void selectVtxRing(Edge firstEdge) {
+    
+    private boolean getConsecutiveEdges(Edge firstEdge, Vec3f firstVtx, IdentitySet<Vec3f> consecutiveVtxs){
         Edge edge = firstEdge;
-        Vec3f v = edge.v0;
-
+        Vec3f v = firstVtx;
+        do {
+            consecutiveVtxs.add(v);
+            v = edge.getOther(v);
+            edge = getOppositeEdge(edge, v);
+        } while (edge != null && edge != firstEdge);
+        return edge == firstEdge;//True if the last edge is the same as the first one (full ring)
+    }
+    
+    public void selectEdgeLine(Edge firstEdge) {
         IdentitySet<Vec3f> vtxsToSelect = new IdentitySet<>();
-        do {
-            vtxsToSelect.add(v);
-            v = edge.getOther(v);
-            edge = getOppositeEdge(edge, v);
-        } while (edge != null && edge != firstEdge);
-        edge = firstEdge;
-        v = edge.v1;
-        do {
-            vtxsToSelect.add(v);
-            v = edge.getOther(v);
-            edge = getOppositeEdge(edge, v);
-        } while (edge != null && edge != firstEdge);
+        //If the consecutive edges dont form a ring, repeat on the opposite direction
+        if(!getConsecutiveEdges(firstEdge, firstEdge.v0, vtxsToSelect)){
+            getConsecutiveEdges(firstEdge, firstEdge.v1, vtxsToSelect);
+        }
         selectedVtxs.addAll(vtxsToSelect);
     }
 

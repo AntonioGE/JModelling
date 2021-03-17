@@ -65,7 +65,7 @@ public class View3D extends Editor {
 
         cam = new CamArcball("",
                 new Vec3f(0.0f, -5.0f, 0.0f), new Vec3f(0.0f, 0.0f, 0.0f),
-                CamArcball.ORTHO, 0.1f, 1000f, 60.0f);
+                CamArcball.PERSPECTIVE, 0.1f, 1000f, 60.0f);
 
         mode = new ObjectMode(this, engine);
     }

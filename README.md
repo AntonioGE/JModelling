@@ -17,7 +17,7 @@ These are the ones that have been implemented so far:
 * **Mesh editor**:
   * **Vertex selection**
 
-There are many features that still have to be added and some need some refactoring.
+There are many features that still have to be added and others need some refactoring.
 
 ## Screenshot
 <p align="center">

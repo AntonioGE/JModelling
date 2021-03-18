@@ -52,7 +52,7 @@ import jmodelling.math.vec.Vec3f;
 public class EditMode extends Mode {
 
     public static final String NAME = "EDIT MODE";
-    private Tool tool;
+    public Tool tool;
     public final MeshEditableObject obj;
 
     List<Vec3f> points = new ArrayList<>();

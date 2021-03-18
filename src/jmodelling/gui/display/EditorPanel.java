@@ -21,17 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package jmodelling.engine.renderer;
+package jmodelling.gui.display;
 
-import com.jogamp.opengl.GL2;
+import javax.swing.JPanel;
 
 /**
  *
  * @author ANTONIO
  */
-public abstract class Renderer {
+public class EditorPanel extends JPanel{
     
-    public abstract void render(GL2 gl);
     
     
 }

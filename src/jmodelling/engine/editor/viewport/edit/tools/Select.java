@@ -71,6 +71,7 @@ public class Select extends EditTool {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        /*
         if (SwingUtilities.isRightMouseButton(e)) {
             Edge edge = MeshRaytracer.getEdgeSolid(
                     editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
@@ -85,8 +86,8 @@ public class Select extends EditTool {
                 editor.getScene().update(mode.obj);
                 editor.repaintSameEditors();
             }
-        }
-        /*
+        }*/
+        
         if (SwingUtilities.isRightMouseButton(e)) {
             Vec3f vtx = MeshRaytracer.getVtxSolid(
                     editor.getCam().viewPosToRay(e.getX(), e.getY(), editor.panel.getWidth(), editor.panel.getHeight()),
@@ -113,7 +114,7 @@ public class Select extends EditTool {
 
                 }
             }
-        }*/
+        }
     }
 
     @Override

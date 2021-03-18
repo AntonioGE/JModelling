@@ -35,8 +35,8 @@ import jmodelling.engine.Engine;
  */
 public abstract class Mode {
 
-    protected final View3D editor;
-    protected final Engine engine;
+    public final View3D editor;
+    public final Engine engine;
 
     public Mode(View3D editor, Engine engine) {
         this.editor = editor;

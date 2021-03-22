@@ -23,3 +23,6 @@ There are many features that still have to be added and others need some refacto
 <p align="center">
   <img src="res/Screenshot.png">
 </p>
+
+## Video demonstration
+[![Video](https://img.youtube.com/vi/wP8gb1vWL3c/maxresdefault.jpg)](https://www.youtube.com/embed/wP8gb1vWL3c)
